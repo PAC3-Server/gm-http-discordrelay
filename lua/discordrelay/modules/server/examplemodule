@@ -1,0 +1,16 @@
+local examplemodule = {}
+-- if needed
+-- local discordrelay = discordrelay
+
+function examplemodule.Handle(input)
+    -- handle discord input here see https://discordapp.com/developers/docs/resources/channel#message-object
+    -- don't declare the function if you don't want to handle incoming discord messages.
+
+    -- getting the message example--
+    local user = input.author.username
+    local msg = input.content
+    print(user.." said "..msg)
+end
+
+make sure to return the local variable, otherwise it will be ignored from the message check, unless you want it to do so.
+return examplemodule
