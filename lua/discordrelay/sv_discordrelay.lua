@@ -101,7 +101,7 @@ function discordrelay.HTTPRequest(ctx, callback, err)
     HTTPRequest.headers = {
         ["Authorization"]= "Bot "..discordrelay.token,
         ["Content-Type"] = "application/json",
-        ["User-Agent"] = "GModRelay (https://datamats.com/, 1.0.0)"
+        ["User-Agent"] = "DiscordBot (https://github.com/PAC3-Server/gm-http-discordrelay, 1.0.0)"
     }
 
     HTTPRequest.type = "application/json"
