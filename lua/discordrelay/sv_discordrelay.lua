@@ -52,6 +52,8 @@ discordrelay.AvatarCache = discordrelay.AvatarCache or {}
 discordrelay.modules = {}
 discordrelay.extensions = {}
 
+AccessorFunc(discordrelay, "enabled", "Enabled", FORCE_BOOL)
+
 -- modules
 local function LoadModule(path)
     if not file.Exists(path,"LUA") then
