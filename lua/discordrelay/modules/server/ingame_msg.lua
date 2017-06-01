@@ -14,10 +14,13 @@ hook.Add("PlayerSay", "DiscordRelayChat", function(ply, text, teamChat)
         end
     end
     if discordrelay and discordrelay.enabled then
+        text = string.Replace(text, "@everyone", "everyone")
+        text = string.Replace(text, "@here", "here")
+
         discordrelay.GetAvatar(ply:SteamID(), function(ret)
             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                 ["username"] = ply:Nick(),
-                ["content"] = string.Replace(text, "@everyone", "everyone"),
+                ["content"] = text,
                 ["avatar_url"] = ret
                 })
         end)
