@@ -3,7 +3,7 @@ local discordrelay = discordrelay
 local easylua = requirex('easylua')
 local luadev = requirex('luadev')
 local prefixes = discordrelay.prefixes
-local webhookid_scriptlog = "285346539638095872"
+local webhookid_scriptlog = "285359393124384770"
 
 local webhooktoken_scriptlog = file.Read( "webhook_token_scriptlog.txt", "DATA" )
 
