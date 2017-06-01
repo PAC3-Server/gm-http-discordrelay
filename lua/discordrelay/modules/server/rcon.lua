@@ -28,10 +28,6 @@ function rcon.Handle(input)
                 })
             end
         end)
-        net.Start( "DiscordMessage" )
-            net.WriteString(string.sub(input.author.username,1,14))
-            net.WriteString(string.sub(input.content,1,400))
-        net.Broadcast()
     end
 end
 return rcon

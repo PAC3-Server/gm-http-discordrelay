@@ -1,7 +1,7 @@
 local messages = {}
 local discordrelay = discordrelay
 
-util.AddNetworkString("DiscordMessage") -- how to deal with this? to many commands use that already
+util.AddNetworkString("DiscordMessage")
 
 function messages.Handle(input)
     if input.author.bot ~= true then

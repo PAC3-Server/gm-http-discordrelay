@@ -20,14 +20,14 @@ function status.Handle(input)
         if #players > 0 then
             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                 ["username"] = "Server status:",
-                ["avatar_url"] = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png",
+                ["avatar_url"] = discordrelay.avatar,
                 ["content"] = "**Hostname:** "..GetHostName().."\n**Uptime:** "..string.FormattedTime(SysTime()/3600,"%02i:%02i:%02i").."\n**Map:** `"..game.GetMap().."`\n**Players:** "..#players.."/"..game.MaxPlayers(),
                 ["embeds"] = embeds
         })
         else
             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
-                ["username"] = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool() and "Test Server" or "Server",
-                ["avatar_url"] = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png",
+                ["username"] = discordrelay.username,
+                ["avatar_url"] = discordrelay.avatar,
                 ["embeds"] = {
                     [1] = {
                         ["title"] = "Server status:",

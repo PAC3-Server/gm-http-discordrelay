@@ -3,6 +3,14 @@ local discordrelay = discordrelay
 local easylua = requirex('easylua')
 local luadev = requirex('luadev')
 local prefixes = discordrelay.prefixes
+local webhookid_scriptlog = "285346539638095872"
+
+local webhooktoken_scriptlog = file.Read( "webhook_token_scriptlog.txt", "DATA" )
+
+if not webhooktoken_scriptlog then
+    discordrelay.log("scriptlog.lua","webhooktoken_scriptlog.txt", " not found. Script logging will be disabled.")
+    return false
+end
 
 local function getType(cmds, msg)
     if not cmds or not msg then return end
@@ -28,10 +36,10 @@ hook.Add("LuaDevRunScript", "DiscordRelay", function(script, ply, where, identif
     end
 
     discordrelay.GetAvatar(ply:SteamID(), function(ret)
-        discordrelay.ExecuteWebhook(discordrelay.webhookid_scriptlog, discordrelay.webhooktoken_scriptlog, {
-            ["username"] = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool() and "Test Server" or "Server",
-            ["avatar_url"] = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png",
-            content = "```lua\n"..script.."\n```",
+        discordrelay.ExecuteWebhook(webhookid_scriptlog, webhooktoken_scriptlog, {
+            ["username"] = discordrelay.username,
+            ["avatar_url"] = discordrelay.avatar,
+            ["content"] = "```lua\n"..script.."\n```",
             ["embeds"] = {
                 [1] = {
                     ["title"] = "",
@@ -41,8 +49,7 @@ hook.Add("LuaDevRunScript", "DiscordRelay", function(script, ply, where, identif
                         ["icon_url"] = ret,
                         ["url"] = "http://steamcommunity.com/profiles/" .. ply:SteamID64()
                     },
-                    ["type"] = "rich",
-                    ["color"] = 0x00b300,
+                    ["color"] = 0x00b300
                 }
             }
         })
@@ -148,10 +155,6 @@ function runlua.Handle(input)
                 })
             end
         end)
-        net.Start( "DiscordMessage" )
-            net.WriteString(string.sub(input.author.username,1,14))
-            net.WriteString(string.sub(input.content,1,400))
-        net.Broadcast()
     end
 end
 

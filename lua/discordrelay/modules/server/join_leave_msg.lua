@@ -6,8 +6,8 @@ hook.Add("player_connect", "DiscordRelayPlayerConnect", function(data)
         discordrelay.GetAvatar(data.networkid, function(ret)
         local commid = util.SteamIDTo64(data.networkid)
             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
-                ["username"] = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool() and "Test Server" or "Server",
-                ["avatar_url"] = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png",
+                ["username"] = discordrelay.username,
+                ["avatar_url"] = discordrelay.avatar,
                 ["embeds"] = {
                     [1] = {
                         ["title"] = "",
@@ -34,8 +34,8 @@ hook.Add("player_disconnect", "DiscordRelayPlayerDisconnect", function(data)
 
         discordrelay.GetAvatar(data.networkid, function(ret)
             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
-                ["username"] = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool() and "Test Server" or "Server",
-                ["avatar_url"] = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png",
+                ["username"] = discordrelay.username,
+                ["avatar_url"] = discordrelay.avatar,
                 ["embeds"] = {
                     [1] = {
                         ["title"] = "",

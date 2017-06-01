@@ -1,5 +1,5 @@
 discordrelay = discordrelay or {}
-discordrelay.log = function(...) Msg("[DiscordRelay] ") print(...) end
+discordrelay.log = function(...) Msg("[DiscordRelay] ") print(...) end -- todo: add support for strings and tables (maybe more???)
 discordrelay.config = {}
 
 -- token for reading messages and core functionality
@@ -22,25 +22,22 @@ if not webhooktoken then
 end
 
 -- main config
+discordrelay.username = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool() and "Test Server" or "Server"
+discordrelay.avatar = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png"
 discordrelay.token = token
 discordrelay.guild = "260866188962168832"
 discordrelay.admin_roles = {"260870255486697472", "260932947140411412"}
 discordrelay.relayChannel = "273575417401573377"
-discordrelay.logChannel = "280436597248229376"
-discordrelay.scriptLogChannel = "285346539638095872"
 
 discordrelay.webhookid = "274957435091812352"
 discordrelay.webhooktoken = webhooktoken
-
-discordrelay.webhookid_scriptlog = "285359393124384770"
-discordrelay.webhooktoken_scriptlog = webhooktoken_scriptlog
 
 discordrelay.endpoints = discordrelay.endpoints or {}
 discordrelay.endpoints.base = "https://discordapp.com/api/v6"
 discordrelay.endpoints.users = discordrelay.endpoints.base.."/users"
 discordrelay.endpoints.guilds = discordrelay.endpoints.base.."/guilds"
 discordrelay.endpoints.channels = discordrelay.endpoints.base.."/channels"
-discordrelay.endpoints.webhook = "https://canary.discordapp.com/api/webhooks"
+discordrelay.endpoints.webhook = discordrelay.endpoints.base.."/webhooks"
 
 discordrelay.enabled = true
 
@@ -76,6 +73,9 @@ if file.Exists("discordrelay/modules/server","LUA") then
         if type(mod) == "string" then
             discordrelay.log("Module Error:",file,"contained errors and will not be loaded!")
             continue
+        elseif mod == false then
+            discordrelay.log("Extension:",file,"NOT loaded. (returned false)")
+            continue
         elseif mod == nil then
             discordrelay.log("Extension:",file,"loaded.")
             discordrelay.extensions[name] = func
@@ -104,7 +104,7 @@ function discordrelay.HTTPRequest(ctx, callback, err)
         ["User-Agent"] = "DiscordBot (https://github.com/PAC3-Server/gm-http-discordrelay, 1.0.0)"
     }
 
-    HTTPRequest.type = "application/json"
+    --HTTPRequest.type = "application/json"
 
     if ctx.body then
         HTTPRequest.body = ctx.body
@@ -114,7 +114,7 @@ function discordrelay.HTTPRequest(ctx, callback, err)
 
     HTTPRequest.success = function(code, body, headers)
     if not callback then return end
-        callback(headers, body)
+        callback(headers, body, code)
     end
 
     HTTPRequest.failed = function(reason)
@@ -204,7 +204,7 @@ function discordrelay.CreateMessage(channelid, msg, cb) -- still keeping this if
         if not cb then return end
         local tbl = util.JSONToTable(body)
         cb(tbl)
-    end)
+    end,function(err) discordrelay.log("CreateMessage failed:",channelid,msg,err) end)
 end
 
 function discordrelay.ExecuteWebhook(whid, whtoken, msg, cb)
@@ -226,24 +226,36 @@ function discordrelay.ExecuteWebhook(whid, whtoken, msg, cb)
     if not cb then return end
         local tbl = util.JSONToTable(body)
         cb(tbl)
-    end,function(err) discordrelay.log(err) end)
+    end,function(err) discordrelay.log("WebhookFailed:",whid,msg,err) end)
 end
 
 local after = 0
+local abort = 0
 local lastid
+local badcode = {
+    [400] = "BAD REQUEST",
+    [401] = "UNAUTHORIZED",
+    [403] = "FORBIDDEN",
+    [404] = "NOT FOUND",
+    [405] =  "METHOD NOT ALLOWED",
+    [429] = "TOO MANY REQUESTS",
+    [502] = "GATEWAY UNAVAILABLE"
+    }
+
 --It was either this or websockets. But this shouldn't be that bad of a solution
 timer.Create("DiscordRelayFetchMessages", 1.5, 0, function()
-    local url
+if abort >= 5 then discordrelay.log("FetchMessages failed DESTROYING") timer.Destroy("DiscordRelayFetchMessages") return end -- prevent spam
+local url
     if after ~= 0 then
         url = discordrelay.endpoints.channels.."/"..discordrelay.relayChannel.."/messages?after="..after
     else
         url = discordrelay.endpoints.channels.."/"..discordrelay.relayChannel.."/messages"
     end
-
-    discordrelay.HTTPRequest({["method"] = "get", ["url"] = url}, function(headers, body)
+    discordrelay.HTTPRequest({["method"] = "get", ["url"] = url}, function(headers, body, code)
+        if badcode[code] then abort = abort + 1 discordrelay.log("FetchMessages failed",badcode[code],"retrying",abort) return end
         local json = util.JSONToTable(body)
-        
         if json and json[1] and after ~= 0 and lastid ~= json[1].id then
+            abort = 0 -- json is valid so we got something
             for k,v in ipairs(json) do
                 if not (v and v.author) and discordrelay.user.id == v.author.id or type(v) == "number" then continue end
                 if v.webhook_id and v.webhook_id == discordrelay.webhookid then continue end
@@ -252,10 +264,9 @@ timer.Create("DiscordRelayFetchMessages", 1.5, 0, function()
                     local ok,why = pcall(module.Handle,v)
                     if not ok then 
                         discordrelay.log("Module Error:",name,why)
-                        -- todo: make point to github
                         discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
-                            ["username"] = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool() and "Test Server" or "Server",
-                            ["avatar_url"] = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png",
+                            ["username"] = discordrelay.username,
+                            ["avatar_url"] = discordrelay.avatar,
                             ["embeds"] = {
                                 [1] = {
                                     ["title"] = "MODULE ERROR: "..name,
@@ -280,8 +291,8 @@ end)
 hook.Add("ShutDown", "DiscordRelayShutDown", function()
     if discordrelay and discordrelay.enabled then
         discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
-            ["username"] = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool() and "Test Server" or "Server",
-            ["avatar_url"] = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png",
+            ["username"] = discordrelay.username,
+            ["avatar_url"] = discordrelay.avatar,
             ["embeds"] = {
                 [1] = {
                     ["title"] = "",
