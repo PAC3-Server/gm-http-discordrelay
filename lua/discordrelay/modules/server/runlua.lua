@@ -24,37 +24,39 @@ local function getType(cmds, msg)
     return false
 end
 
-hook.Add("LuaDevRunScript", "DiscordRelay", function(script, ply, where, identifier, targets)
-    identifier = identifier:match("<(.-)>")
+-- todo: fix???
 
-    if targets then
-        local str = {}
-        for k,v in pairs(targets) do
-            table.insert(str, tostring(v))
-        end
-        where = table.concat(str, ", ")
-    end
+-- hook.Add("LuaDevRunScript", "DiscordRelay", function(script, ply, where, identifier, targets)
+--     identifier = identifier:match("<(.-)>")
 
-    discordrelay.GetAvatar(ply:SteamID(), function(ret)
-        discordrelay.ExecuteWebhook(webhookid_scriptlog, webhooktoken_scriptlog, {
-            ["username"] = discordrelay.username,
-            ["avatar_url"] = discordrelay.avatar,
-            ["content"] = "```lua\n"..script.."\n```",
-            ["embeds"] = {
-                [1] = {
-                    ["title"] = "",
-                    ["description"] = "ran " .. identifier .. " " .. where,
-                    ["author"] = {
-                        ["name"] = ply:Nick(),
-                        ["icon_url"] = ret,
-                        ["url"] = "http://steamcommunity.com/profiles/" .. ply:SteamID64()
-                    },
-                    ["color"] = 0x00b300
-                }
-            }
-        })
-    end)
-end)
+--     if targets then
+--         local str = {}
+--         for k,v in pairs(targets) do
+--             table.insert(str, tostring(v))
+--         end
+--         where = table.concat(str, ", ")
+--     end
+
+--     discordrelay.GetAvatar(ply:SteamID(), function(ret)
+--         discordrelay.ExecuteWebhook(webhookid_scriptlog, webhooktoken_scriptlog, {
+--             ["username"] = discordrelay.username,
+--             ["avatar_url"] = discordrelay.avatar,
+--             ["content"] = "```lua\n"..script.."\n```",
+--             ["embeds"] = {
+--                 [1] = {
+--                     ["title"] = "",
+--                     ["description"] = "ran " .. identifier .. " " .. where,
+--                     ["author"] = {
+--                         ["name"] = ply:Nick(),
+--                         ["icon_url"] = ret,
+--                         ["url"] = "http://steamcommunity.com/profiles/" .. ply:SteamID64()
+--                     },
+--                     ["color"] = 0x00b300
+--                 }
+--             }
+--         })
+--     end)
+-- end)
 
 function runlua.Handle(input)
     if input.author.bot ~= true and startsWith("l", input.content) or startsWith("print", input.content) or startsWith("table", input.content) then
