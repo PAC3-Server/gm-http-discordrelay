@@ -1,10 +1,14 @@
 local status = {}
 local discordrelay = discordrelay
 local abort = 0
+local tag = "DiscordrelayUpdateTopic"
 
-function status.ChannelTopicPatch()
-    timer.Create("DiscordRelayChannelTopic", 10, 0, function()
-        if abort >= 3 then discordrelay.log("DiscordRelayChannelTopic failed DESTROYING") timer.Destroy("DiscordRelayChannelTopic") return end -- prevent spam
+function status.DiscordrelayUpdateTopic()
+        if abort >= 3 then -- prevent spam
+            discordrelay.log(tag,"failed DESTROYING")
+            hook.Remove("PlayerConnect",tag)
+            hook.Remove("PlayerDisconnected",tag)
+        return end 
         local res = util.TableToJSON({
             ["name"] = "server-chat",
             ["position"] = 7,
@@ -19,17 +23,19 @@ function status.ChannelTopicPatch()
             function(h,b,c)
                 if discordrelay.util.badcode[c] then 
                     abort = abort + 1 
-                    discordrelay.log("DiscordRelayAddLog failed",discordrelay.util.badcode[c],"retrying",abort) 
-                return end
+                    discordrelay.log(tag,"failed",discordrelay.util.badcode[c],"retrying",abort)
+                    return
+                else 
+                    abort = 0 -- all good now
+                end
             end,
             function(err) 
-                discordrelay.log("DiscordRelayChannelTopic",err) 
+                discordrelay.log(tag,err) 
              end)
-    end)
 end
-status.ChannelTopicPatch()
-hook.Add("PlayerConnect", "DiscordrelayUpdateTopic", status.ChannelTopicPatch)
-hook.Add("PlayerDisconnected", "DiscordrelayUpdateTopic", status.ChannelTopicPatch)
+status.DiscordrelayUpdateTopic()
+hook.Add("PlayerConnect", tag, status.DiscordrelayUpdateTopic)
+hook.Add("PlayerDisconnected", tag, status.DiscordrelayUpdateTopic)
 
 function status.Handle(input)
     if input.author.bot ~= true and string.StartWith(input.content, "<@"..discordrelay.user.id.."> status") or startsWith("status", input.content) then
