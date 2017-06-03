@@ -1,5 +1,35 @@
 local status = {}
 local discordrelay = discordrelay
+local abort = 0
+
+function status.ChannelTopicPatch()
+    timer.Create("DiscordRelayChannelTopic", 10, 0, function()
+        if abort >= 3 then discordrelay.log("DiscordRelayChannelTopic failed DESTROYING") timer.Destroy("DiscordRelayChannelTopic") return end -- prevent spam
+        local res = util.TableToJSON({
+            ["name"] = "server-chat",
+            ["position"] = 7,
+            ["topic"] = GetHostName().." - **Uptime:** "..string.FormattedTime(SysTime()/3600,"%02i:%02i:%02i").." - **Players:** "..player.GetCount().."/"..game.MaxPlayers().."\nsteam://connect/threekelv.in".."\n\nType !status in chat for more detailed info."
+        })
+        -- patch returned not allowed so what gives
+        discordrelay.HTTPRequest({
+            ["method"] = "put",
+            ["url"] = discordrelay.endpoints.channels.."/"..discordrelay.relayChannel,
+            ["body"] = res
+            },
+            function(h,b,c)
+                if discordrelay.util.badcode[c] then 
+                    abort = abort + 1 
+                    discordrelay.log("DiscordRelayAddLog failed",discordrelay.util.badcode[c],"retrying",abort) 
+                return end
+            end,
+            function(err) 
+                discordrelay.log("DiscordRelayChannelTopic",err) 
+             end)
+    end)
+end
+status.ChannelTopicPatch()
+hook.Add("PlayerConnect", "DiscordrelayUpdateTopic", status.ChannelTopicPatch)
+hook.Add("PlayerDisconnected", "DiscordrelayUpdateTopic", status.ChannelTopicPatch)
 
 function status.Handle(input)
     if input.author.bot ~= true and string.StartWith(input.content, "<@"..discordrelay.user.id.."> status") or startsWith("status", input.content) then
