@@ -14,6 +14,7 @@ timer.Create("DiscordRelayAddLog", 1.5, 0, function()
         discordrelay.CreateMessage(logChannel, "```"..logBuffer.."```",function(h,b,c)
             if discordrelay.util.badcode[c] then 
                 abort = abort + 1 
+                logBuffer = "" -- clear buffer to get rid of potentally massive logs
                 discordrelay.log("DiscordRelayAddLog failed",discordrelay.util.badcode[c],"retrying",abort) return end 
             end)
         logBuffer = ""
