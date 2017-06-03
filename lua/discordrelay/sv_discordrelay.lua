@@ -33,7 +33,7 @@ discordrelay.webhookid = "274957435091812352"
 discordrelay.webhooktoken = webhooktoken
 
 discordrelay.endpoints = discordrelay.endpoints or {}
-discordrelay.endpoints.base = "https://discordapp.com/api/v6"
+discordrelay.endpoints.base = "https://discordapp.com/api"
 discordrelay.endpoints.users = discordrelay.endpoints.base.."/users"
 discordrelay.endpoints.guilds = discordrelay.endpoints.base.."/guilds"
 discordrelay.endpoints.channels = discordrelay.endpoints.base.."/channels"
@@ -53,6 +53,18 @@ discordrelay.modules = {}
 discordrelay.extensions = {}
 
 AccessorFunc(discordrelay, "enabled", "Enabled", FORCE_BOOL)
+
+discordrelay.util = {}
+discordrelay.util.badcode = {
+    [400] = "BAD REQUEST",
+    [401] = "UNAUTHORIZED",
+    [403] = "FORBIDDEN",
+    [404] = "NOT FOUND",
+    [405] =  "METHOD NOT ALLOWED",
+    [429] = "TOO MANY REQUESTS",
+    [502] = "GATEWAY UNAVAILABLE"
+    }
+
 
 -- modules
 local function LoadModule(path)
@@ -106,7 +118,7 @@ function discordrelay.HTTPRequest(ctx, callback, err)
         ["User-Agent"] = "DiscordBot (https://github.com/PAC3-Server/gm-http-discordrelay, 1.0.0)"
     }
 
-    --HTTPRequest.type = "application/json"
+    HTTPRequest.type = "application/json"
 
     if ctx.body then
         HTTPRequest.body = ctx.body
@@ -115,8 +127,9 @@ function discordrelay.HTTPRequest(ctx, callback, err)
     end
 
     HTTPRequest.success = function(code, body, headers)
+    if discordrelay.util.badcode[code] then discordrelay.log("HTTPRequest",ctx.url,discordrelay.util.badcode[code]) end
     if not callback then return end
-        callback(headers, body, code)
+    callback(headers, body, code)
     end
 
     HTTPRequest.failed = function(reason)
@@ -202,10 +215,10 @@ function discordrelay.CreateMessage(channelid, msg, cb) -- still keeping this if
         ["method"] = "post",
         ["url"] = discordrelay.endpoints.channels.."/"..channelid.."/messages",
         ["body"] = res
-    }, function(headers, body)
+    }, function(headers, body, code)
         if not cb then return end
         local tbl = util.JSONToTable(body)
-        cb(tbl)
+        cb(headers,tbl,code)
     end,function(err) discordrelay.log("CreateMessage failed:",channelid,msg,err) end)
 end
 
@@ -234,15 +247,6 @@ end
 local after = 0
 local abort = 0
 local lastid
-local badcode = {
-    [400] = "BAD REQUEST",
-    [401] = "UNAUTHORIZED",
-    [403] = "FORBIDDEN",
-    [404] = "NOT FOUND",
-    [405] =  "METHOD NOT ALLOWED",
-    [429] = "TOO MANY REQUESTS",
-    [502] = "GATEWAY UNAVAILABLE"
-    }
 
 --It was either this or websockets. But this shouldn't be that bad of a solution
 timer.Create("DiscordRelayFetchMessages", 1.5, 0, function()
@@ -254,7 +258,7 @@ local url
         url = discordrelay.endpoints.channels.."/"..discordrelay.relayChannel.."/messages"
     end
     discordrelay.HTTPRequest({["method"] = "get", ["url"] = url}, function(headers, body, code)
-        if badcode[code] then abort = abort + 1 discordrelay.log("FetchMessages failed",badcode[code],"retrying",abort) return end
+        if discordrelay.util.badcode[code] then abort = abort + 1 discordrelay.log("FetchMessages failed",discordrelay.util.badcode[code],"retrying",abort) return end
         local json = util.JSONToTable(body)
         if json and json[1] and after ~= 0 and lastid ~= json[1].id then
             abort = 0 -- json is valid so we got something
