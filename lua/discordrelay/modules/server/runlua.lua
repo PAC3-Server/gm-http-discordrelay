@@ -39,7 +39,7 @@ hook.Add("LuaDevRunScript", "DiscordRelay", function(script, ply, where, identif
         discordrelay.ExecuteWebhook(webhookid_scriptlog, webhooktoken_scriptlog, {
             ["username"] = discordrelay.username,
             ["avatar_url"] = discordrelay.avatar,
-            ["content"] = "```lua\n"..script.."\n```",
+            ["content"] = "```lua\n"..string.sub(script, 0, 1990).."\n```",
             ["embeds"] = {
                 [1] = {
                     ["title"] = "",
