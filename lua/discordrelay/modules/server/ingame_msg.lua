@@ -15,9 +15,6 @@ hook.Add("PlayerSay", "DiscordRelayChat", function(ply, text, teamChat)
         end
     end
     if discordrelay and discordrelay.enabled then
-        text = string.Replace(text, "@everyone", "everyone")
-        text = string.Replace(text, "@here", "here")
-
         --Parse mentions and replace it into the message
         if string.match(text, "@%a+") then
             for n in string.gmatch( text, "@(%a+)") do
@@ -27,6 +24,9 @@ hook.Add("PlayerSay", "DiscordRelayChat", function(ply, text, teamChat)
                 end
             end
         end
+
+        text = string.Replace(text, "@everyone", "everyone")
+        text = string.Replace(text, "@here", "here")
 
         discordrelay.GetAvatar(ply:SteamID(), function(ret)
             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
