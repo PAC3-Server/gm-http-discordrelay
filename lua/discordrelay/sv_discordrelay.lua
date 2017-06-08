@@ -45,7 +45,7 @@ discordrelay.user = {}
 discordrelay.user.username = "GMod-Relay"
 discordrelay.user.id = "276379732726251521"
 
-discordrelay.members = {}
+discordrelay.members = discordrelay.members or {}
 
 discordrelay.prefixes = {".", "!"}
 
