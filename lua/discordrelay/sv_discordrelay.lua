@@ -212,13 +212,13 @@ function discordrelay.FetchMembers()
     end)
 end
 
-local after = 0
-local abort = 0
-local lastid
-
 timer.Create("DiscordFetchMembers", 60*20, 0, discordrelay.FetchMembers)
 
 hook.Add("PostGamemodeLoaded", "FetchDiscordMembersStartup", discordrelay.FetchMembers)
+
+local after = 0
+local abort = 0
+local lastid
 
 --It was either this or websockets. But this shouldn't be that bad of a solution
 timer.Create("DiscordRelayFetchMessages", 1.5, 0, function()
