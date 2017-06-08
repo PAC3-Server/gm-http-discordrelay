@@ -4,7 +4,7 @@ local luadev = requirex('luadev')
 local logChannel = "280436597248229376"
 if not easylua or not luadev then discordrelay.log("easylua or luadev not found, scriptlogging disabled.") return false end
 
-local blacklist = {"suicided", "Bad SetLocalOrigin"}
+local blacklist = {"suicided", "Bad SetLocalOrigin","Changing collision rules"}
 local logBuffer = ""
 local abort = 0
 
