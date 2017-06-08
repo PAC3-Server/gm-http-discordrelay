@@ -208,15 +208,23 @@ end
 function discordrelay.FetchMembers()
     local url = discordrelay.endpoints.guilds.."/"..(guildid or discordrelay.guild).."/members?limit=1000"
     discordrelay.HTTPRequest({["method"] = "get", ["url"] = url}, function(headers, body, code)
+        if discordrelay.util.badcode[code] then
+            discordrelay.log("DiscordRelayFetchMembers failed:",discordrelay.util.badcode[code])
+            if code == 502 then
+                discordrelay.FetchMembers() -- try again
+            else
+                return
+            end
+        end
         for k,v in pairs(util.JSONToTable(body)) do
             discordrelay.members[string.lower(v.user.username)] = v
         end
     end)
 end
 
-timer.Create("DiscordFetchMembers", 60*20, 0, discordrelay.FetchMembers)
+timer.Create("DiscordRelayFetchMembers", 60*20, 0, discordrelay.FetchMembers)
 
-hook.Add("PostGamemodeLoaded", "FetchDiscordMembersStartup", discordrelay.FetchMembers)
+hook.Add("PostGamemodeLoaded", "DiscordRelayFetchMembersStartup", discordrelay.FetchMembers)
 
 -- modules
 
@@ -267,6 +275,8 @@ hook.Add("NotagainPostLoad", "DiscordRelayLoadModules", discordrelay.InitializeM
 function discordrelay.reload()
     DiscordrelayInit()
     discordrelay.InitializeModules()
+    discordrelay.members = {}
+    discordrelay.FetchMembers()
 end
 
 --It was either this or websockets. But this shouldn't be that bad of a solution
