@@ -216,11 +216,6 @@ timer.Create("DiscordFetchMembers", 60*20, 0, discordrelay.FetchMembers)
 
 hook.Add("PostGamemodeLoaded", "FetchDiscordMembersStartup", discordrelay.FetchMembers)
 
-local after = 0
-local abort = 0
-local lastid
-
-
 -- modules
 local function LoadModule(path)
     if not file.Exists(path,"LUA") then
@@ -240,9 +235,8 @@ if file.Exists("discordrelay/modules/server","LUA") then
         local name = string.StripExtension(file)
         local func = LoadModule("discordrelay/modules/server/"..file)
         local ok, mod = pcall(func)
-        if not ok then continue end -- even if a single modules fail don't exit loop
         if type(mod) == "string" then
-            discordrelay.log("Module Error:",file,"contained errors and will not be loaded!")
+            discordrelay.log("Module Error:",mod,file,"contained errors and will not be loaded!")
             continue
         elseif mod == false then
             discordrelay.log("Extension:",file,"NOT loaded. (returned false)")
@@ -264,6 +258,11 @@ if file.Exists("discordrelay/modules/client","LUA") then
 end
 
 --It was either this or websockets. But this shouldn't be that bad of a solution
+
+local after = 0
+local abort = 0
+local lastid
+
 timer.Create("DiscordRelayFetchMessages", 1.5, 0, function()
 if abort >= 5 then discordrelay.log("FetchMessages failed DESTROYING") timer.Destroy("DiscordRelayFetchMessages") return end -- prevent spam
 local url
@@ -284,6 +283,7 @@ local url
                 for name,module in pairs(discordrelay.modules) do
                     local ok,why = pcall(module.Handle,v)
                     if not ok then 
+                        discordrelay.modules[name] = nil -- unload to prevent spam
                         discordrelay.log("Module Error:",name,why)
                         discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                             ["username"] = discordrelay.username,
