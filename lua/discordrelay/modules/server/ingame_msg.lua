@@ -35,6 +35,6 @@ hook.Add("PlayerSay", "DiscordRelayChat", function(ply, text, teamChat)
                 ["avatar_url"] = ret
             })
         end)
-
+        hook.Run("DiscordRelayMessage", ply, text, teamChat)
     end
 end)
