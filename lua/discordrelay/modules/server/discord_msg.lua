@@ -20,6 +20,8 @@ function messages.Handle(input)
             net.WriteString(string.sub(input.author.username,1,14))
             net.WriteString(string.sub(ret,1,400))
         net.Broadcast()
+
+        hook.Run("DiscordRelayMessage", input)
     end
 end
 
