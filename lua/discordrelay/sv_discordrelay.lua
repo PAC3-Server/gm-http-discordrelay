@@ -220,6 +220,49 @@ local after = 0
 local abort = 0
 local lastid
 
+
+-- modules
+local function LoadModule(path)
+    if not file.Exists(path,"LUA") then
+        discordrelay.log("Modules Error:",path,"not found")
+    end
+    local func = CompileFile(path)
+    if type(func) ~= "string" then
+        return func
+    end
+    return nil
+end
+
+include("discordrelay/helpers.lua") -- todo: remove???????
+
+if file.Exists("discordrelay/modules/server","LUA") then
+    for _,file in pairs (file.Find("discordrelay/modules/server/*.lua", "LUA")) do
+        local name = string.StripExtension(file)
+        local func = LoadModule("discordrelay/modules/server/"..file)
+        local ok, mod = pcall(func)
+        if not ok then continue end -- even if a single modules fail don't exit loop
+        if type(mod) == "string" then
+            discordrelay.log("Module Error:",file,"contained errors and will not be loaded!")
+            continue
+        elseif mod == false then
+            discordrelay.log("Extension:",file,"NOT loaded. (returned false)")
+            continue
+        elseif mod == nil then
+            discordrelay.log("Extension:",file,"loaded.")
+            discordrelay.extensions[name] = func
+            continue
+        end
+        
+        discordrelay.modules[name] = mod
+        discordrelay.log("Discord Modules:",name,"loaded.")
+    end
+end
+if file.Exists("discordrelay/modules/client","LUA") then
+    for _,file in pairs (file.Find("discordrelay/modules/client/*.lua", "LUA")) do
+        AddCSLuaFile("discordrelay/modules/client/"..file)
+    end
+end
+
 --It was either this or websockets. But this shouldn't be that bad of a solution
 timer.Create("DiscordRelayFetchMessages", 1.5, 0, function()
 if abort >= 5 then discordrelay.log("FetchMessages failed DESTROYING") timer.Destroy("DiscordRelayFetchMessages") return end -- prevent spam
@@ -282,45 +325,3 @@ hook.Add("ShutDown", "DiscordRelayShutDown", function()
         })
     end
 end)
-
--- modules
-local function LoadModule(path)
-    if not file.Exists(path,"LUA") then
-        discordrelay.log("Modules Error:",path,"not found")
-    end
-    local func = CompileFile(path)
-    if type(func) ~= "string" then
-        return func
-    end
-    return nil
-end
-
-include("discordrelay/helpers.lua") -- todo: remove???????
-
-if file.Exists("discordrelay/modules/server","LUA") then
-    for _,file in pairs (file.Find("discordrelay/modules/server/*.lua", "LUA")) do
-        local name = string.StripExtension(file)
-        local func = LoadModule("discordrelay/modules/server/"..file)
-        local ok, mod = pcall(func)
-        if not ok then continue end -- even if a single modules fail don't exit loop
-        if type(mod) == "string" then
-            discordrelay.log("Module Error:",file,"contained errors and will not be loaded!")
-            continue
-        elseif mod == false then
-            discordrelay.log("Extension:",file,"NOT loaded. (returned false)")
-            continue
-        elseif mod == nil then
-            discordrelay.log("Extension:",file,"loaded.")
-            discordrelay.extensions[name] = func
-            continue
-        end
-        
-        discordrelay.modules[name] = mod
-        discordrelay.log("Discord Modules:",name,"loaded.")
-    end
-end
-if file.Exists("discordrelay/modules/client","LUA") then
-    for _,file in pairs (file.Find("discordrelay/modules/client/*.lua", "LUA")) do
-        AddCSLuaFile("discordrelay/modules/client/"..file)
-    end
-end
