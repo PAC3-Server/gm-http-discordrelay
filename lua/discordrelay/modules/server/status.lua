@@ -34,8 +34,10 @@ function status.DiscordrelayUpdateTopic()
              end)
 end
 status.DiscordrelayUpdateTopic()
-hook.Add("PlayerConnect", tag, status.DiscordrelayUpdateTopic)
-hook.Add("PlayerDisconnected", tag, status.DiscordrelayUpdateTopic)
+gameevent.Listen("player_connect")
+hook.Add("player_connect", tag, status.DiscordrelayUpdateTopic)
+gameevent.Listen( "player_disconnect" )
+hook.Add("player_disconnect",tag,status.DiscordrelayUpdateTopic)
 
 function status.Handle(input)
     if input.author.bot ~= true and string.StartWith(input.content, "<@"..discordrelay.user.id.."> status") or startsWith("status", input.content) then
