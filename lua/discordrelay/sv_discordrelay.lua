@@ -45,6 +45,8 @@ discordrelay.user = {}
 discordrelay.user.username = "GMod-Relay"
 discordrelay.user.id = "276379732726251521"
 
+discordrelay.members = {}
+
 discordrelay.prefixes = {".", "!"}
 
 discordrelay.AvatarCache = discordrelay.AvatarCache or {}
@@ -201,9 +203,22 @@ function discordrelay.ExecuteWebhook(whid, whtoken, msg, cb)
     end,function(err) discordrelay.log("WebhookFailed:",whid,msg,err) end)
 end
 
+function discordrelay.FetchMembers()
+    local url = discordrelay.endpoints.guilds.."/"..(guildid or discordrelay.guild).."/members?limit=1000"
+    discordrelay.HTTPRequest({["method"] = "get", ["url"] = url}, function(headers, body, code)
+        for k,v in pairs(util.JSONToTable(body)) do
+            discordrelay.members[string.lower(v.user.username)] = v
+        end
+    end)
+end
+
 local after = 0
 local abort = 0
 local lastid
+
+timer.Create("DiscordFetchMembers", 60*20, 0, discordrelay.FetchMembers)
+
+hook.Add("PostGamemodeLoaded", "FetchDiscordMembersStartup", discordrelay.FetchMembers)
 
 --It was either this or websockets. But this shouldn't be that bad of a solution
 timer.Create("DiscordRelayFetchMessages", 1.5, 0, function()
