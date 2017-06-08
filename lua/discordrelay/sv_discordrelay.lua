@@ -262,7 +262,7 @@ function discordrelay.InitializeModules()
     end
 end
 
-hook.Add("NotagainPostLoad", "DiscordRelayLoadModules", InitializeModules)
+hook.Add("NotagainPostLoad", "DiscordRelayLoadModules", discordrelay.InitializeModules)
 
 function discordrelay.reload()
     DiscordrelayInit()
