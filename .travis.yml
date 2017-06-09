@@ -1,11 +1,22 @@
-language: generic
+sudo: false
+
+language: c
+
+addons:
+  apt:
+    packages:
+    - libc6:i386
+    - libstdc++6:i386
     
 before_install:
- - wget https://github.com/CapsAdmin/goluwa/archive/master.zip && unzip master.zip -d ../goluwa
+ # Download the lua 
+ - wget https://github.com/Metastruct/gtravis/releases/download/travisbins/gluac.tar.xz
+ - tar -xf gluac.tar.xz
+ - export LD_LIBRARY_PATH=`pwd`/gluac${LD_LIBRARY_PATH:+:}${LD_LIBRARY_PATH:-}
+
+ # Set the $PATH so gluac can be executed
+ - export PATH=$PATH:`pwd`/gluac
  
-script:
- - |
-    paths=($(git -C $TRAVIS_BUILD_DIR diff --name-only $TRAVIS_COMMIT_RANGE))
-    echo $paths
-    paths=("${paths[@]/#/$TRAVIS_BUILD_DIR/}")
-    bash ../goluwa/goluwa-master/goluwa cli --gluacheck $(printf '%s,' "${paths[@]}")
+ - echo $PWD
+
+script: find . -iname '*.lua' -not -path '*/entities/gmod_wire_expression2/core/*' -print0 | xargs -0 -- gluac -p --
