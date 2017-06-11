@@ -258,7 +258,7 @@ function discordrelay.InitializeModules()
                 discordrelay.extensions[name] = func
                 continue
             end
-            
+
             discordrelay.modules[name] = mod
             discordrelay.log("Discord Modules:",name,"loaded.")
         end
@@ -294,7 +294,13 @@ local url
         url = discordrelay.endpoints.channels.."/"..discordrelay.relayChannel.."/messages"
     end
     discordrelay.HTTPRequest({["method"] = "get", ["url"] = url}, function(headers, body, code)
-        if discordrelay.util.badcode[code] then abort = abort + 1 discordrelay.log("FetchMessages failed",discordrelay.util.badcode[code],"retrying",abort) return end
+        if discordrelay.util.badcode[code] then
+            abort = abort + 1
+            discordrelay.log("FetchMessages failed",discordrelay.util.badcode[code],"retrying",abort)
+            return
+        else
+            abort = 0
+        end
         local json = util.JSONToTable(body)
         if json and json[1] and after ~= 0 and lastid ~= json[1].id then
             abort = 0 -- json is valid so we got something
@@ -304,7 +310,7 @@ local url
 
                 for name,module in pairs(discordrelay.modules) do
                     local ok,why = pcall(module.Handle,v)
-                    if not ok then 
+                    if not ok then
                         discordrelay.modules[name] = nil -- unload to prevent spam
                         discordrelay.log("Module Error:",name,why)
                         discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
