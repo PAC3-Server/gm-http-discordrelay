@@ -2,6 +2,7 @@ local status = {}
 local tag = "DiscordrelayUpdateTopic"
 local discordrelay = discordrelay
 local abort = 0
+local startsWith = discordrelay.util.startsWith
 
 function status.DiscordrelayUpdateTopic()
     if abort >= 3 then -- prevent spam

@@ -1,5 +1,6 @@
 local rcon = {}
 local discordrelay = discordrelay
+local startsWith = discordrelay.util.startsWith
 
 function rcon.Handle(input)
     if startsWith("rcon", input.content) then

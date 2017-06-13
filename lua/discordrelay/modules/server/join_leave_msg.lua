@@ -5,7 +5,7 @@ function join_leave_msg.Init()
     gameevent.Listen( "player_connect" )
     hook.Add("player_connect", "DiscordRelayPlayerConnect", function(data)
         if discordrelay and discordrelay.enabled then
-            discordrelay.GetAvatar(data.networkid, function(ret)
+            discordrelay.util.GetAvatar(data.networkid, function(ret)
             local commid = util.SteamIDTo64(data.networkid)
                 discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                     ["username"] = discordrelay.username,
@@ -34,7 +34,7 @@ function join_leave_msg.Init()
             local commid = util.SteamIDTo64(data.networkid)
             local reason = (string.StartWith(data.reason ,"Map") or string.StartWith(data.reason ,data.name) or string.StartWith(data.reason ,"Client" )) and ":interrobang: "..data.reason or data.reason
 
-            discordrelay.GetAvatar(data.networkid, function(ret)
+            discordrelay.util.GetAvatar(data.networkid, function(ret)
                 discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                     ["username"] = discordrelay.username,
                     ["avatar_url"] = discordrelay.avatar,

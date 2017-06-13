@@ -3,6 +3,7 @@ local discordrelay = discordrelay
 local prefixes = discordrelay.prefixes
 local easylua = requirex('easylua')
 local luadev = requirex('luadev')
+local startsWith = discordrelay.util.startsWith
 
 local function getType(cmds, msg)
     if not cmds or not msg then return end
@@ -37,7 +38,7 @@ function runlua.Init()
             where = table.concat(str, ", ")
         end
 
-        discordrelay.GetAvatar(ply:SteamID(), function(ret)
+        discordrelay.util.GetAvatar(ply:SteamID(), function(ret)
             discordrelay.ExecuteWebhook(webhookid_scriptlog, webhooktoken_scriptlog, {
                 ["username"] = discordrelay.username,
                 ["avatar_url"] = discordrelay.avatar,

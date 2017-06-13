@@ -173,7 +173,7 @@ function discordrelay.WebhookRequest(ctx, callback, err)
     HTTP(HTTPRequest)
 end
 
-function discordrelay.GetAvatar(steamid, callback)
+function discordrelay.util.GetAvatar(steamid, callback)
     local commid = util.SteamIDTo64(steamid)
     if discordrelay.AvatarCache[commid] then
         callback(discordrelay.AvatarCache[commid])
@@ -190,7 +190,7 @@ function discordrelay.GetAvatar(steamid, callback)
     end
 end
 
-function discordrelay.IsAdmin(userid, cb)
+function discordrelay.util.IsAdmin(userid, cb)
     discordrelay.HTTPRequest({
         ["method"] = "get",
         ["url"] = discordrelay.endpoints.guilds.."/"..discordrelay.guild.."/members/"..userid
@@ -209,6 +209,17 @@ function discordrelay.IsAdmin(userid, cb)
         cb(false)
     end)
 end
+
+function discordrelay.util.startsWith(name, msg, param)
+    if not name or not msg then return end
+    for k,v in pairs(discordrelay.prefixes) do
+        if string.StartWith(msg, v..name) then
+            return true
+        end
+    end
+    return false
+end
+
 
 function discordrelay.CreateMessage(channelid, msg, cb)
     local res
@@ -296,7 +307,6 @@ local function LoadModule(path)
 end
 
 function discordrelay.InitializeModules()
-    include("discordrelay/helpers.lua") -- todo: remove???????
 
     if file.Exists("discordrelay/modules/server","LUA") then
         for _,file in pairs (file.Find("discordrelay/modules/server/*.lua", "LUA")) do
