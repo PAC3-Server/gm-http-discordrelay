@@ -1,5 +1,6 @@
 local join_leave_msg = {}
 local discordrelay = discordrelay
+
 function join_leave_msg.Init()
     gameevent.Listen( "player_connect" )
     hook.Add("player_connect", "DiscordRelayPlayerConnect", function(data)
