@@ -3,7 +3,7 @@ local tag = "DiscordrelayUpdateTopic"
 local discordrelay = discordrelay
 local abort = 0
 
-local function status.DiscordrelayUpdateTopic()
+function status.DiscordrelayUpdateTopic()
     if abort >= 3 then -- prevent spam
         discordrelay.log(3,tag,"failed DESTROYING")
         hook.Remove("PlayerConnect",tag)
@@ -36,11 +36,10 @@ local function status.DiscordrelayUpdateTopic()
 end
 
 function status.Init()
-    local abort = 0
     status.DiscordrelayUpdateTopic()
     gameevent.Listen("player_connect")
-    hook.Add("player_connect", tag, status.DiscordrelayUpdateTopic)
-    gameevent.Listen( "player_disconnect" )
+    hook.Add("player_connect",tag,status.DiscordrelayUpdateTopic)
+    gameevent.Listen( "player_disconnect")
     hook.Add("player_disconnect",tag,status.DiscordrelayUpdateTopic)
 end
 
@@ -83,9 +82,11 @@ function status.Handle(input)
         end
     end
 end
+
 function status.Remove()
-    hook.Remove("player_connect", tag)
+    hook.Remove("player_connect",tag)
     hook.Remove("player_disconnect",tag)
 end
+
 status.Init()
 return status

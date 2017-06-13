@@ -1,5 +1,6 @@
 local scriptlog = {}
 local discordrelay = discordrelay
+
 function scriptlog.Init()
     local easylua = requirex('easylua')
     local luadev = requirex('luadev')
@@ -37,9 +38,11 @@ function scriptlog.Init()
         logBuffer = logBuffer..msg
     end)
 end
+
 function scriptlog.Remove()
      hook.Remove("EngineSpew", "DiscordRelaySpew")
      timer.Destroy("DiscordRelayAddLog")
 end
+
 scriptlog.Init()
 return scriptlog
