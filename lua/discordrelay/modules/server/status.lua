@@ -86,8 +86,8 @@ end
 function status.Remove()
     hook.Remove("player_connect",tag)
     hook.Remove("player_disconnect",tag)
-    if discordrelay.extensions.status then
-        discordrelay.extensions.status = nil
+    if discordrelay.modules.status then
+        discordrelay.modules.status = nil
     end
 end
 

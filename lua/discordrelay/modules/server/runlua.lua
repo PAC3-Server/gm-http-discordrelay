@@ -164,8 +164,8 @@ end
 
 function runlua.Remove ()
     hook.Remove("LuaDevRunScript", "DiscordRelay")
-    if discordrelay.extensions.runlua then
-        discordrelay.extensions.runlua = nil
+    if discordrelay.modules.runlua then
+        discordrelay.modules.runlua = nil
     end
 end
 
