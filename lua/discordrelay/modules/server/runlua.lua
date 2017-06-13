@@ -8,7 +8,7 @@ local webhookid_scriptlog = "285359393124384770"
 local webhooktoken_scriptlog = file.Read( "webhook_token_scriptlog.txt", "DATA" )
 
 if not webhooktoken_scriptlog then
-    discordrelay.log("scriptlog.lua","webhooktoken_scriptlog.txt", " not found. Script logging will be disabled.")
+    discordrelay.log(2,"scriptlog.lua","webhooktoken_scriptlog.txt", " not found. Script logging will be disabled.")
     return false
 end
 

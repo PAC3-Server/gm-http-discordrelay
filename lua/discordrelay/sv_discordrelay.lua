@@ -1,13 +1,12 @@
 local function DiscordrelayInit()
     discordrelay = discordrelay or {}
-    discordrelay.log = function(...) Msg("[DiscordRelay] ") print(...) end -- todo: add support for strings and tables (maybe more???)
     discordrelay.config = {}
 
     -- token for reading messages and core functionality
     local token = file.Read( "discordbot_token.txt", "DATA" )
 
     if not token then
-        discordrelay.log("discordbot_token.txt", "not found.")
+        discordrelay.log(3,"discordbot_token.txt", "not found.")
     end
 
     if not token then return end
@@ -18,7 +17,7 @@ local function DiscordrelayInit()
     local webhooktoken = file.Read( "webhook_token.txt", "DATA" )
 
     if not webhooktoken then
-        discordrelay.log("webhook_token.txt", " not found. Discordrelay unable to post messages on Discord.")
+        discordrelay.log(2,"webhook_token.txt", " not found. Discordrelay unable to post messages on Discord.")
         discordrelay.config.webhookenabled = false
     end
 
@@ -69,6 +68,45 @@ local function DiscordrelayInit()
         }
 end
 DiscordrelayInit()
+
+function discordrelay.log(level,...)  -- most expensive print ever
+    local arg = {...}
+    local color = {
+        [1] = Color(255,255,255),
+        [2] = Color(255,222,102),
+        [3] = Color(255,0,0)
+    }
+    local prefix = {
+        [1] = {Color(255,182,79),"[DiscordRelay:",Color(255,255,255),"info",Color(255,182,79),"] "},
+        [2] = {Color(255,182,79),"[DiscordRelay:",Color(255,222,102),"warning",Color(255,182,79),"] "},
+        [3] = {Color(255,182,79),"[DiscordRelay:",Color(255,0,0),"error",Color(255,182,79),"] "}
+    }
+    local level = math.Clamp(level, 1, #prefix) -- lol
+    MsgC(unpack(prefix[level]))
+    local out = ""
+    local tablespew = {}
+    local function insert(inc,val)
+        if inc == 1 then
+            return val
+        else
+            return " "..val
+        end
+    end
+    for i,val in ipairs(arg) do
+        if type(val) == "string" or type(val) == "number" or type(val) == "boolean" then
+            out = out..insert(i,tostring(val))
+        elseif type(val) == "table" then
+        table.Add(tablespew, val)
+        end
+    end
+    MsgC(color[level],out,"\n")
+    if tablespew then -- subtables??? who knows
+        for key,value in ipairs(tablespew) do
+        MsgC(color[level],key," --> ",value,"\n")
+        end
+    end
+end
+
 function discordrelay.HTTPRequest(ctx, callback, err)
     local HTTPRequest = {}
     HTTPRequest.method = ctx.method
@@ -88,9 +126,11 @@ function discordrelay.HTTPRequest(ctx, callback, err)
     end
 
     HTTPRequest.success = function(code, body, headers)
-    if discordrelay.util.badcode[code] then discordrelay.log("HTTPRequest",ctx.url,discordrelay.util.badcode[code]) end
-    if not callback then return end
-    callback(headers, body, code)
+        if discordrelay.util.badcode[code] then
+            discordrelay.log(2,"HTTPRequest",ctx.url,discordrelay.util.badcode[code])
+        end
+        if not callback then return end
+        callback(headers, body, code)
     end
 
     HTTPRequest.failed = function(reason)
@@ -136,10 +176,14 @@ function discordrelay.GetAvatar(steamid, callback)
     if discordrelay.AvatarCache[commid] then
         callback(discordrelay.AvatarCache[commid])
     else
-        http.Fetch("http://steamcommunity.com/profiles/" .. commid .. "?xml=1", function(content, size)
+        http.Fetch("http://steamcommunity.com/profiles/" .. commid .. "?xml=1",
+        function(content, size)
             local ret = content:match("<avatarFull><!%[CDATA%[(.-)%]%]></avatarFull>") or "http://i.imgur.com/ovW4MBM.png"
             discordrelay.AvatarCache[commid] = ret
             callback(ret)
+        end,
+        function(err)
+            discordrelay.log(3,"GetAvatar failed for:",steamid,err)
         end)
     end
 end
@@ -148,7 +192,8 @@ function discordrelay.IsAdmin(userid, cb)
     discordrelay.HTTPRequest({
         ["method"] = "get",
         ["url"] = discordrelay.endpoints.guilds.."/"..discordrelay.guild.."/members/"..userid
-    }, function(headers, body)
+    },
+    function(headers, body)
         local tbl = util.JSONToTable(body)
         if tbl.roles then
             for k,role in pairs(discordrelay.admin_roles) do
@@ -163,24 +208,28 @@ function discordrelay.IsAdmin(userid, cb)
     end)
 end
 
-function discordrelay.CreateMessage(channelid, msg, cb) -- still keeping this if we want to post anything in the future, feel free to remove though
+function discordrelay.CreateMessage(channelid, msg, cb)
     local res
     if type(msg) == "string" then
         res = util.TableToJSON({["content"] = msg})
     elseif type(msg) == "table" then
         res = util.TableToJSON(msg)
     else
-        return discordrelay.log("Relay: attempting to send a invalid message")
+        return discordrelay.log(3,"Relay: attempting to send a invalid message")
     end
     discordrelay.HTTPRequest({
         ["method"] = "post",
         ["url"] = discordrelay.endpoints.channels.."/"..channelid.."/messages",
         ["body"] = res
-    }, function(headers, body, code)
+    },
+    function(headers, body, code)
         if not cb then return end
         local tbl = util.JSONToTable(body)
         cb(headers,tbl,code)
-    end,function(err) discordrelay.log("CreateMessage failed:",channelid,msg,err) end)
+    end,
+    function(err)
+        discordrelay.log(3,"CreateMessage failed:",channelid,msg,err)
+    end)
 end
 
 function discordrelay.ExecuteWebhook(whid, whtoken, msg, cb)
@@ -191,25 +240,30 @@ function discordrelay.ExecuteWebhook(whid, whtoken, msg, cb)
     elseif type(msg) == "table" then
         res = util.TableToJSON(msg)
     else
-        return discordrelay.log("Relay: attempting to send a invalid message")
+        return discordrelay.log(3,"Relay: attempting to send a invalid message")
     end
     discordrelay.WebhookRequest({
         ["method"] = "POST",
         ["url"] = discordrelay.endpoints.webhook.."/"..whid.."/"..whtoken,
         ["body"] = res
 
-    }, function(headers, body)
-    if not cb then return end
+    },
+    function(headers, body)
+        if not cb then return end
         local tbl = util.JSONToTable(body)
         cb(tbl)
-    end,function(err) discordrelay.log("WebhookFailed:",whid,msg,err) end)
+    end,
+    function(err)
+        discordrelay.log(3,"WebhookFailed:",whid,msg,err)
+    end)
 end
 
 function discordrelay.FetchMembers()
     local url = discordrelay.endpoints.guilds.."/"..(guildid or discordrelay.guild).."/members?limit=1000"
-    discordrelay.HTTPRequest({["method"] = "get", ["url"] = url}, function(headers, body, code)
+    discordrelay.HTTPRequest({["method"] = "get", ["url"] = url},
+    function(headers, body, code)
         if discordrelay.util.badcode[code] then
-            discordrelay.log("DiscordRelayFetchMembers failed:",discordrelay.util.badcode[code])
+            discordrelay.log(2,"DiscordRelayFetchMembers failed:",discordrelay.util.badcode[code])
             if code == 502 then
                 discordrelay.FetchMembers() -- try again
             else
@@ -230,7 +284,7 @@ hook.Add("PostGamemodeLoaded", "DiscordRelayFetchMembersStartup", discordrelay.F
 
 local function LoadModule(path)
     if not file.Exists(path,"LUA") then
-        discordrelay.log("Modules Error:",path,"not found")
+        discordrelay.log(3,"Modules Error:",path,"not found")
     end
     local func = CompileFile(path)
     if type(func) ~= "string" then
@@ -248,19 +302,19 @@ function discordrelay.InitializeModules()
             local func = LoadModule("discordrelay/modules/server/"..file)
             local ok, mod = pcall(func)
             if type(mod) == "string" then
-                discordrelay.log("Module Error:",mod,file,"contained errors and will not be loaded!")
+                discordrelay.log(3,"Module Error:",mod,file,"contained errors and will not be loaded!")
                 continue
             elseif mod == false then
-                discordrelay.log("Extension:",file,"NOT loaded. (returned false)")
+                discordrelay.log(3,"Extension:",file,"NOT loaded. (returned false)")
                 continue
             elseif mod == nil then
-                discordrelay.log("Extension:",file,"loaded.")
+                discordrelay.log(1,"Extension:",file,"loaded.")
                 discordrelay.extensions[name] = func
                 continue
             end
 
             discordrelay.modules[name] = mod
-            discordrelay.log("Discord Modules:",name,"loaded.")
+            discordrelay.log(1,"Discord Modules:",name,"loaded.")
         end
     end
     if file.Exists("discordrelay/modules/client","LUA") then
@@ -286,17 +340,18 @@ local abort = 0
 local lastid
 
 timer.Create("DiscordRelayFetchMessages", 1.5, 0, function()
-if abort >= 5 then discordrelay.log("FetchMessages failed DESTROYING") timer.Destroy("DiscordRelayFetchMessages") return end -- prevent spam
+if abort >= 5 then discordrelay.log(3,"FetchMessages failed DESTROYING") timer.Destroy("DiscordRelayFetchMessages") return end -- prevent spam
 local url
     if after ~= 0 then
         url = discordrelay.endpoints.channels.."/"..discordrelay.relayChannel.."/messages?after="..after
     else
         url = discordrelay.endpoints.channels.."/"..discordrelay.relayChannel.."/messages"
     end
-    discordrelay.HTTPRequest({["method"] = "get", ["url"] = url}, function(headers, body, code)
+    discordrelay.HTTPRequest({["method"] = "get", ["url"] = url},
+    function(headers, body, code)
         if discordrelay.util.badcode[code] then
             abort = abort + 1
-            discordrelay.log("FetchMessages failed",discordrelay.util.badcode[code],"retrying",abort)
+            discordrelay.log(2,"FetchMessages failed",discordrelay.util.badcode[code],"retrying",abort)
             return
         else
             abort = 0
@@ -312,7 +367,7 @@ local url
                     local ok,why = pcall(module.Handle,v)
                     if not ok then
                         discordrelay.modules[name] = nil -- unload to prevent spam
-                        discordrelay.log("Module Error:",name,why)
+                        discordrelay.log(3,"Module Error:",name,why)
                         discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                             ["username"] = discordrelay.username,
                             ["avatar_url"] = discordrelay.avatar,
