@@ -96,13 +96,15 @@ function discordrelay.log(level,...)  -- most expensive print ever
         if type(val) == "string" or type(val) == "number" or type(val) == "boolean" then
             out = out..insert(i,tostring(val))
         elseif type(val) == "table" then
-        table.Add(tablespew, val)
+        table.insert(tablespew, val)
         end
     end
     MsgC(color[level],out,"\n")
-    if tablespew then -- subtables??? who knows
-        for key,value in ipairs(tablespew) do
-        MsgC(color[level],key," --> ",value,"\n")
+    if tablespew then
+        for _,tbl in ipairs(tablespew) do
+            for key,value in pairs(tbl) do -- subtables??? who knows
+                MsgC(color[level],key," --> ",value,"\n")
+            end
         end
     end
 end
