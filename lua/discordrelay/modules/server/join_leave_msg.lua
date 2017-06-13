@@ -67,9 +67,6 @@ end
 function join_leave_msg.Remove()
     hook.Remove("player_disconnect", "DiscordRelayPlayerDisconnect")
     hook.Remove("player_connect", "DiscordRelayPlayerConnect")
-    if discordrelay.extensions.join_leave_msg then -- pls tell me a better way
-        discordrelay.extensions.join_leave_msg = nil
-    end
 end
 
 join_leave_msg.Init()
