@@ -32,6 +32,9 @@ function rcon.Handle(input)
 end
 
 function rcon.Remove()
+    if discordrelay.extensions.rcon then
+        discordrelay.extensions.rcon = nil
+    end
 end
 
 return rcon

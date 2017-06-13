@@ -24,6 +24,9 @@ function github.Handle(input)
 end
 
 function github.Remove()
+    if discordrelay.modules.github then
+        discordrelay.modules.github = nil
+    end
 end
 
 return github

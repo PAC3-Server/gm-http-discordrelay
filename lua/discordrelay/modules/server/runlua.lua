@@ -1,27 +1,28 @@
 local runlua = {}
 local discordrelay = discordrelay
+local prefixes = discordrelay.prefixes
+local easylua = requirex('easylua')
+local luadev = requirex('luadev')
+
+local function getType(cmds, msg)
+    if not cmds or not msg then return end
+    for k,v in pairs(prefixes) do
+        for k,cmd in pairs(cmds) do
+            if string.StartWith(msg, v..cmd.." ") then
+                return cmd
+            end
+        end
+    end
+    return false
+end
+
 function runlua.Init()
-    local easylua = requirex('easylua')
-    local luadev = requirex('luadev')
-    local prefixes = discordrelay.prefixes
     local webhookid_scriptlog = "285359393124384770"
 
     local webhooktoken_scriptlog = file.Read( "webhook_token_scriptlog.txt", "DATA" )
 
     if not webhooktoken_scriptlog then
         discordrelay.log(2,"scriptlog.lua","webhooktoken_scriptlog.txt", " not found. Script logging will be disabled.")
-        return false
-    end
-
-    local function getType(cmds, msg)
-        if not cmds or not msg then return end
-        for k,v in pairs(prefixes) do
-            for k,cmd in pairs(cmds) do
-                if string.StartWith(msg, v..cmd.." ") then
-                    return cmd
-                end
-            end
-        end
         return false
     end
 
@@ -163,7 +164,9 @@ end
 
 function runlua.Remove ()
     hook.Remove("LuaDevRunScript", "DiscordRelay")
+    if discordrelay.extensions.runlua then
+        discordrelay.extensions.runlua = nil
+    end
 end
 
-runlua.Init()
 return runlua

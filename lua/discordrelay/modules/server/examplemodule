@@ -3,7 +3,7 @@ local examplemodule = {}
 -- local discordrelay = discordrelay
 
 function examplemodule.Init()
-    --initialize your module here, why? it's used to reload the module
+    --initialize your module here, why? it's used to reload the module and on restart/mapreload
     hook.Add("Think","whyareyouevendoingthis",function() print("aa") end)
 end
 
@@ -20,7 +20,9 @@ end
 function examplemodule.Remove()
     -- undo all your changes here example:
     hook.Remove("Think","whyareyouevendoingthis")
+    if discordrelay.modules.examplemodule then -- .modules if you use examplemodule.Handle
+        discordrelay.modules.examplemodule = nil -- until I find out how to do it better
+    end
 end
-make sure to return the local variable, otherwise it will be ignored from the message check, unless you want it to do so.
-examplemodule.Init() -- don't forget this or shit will go down on restart/mapchange
+make sure to return the local variable, otherwise it will be ignored from the relay and error
 return examplemodule

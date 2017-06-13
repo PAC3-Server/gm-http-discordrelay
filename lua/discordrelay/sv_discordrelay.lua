@@ -313,13 +313,11 @@ function discordrelay.InitializeModules()
                  discordrelay.log(3,"Module:",file,"NOT loaded. (no Functions defined)")
                 continue
             end
-            if mod.Handle then
-                discordrelay.modules[name] = mod
-                discordrelay.log(1,"Discord Modules:",name,"loaded.")
-            else
-                discordrelay.log(1,"Extension:",file,"loaded.")
-                discordrelay.extensions[name] = mod
+            discordrelay.modules[name] = mod
+            if discordrelay.modules[name].Init then
+                discordrelay.modules[name].Init()
             end
+            discordrelay.log(1,"Discord Modules:",name,"loaded.")
         end
     end
     if file.Exists("discordrelay/modules/client","LUA") then
@@ -369,22 +367,24 @@ local url
                 if v.webhook_id and v.webhook_id == discordrelay.webhookid then continue end
 
                 for name,module in pairs(discordrelay.modules) do
-                    local ok,why = pcall(module.Handle,v)
-                    if not ok then
-                        discordrelay.modules[name] = nil -- unload to prevent spam
-                        discordrelay.log(3,"Module Error:",name,why)
-                        discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
-                            ["username"] = discordrelay.username,
-                            ["avatar_url"] = discordrelay.avatar,
-                            ["embeds"] = {
-                                [1] = {
-                                    ["title"] = "MODULE ERROR: "..name,
-                                    ["description"] = "```"..why.."```",
-                                    ["type"] = "rich",
-                                    ["color"] = 0xb30000
+                    if module.Handle then
+                        local ok,why = pcall(module.Handle,v)
+                        if not ok then
+                            discordrelay.modules[name] = nil -- unload to prevent spam
+                            discordrelay.log(3,"Module Error:",name,why)
+                            discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
+                                ["username"] = discordrelay.username,
+                                ["avatar_url"] = discordrelay.avatar,
+                                ["embeds"] = {
+                                    [1] = {
+                                        ["title"] = "MODULE ERROR: "..name,
+                                        ["description"] = "```"..why.."```",
+                                        ["type"] = "rich",
+                                        ["color"] = 0xb30000
+                                    }
                                 }
-                            }
-                        })
+                            })
+                        end
                     end
                 end
             end

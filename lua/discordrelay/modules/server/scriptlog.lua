@@ -40,9 +40,11 @@ function scriptlog.Init()
 end
 
 function scriptlog.Remove()
-     hook.Remove("EngineSpew", "DiscordRelaySpew")
-     timer.Destroy("DiscordRelayAddLog")
+    hook.Remove("EngineSpew", "DiscordRelaySpew")
+    timer.Destroy("DiscordRelayAddLog")
+    if discordrelay.extensions.scriptlog then
+        discordrelay.extensions.scriptlog = nil
+    end
 end
 
-scriptlog.Init()
 return scriptlog

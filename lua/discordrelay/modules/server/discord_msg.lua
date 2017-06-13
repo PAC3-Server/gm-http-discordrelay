@@ -26,6 +26,9 @@ function discord_msg.Handle(input)
 end
 
 function discord_msg.Remove()
+    if discordrelay.modules.discord_msg then
+        discordrelay.modules.discord_msg = nil
+    end
 end
 
 return discord_msg

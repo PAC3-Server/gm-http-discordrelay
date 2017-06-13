@@ -1,5 +1,6 @@
 local ingame_msg = {}
 local discordrelay = discordrelay
+
 function ingame_msg.Init()
     local prefixes = {"!", "/", "."} --cba to use the lua pattern
 
@@ -42,7 +43,9 @@ end
 
 function ingame_msg.Remove()
     hook.Remove("PlayerSay", "DiscordRelayChat")
+    if discordrelay.modules.ingame_msg then
+        discordrelay.modules.ingame_msg = nil
+    end
 end
 
-ingame_msg.Init()
 return ingame_msg
