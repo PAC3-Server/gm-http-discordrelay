@@ -2,7 +2,6 @@ local status = {}
 local tag = "DiscordrelayUpdateTopic"
 local discordrelay = discordrelay
 local abort = 0
-local startsWith = discordrelay.util.startsWith
 
 function status.DiscordrelayUpdateTopic()
     if abort >= 3 then -- prevent spam
@@ -45,7 +44,7 @@ function status.Init()
 end
 
 function status.Handle(input)
-    if input.author.bot ~= true and string.StartWith(input.content, "<@"..discordrelay.user.id.."> status") or startsWith("status", input.content) then
+    if input.author.bot ~= true and string.StartWith(input.content, "<@"..discordrelay.user.id.."> status") or discordrelay.util.startsWith("status", input.content) then
         local embeds = {}
         local players = player.GetAll()
         local cache = discordrelay.AvatarCache -- todo check if not nil

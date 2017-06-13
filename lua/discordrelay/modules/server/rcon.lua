@@ -1,9 +1,8 @@
 local rcon = {}
 local discordrelay = discordrelay
-local startsWith = discordrelay.util.startsWith
 
 function rcon.Handle(input)
-    if startsWith("rcon", input.content) then
+    if discordrelay.util.startsWith("rcon", input.content) then
         discordrelay.util.IsAdmin(input.author.id, function(access)
             if access then
                 game.ConsoleCommand(string.sub(input.content, 6, #input.content).."\n")

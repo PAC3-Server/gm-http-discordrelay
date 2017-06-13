@@ -3,7 +3,6 @@ local discordrelay = discordrelay
 local prefixes = discordrelay.prefixes
 local easylua = requirex('easylua')
 local luadev = requirex('luadev')
-local startsWith = discordrelay.util.startsWith
 
 local function getType(cmds, msg)
     if not cmds or not msg then return end
@@ -62,7 +61,7 @@ function runlua.Init()
 end
 
 function runlua.Handle(input)
-    if input.author.bot ~= true and startsWith("l", input.content) or startsWith("print", input.content) or startsWith("table", input.content) then
+    if input.author.bot ~= true and discordrelay.util.startsWith("l", input.content) or discordrelay.util.startsWith("print", input.content) or discordrelay.util.startsWith("table", input.content) then
         discordrelay.util.IsAdmin(input.author.id, function(access)
             if access then
                 local cmd = getType({"l", "lc", "ls", "print", "table"}, input.content)
