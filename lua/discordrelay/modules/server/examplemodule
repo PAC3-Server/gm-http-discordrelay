@@ -22,5 +22,5 @@ function examplemodule.Remove()
     hook.Remove("Think","whyareyouevendoingthis")
 end
 make sure to return the local variable, otherwise it will be ignored from the message check, unless you want it to do so.
-
+examplemodule.Init() -- don't forget this or shit will go down on restart/mapchange
 return examplemodule
