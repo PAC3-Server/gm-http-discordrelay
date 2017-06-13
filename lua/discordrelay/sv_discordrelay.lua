@@ -93,10 +93,10 @@ function discordrelay.log(level,...)  -- most expensive print ever
         end
     end
     for i,val in ipairs(arg) do
-        if type(val) == "string" or type(val) == "number" or type(val) == "boolean" then
+        if type(val) == "table" then
+            table.insert(tablespew, val)
+        else
             out = out..insert(i,tostring(val))
-        elseif type(val) == "table" then
-        table.insert(tablespew, val)
         end
     end
     MsgC(color[level],out,"\n")
