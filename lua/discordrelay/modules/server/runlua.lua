@@ -63,7 +63,7 @@ end
 
 function runlua.Handle(input)
     if input.author.bot ~= true and startsWith("l", input.content) or startsWith("print", input.content) or startsWith("table", input.content) then
-        discordrelay.IsAdmin(input.author.id, function(access)
+        discordrelay.util.IsAdmin(input.author.id, function(access)
             if access then
                 local cmd = getType({"l", "lc", "ls", "print", "table"}, input.content)
                 print(cmd,input.content)

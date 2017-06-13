@@ -4,7 +4,7 @@ local startsWith = discordrelay.util.startsWith
 
 function rcon.Handle(input)
     if startsWith("rcon", input.content) then
-        discordrelay.IsAdmin(input.author.id, function(access)
+        discordrelay.util.IsAdmin(input.author.id, function(access)
             if access then
                 game.ConsoleCommand(string.sub(input.content, 6, #input.content).."\n")
                 discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
