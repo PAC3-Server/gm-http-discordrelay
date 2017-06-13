@@ -1,9 +1,9 @@
-local messages = {}
+local discord_msg = {}
 local discordrelay = discordrelay
 
 util.AddNetworkString("DiscordMessage")
 
-function messages.Handle(input)
+function discord_msg.Handle(input)
     if input.author.bot ~= true then
         local ret = input.content
         if input.mentions then
@@ -25,4 +25,7 @@ function messages.Handle(input)
     end
 end
 
-return messages
+function discord_msg.Remove()
+end
+
+return discord_msg

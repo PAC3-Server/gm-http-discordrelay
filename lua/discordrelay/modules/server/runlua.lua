@@ -1,61 +1,63 @@
 local runlua = {}
 local discordrelay = discordrelay
-local easylua = requirex('easylua')
-local luadev = requirex('luadev')
-local prefixes = discordrelay.prefixes
-local webhookid_scriptlog = "285359393124384770"
+function runlua.Init()
+    local easylua = requirex('easylua')
+    local luadev = requirex('luadev')
+    local prefixes = discordrelay.prefixes
+    local webhookid_scriptlog = "285359393124384770"
 
-local webhooktoken_scriptlog = file.Read( "webhook_token_scriptlog.txt", "DATA" )
+    local webhooktoken_scriptlog = file.Read( "webhook_token_scriptlog.txt", "DATA" )
 
-if not webhooktoken_scriptlog then
-    discordrelay.log(2,"scriptlog.lua","webhooktoken_scriptlog.txt", " not found. Script logging will be disabled.")
-    return false
-end
+    if not webhooktoken_scriptlog then
+        discordrelay.log(2,"scriptlog.lua","webhooktoken_scriptlog.txt", " not found. Script logging will be disabled.")
+        return false
+    end
 
-local function getType(cmds, msg)
-    if not cmds or not msg then return end
-    for k,v in pairs(prefixes) do
-        for k,cmd in pairs(cmds) do
-            if string.StartWith(msg, v..cmd.." ") then
-                return cmd
+    local function getType(cmds, msg)
+        if not cmds or not msg then return end
+        for k,v in pairs(prefixes) do
+            for k,cmd in pairs(cmds) do
+                if string.StartWith(msg, v..cmd.." ") then
+                    return cmd
+                end
             end
         end
+        return false
     end
-    return false
-end
 
-hook.Add("LuaDevRunScript", "DiscordRelay", function(script, ply, where, identifier, targets)
-    identifier = identifier:match("<(.-)>")
+    hook.Add("LuaDevRunScript", "DiscordRelay", function(script, ply, where, identifier, targets)
+        identifier = identifier:match("<(.-)>")
 
-    if targets then
-        local str = {}
-        for k,v in pairs(targets) do
-            table.insert(str, tostring(v))
+        if targets then
+            local str = {}
+            for k,v in pairs(targets) do
+                table.insert(str, tostring(v))
+            end
+            where = table.concat(str, ", ")
         end
-        where = table.concat(str, ", ")
-    end
 
-    discordrelay.GetAvatar(ply:SteamID(), function(ret)
-        discordrelay.ExecuteWebhook(webhookid_scriptlog, webhooktoken_scriptlog, {
-            ["username"] = discordrelay.username,
-            ["avatar_url"] = discordrelay.avatar,
-            ["content"] = "```lua\n"..string.sub(script, 0, 1990).."\n```",
-            ["embeds"] = {
-                [1] = {
-                    ["title"] = "",
-                    ["description"] = "ran " .. identifier .. " " .. where,
-                    ["author"] = {
-                        ["name"] = ply:Nick(),
-                        ["icon_url"] = ret,
-                        ["url"] = "http://steamcommunity.com/profiles/" .. ply:SteamID64()
-                    },
-                    ["type"] = "rich",
-                    ["color"] = 0x00b300
+        discordrelay.GetAvatar(ply:SteamID(), function(ret)
+            discordrelay.ExecuteWebhook(webhookid_scriptlog, webhooktoken_scriptlog, {
+                ["username"] = discordrelay.username,
+                ["avatar_url"] = discordrelay.avatar,
+                ["content"] = "```lua\n"..string.sub(script, 0, 1990).."\n```",
+                ["embeds"] = {
+                    [1] = {
+                        ["title"] = "",
+                        ["description"] = "ran " .. identifier .. " " .. where,
+                        ["author"] = {
+                            ["name"] = ply:Nick(),
+                            ["icon_url"] = ret,
+                            ["url"] = "http://steamcommunity.com/profiles/" .. ply:SteamID64()
+                        },
+                        ["type"] = "rich",
+                        ["color"] = 0x00b300
+                    }
                 }
-            }
-        })
+            })
+        end)
     end)
-end)
+end
 
 function runlua.Handle(input)
     if input.author.bot ~= true and startsWith("l", input.content) or startsWith("print", input.content) or startsWith("table", input.content) then
@@ -159,4 +161,9 @@ function runlua.Handle(input)
     end
 end
 
+function runlua.Remove ()
+    hook.Remove("LuaDevRunScript", "DiscordRelay")
+end
+
+runlua.Init()
 return runlua

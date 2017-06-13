@@ -30,4 +30,8 @@ function rcon.Handle(input)
         end)
     end
 end
+
+function rcon.Remove()
+end
+
 return rcon

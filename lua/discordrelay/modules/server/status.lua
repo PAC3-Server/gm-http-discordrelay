@@ -1,9 +1,9 @@
 local status = {}
+local tag = "DiscordrelayUpdateTopic"
 local discordrelay = discordrelay
 local abort = 0
-local tag = "DiscordrelayUpdateTopic"
 
-function status.DiscordrelayUpdateTopic()
+local function status.DiscordrelayUpdateTopic()
     if abort >= 3 then -- prevent spam
         discordrelay.log(3,tag,"failed DESTROYING")
         hook.Remove("PlayerConnect",tag)
@@ -34,11 +34,15 @@ function status.DiscordrelayUpdateTopic()
         discordrelay.log(3,tag,err)
     end)
 end
-status.DiscordrelayUpdateTopic()
-gameevent.Listen("player_connect")
-hook.Add("player_connect", tag, status.DiscordrelayUpdateTopic)
-gameevent.Listen( "player_disconnect" )
-hook.Add("player_disconnect",tag,status.DiscordrelayUpdateTopic)
+
+function status.Init()
+    local abort = 0
+    status.DiscordrelayUpdateTopic()
+    gameevent.Listen("player_connect")
+    hook.Add("player_connect", tag, status.DiscordrelayUpdateTopic)
+    gameevent.Listen( "player_disconnect" )
+    hook.Add("player_disconnect",tag,status.DiscordrelayUpdateTopic)
+end
 
 function status.Handle(input)
     if input.author.bot ~= true and string.StartWith(input.content, "<@"..discordrelay.user.id.."> status") or startsWith("status", input.content) then
@@ -79,4 +83,9 @@ function status.Handle(input)
         end
     end
 end
+function status.Remove()
+    hook.Remove("player_connect", tag)
+    hook.Remove("player_disconnect",tag)
+end
+status.Init()
 return status

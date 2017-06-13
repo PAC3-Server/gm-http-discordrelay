@@ -307,16 +307,19 @@ function discordrelay.InitializeModules()
                 discordrelay.log(3,"Module Error:",mod,file,"contained errors and will not be loaded!")
                 continue
             elseif mod == false then
-                discordrelay.log(3,"Extension:",file,"NOT loaded. (returned false)")
+                discordrelay.log(3,"Modules:",file,"NOT loaded. (returned false)")
                 continue
             elseif mod == nil then
-                discordrelay.log(1,"Extension:",file,"loaded.")
-                discordrelay.extensions[name] = func
+                 discordrelay.log(3,"Module:",file,"NOT loaded. (no Functions defined)")
                 continue
             end
-
-            discordrelay.modules[name] = mod
-            discordrelay.log(1,"Discord Modules:",name,"loaded.")
+            if mod.Handle then
+                discordrelay.modules[name] = mod
+                discordrelay.log(1,"Discord Modules:",name,"loaded.")
+            else
+                discordrelay.log(1,"Extension:",file,"loaded.")
+                discordrelay.extensions[name] = mod
+            end
         end
     end
     if file.Exists("discordrelay/modules/client","LUA") then

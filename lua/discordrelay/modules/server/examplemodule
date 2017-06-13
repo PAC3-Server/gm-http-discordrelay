@@ -2,6 +2,11 @@ local examplemodule = {}
 -- if needed
 -- local discordrelay = discordrelay
 
+function examplemodule.Init()
+    --initialize your module here, why? it's used to reload the module
+    hook.Add("Think","whyareyouevendoingthis",function() print("aa") end)
+end
+
 function examplemodule.Handle(input)
     -- handle discord input here see https://discordapp.com/developers/docs/resources/channel#message-object
     -- don't declare the function if you don't want to handle incoming discord messages.
@@ -12,6 +17,10 @@ function examplemodule.Handle(input)
     print(user.." said "..msg)
 end
 
+function examplemodule.Remove()
+    -- undo all your changes here example:
+    hook.Remove("Think","whyareyouevendoingthis")
+end
 make sure to return the local variable, otherwise it will be ignored from the message check, unless you want it to do so.
-return false end -- because return nil is not checked (but still will be ran)
+
 return examplemodule

@@ -22,4 +22,8 @@ function github.Handle(input)
         end
     end
 end
+
+function github.Remove()
+end
+
 return github
