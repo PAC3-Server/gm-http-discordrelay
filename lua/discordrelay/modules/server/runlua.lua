@@ -64,8 +64,7 @@ function runlua.Handle(input)
     if input.author.bot ~= true and discordrelay.util.startsWith("l", input.content) or discordrelay.util.startsWith("print", input.content) or discordrelay.util.startsWith("table", input.content) then
         discordrelay.util.IsAdmin(input.author.id, function(access)
             if access then
-                local cmd = getType({"l", "lc", "ls", "print", "table"}, input.content)
-                print(cmd,input.content)
+                local cmd = getType({"l", "lc", "ls", "lsc", "print", "table"}, input.content)
                 local code = string.sub(input.content, #cmd + 2, #input.content)
                 if code and code ~= "" then
                     local data
@@ -73,6 +72,18 @@ function runlua.Handle(input)
                         data = easylua.RunLua(nil, code)
                     elseif cmd == "lc" then
                         data = luadev.RunOnClients(code)
+                    elseif cmd == "lsc" then
+                        local args = string.Split(code, ",")
+                        if not args[1] or not args[2] then
+                            data = {error = "you need to supply both a player and code!"}
+                        else
+                            local ent = easylua.FindEntity(string.Replace(args[1], " ", ""))
+                            if IsValid(ent) and ent:IsPlayer() then
+                                data = luadev.RunOnClient(args[2],  ent)
+                            else
+                                data = {error = "that is not a valid player!"}
+                            end
+                        end
                     elseif cmd == "ls" then
                         data = luadev.RunOnShared(code)
                     elseif cmd == "print" then
