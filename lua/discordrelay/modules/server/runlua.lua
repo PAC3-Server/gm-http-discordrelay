@@ -77,6 +77,7 @@ function runlua.Handle(input)
                         if not args[1] or not args[2] then
                             data = {error = "you need to supply both a player and code!"}
                         else
+                            args[2] = table.concat(args, ",", 2)
                             local ent = easylua.FindEntity(string.Replace(args[1], " ", ""))
                             if IsValid(ent) and ent:IsPlayer() then
                                 data = luadev.RunOnClient(args[2],  ent)
