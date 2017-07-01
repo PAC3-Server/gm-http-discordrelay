@@ -2,18 +2,11 @@ local ingame_msg = {}
 local discordrelay = discordrelay
 
 function ingame_msg.Init()
-    local prefixes = {"!", "/", "."} --cba to use the lua pattern
 
     hook.Add("PlayerSay", "DiscordRelayChat", function(ply, text, teamChat)
         if aowl then
-            for cmd,v in pairs(aowl.cmds) do
-                for k,prefix in pairs(prefixes) do
-                    if string.StartWith(text, prefix..cmd) then
-                        if aowl.cmds[cmd] and aowl.cmds[cmd].hidechat then
-                            return
-                        end
-                    end
-                end
+            if string.match(text,"^[%.|%/|%!].+") then
+                return
             end
         end
         if discordrelay and discordrelay.enabled then
