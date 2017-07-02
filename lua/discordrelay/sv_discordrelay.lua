@@ -317,7 +317,7 @@ function discordrelay.InitializeModules()
                 discordrelay.log(3,"Module Error:",mod,file,"contained errors and will not be loaded!")
                 continue
             elseif mod == false then
-                discordrelay.log(3,"Modules:",file,"NOT loaded. (returned false)")
+                discordrelay.log(3,"Module:",file,"NOT loaded. (returned false)")
                 continue
             elseif mod == nil then
                  discordrelay.log(3,"Module:",file,"NOT loaded. (no Functions defined)")
@@ -378,9 +378,9 @@ local url
                 if not (v and v.author) and discordrelay.user.id == v.author.id or type(v) == "number" then continue end
                 if v.webhook_id and v.webhook_id == discordrelay.webhookid then continue end
 
-                for name,module in pairs(discordrelay.modules) do
-                    if module.Handle then
-                        local ok,why = pcall(module.Handle,v)
+                for name,dmodule in pairs(discordrelay.modules) do
+                    if dmodule.Handle then
+                        local ok,why = pcall(dmodule.Handle,v)
                         if not ok then
                             discordrelay.log(3,"Module Error:",name,why)
                             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
@@ -398,7 +398,7 @@ local url
                             if discordrelay.modules[name].Remove then
                                 discordrelay.modules[name].Remove()
                             else
-                                discordrelay.log(2,"Module Error:",name,"has no remove function!")
+                                discordrelay.log(2,"Module Error:",name,"has no remove function and might not be unloaded correctly!")
                                 discordrelay.modules[name] = nil -- fallback so it doesn't keep erroring
                             end
                         end
