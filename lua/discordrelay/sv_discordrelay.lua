@@ -62,7 +62,7 @@ local function DiscordrelayInit()
         [401] = "UNAUTHORIZED",
         [403] = "FORBIDDEN",
         [404] = "NOT FOUND",
-        [405] =  "METHOD NOT ALLOWED",
+        [405] = "METHOD NOT ALLOWED",
         [429] = "TOO MANY REQUESTS",
         [502] = "GATEWAY UNAVAILABLE"
         }
@@ -326,8 +326,10 @@ function discordrelay.InitializeModules()
             discordrelay.modules[name] = mod
             if discordrelay.modules[name].Init then
                 discordrelay.modules[name].Init()
+            else
+                discordrelay.log(2,"Discord Module:",name,"not initialized!")
             end
-            discordrelay.log(1,"Discord Modules:",name,"loaded.")
+            discordrelay.log(1,"Discord Module:",name,"loaded.")
         end
     end
     if file.Exists("discordrelay/modules/client","LUA") then
@@ -380,7 +382,6 @@ local url
                     if module.Handle then
                         local ok,why = pcall(module.Handle,v)
                         if not ok then
-                            discordrelay.modules[name] = nil -- unload to prevent spam
                             discordrelay.log(3,"Module Error:",name,why)
                             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                                 ["username"] = discordrelay.username,
@@ -394,6 +395,12 @@ local url
                                     }
                                 }
                             })
+                            if discordrelay.modules[name].Remove then
+                                discordrelay.modules[name].Remove()
+                            else
+                                discordrelay.log(2,"Module Error:",name,"has no remove function!")
+                                discordrelay.modules[name] = nil -- fallback so it doesn't keep erroring
+                            end
                         end
                     end
                 end
