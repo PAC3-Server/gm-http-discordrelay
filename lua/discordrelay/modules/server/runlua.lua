@@ -28,6 +28,9 @@ function runlua.Init()
 
     hook.Add("LuaDevRunScript", "DiscordRelay", function(script, ply, where, identifier, targets)
         identifier = identifier:match("<(.-)>")
+        if not identifier then
+            identifier = "unknown"
+        end
 
         if targets then
             local str = {}
