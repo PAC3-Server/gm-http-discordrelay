@@ -5,8 +5,12 @@ function ingame_msg.Init()
 
     hook.Add("PlayerSay", "DiscordRelayChat", function(ply, text, teamChat)
         if aowl then
-            if string.match(text,"^[%.|%/|%!].+") then
-                return
+            local pattern = "^[%.|%/|%!]"
+            if string.match(text,pattern) then
+                local text,_ = string.gsub(text,pattern,"")
+                if aowl.cmds[string.Explode(" ",text)[1]] then
+                        return
+                end
             end
         end
         if discordrelay and discordrelay.enabled then
