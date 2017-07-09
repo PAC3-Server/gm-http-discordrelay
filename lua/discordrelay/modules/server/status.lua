@@ -1,47 +1,5 @@
 local status = {}
-local tag = "DiscordrelayUpdateTopic"
 local discordrelay = discordrelay
-local abort = 0
-
-function status.DiscordrelayUpdateTopic()
-    if abort >= 3 then -- prevent spam
-        discordrelay.log(3,tag,"failed DESTROYING")
-        hook.Remove("PlayerConnect",tag)
-        hook.Remove("PlayerDisconnected",tag)
-        return
-    end
-    local res = util.TableToJSON({
-        ["name"] = "server-chat",
-        ["position"] = 7,
-        ["topic"] = GetHostName().." - **Uptime:** "..string.FormattedTime(SysTime()/3600,"%02i:%02i:%02i").." - **Players:** "..player.GetCount().."/"..game.MaxPlayers().."\nsteam://connect/threekelv.in".."\n\nType !status in chat for more detailed info."
-    })
-    -- patch returned not allowed so what gives
-    discordrelay.HTTPRequest({
-        ["method"] = "put",
-        ["url"] = discordrelay.endpoints.channels.."/"..discordrelay.relayChannel,
-        ["body"] = res
-        },
-    function(h,b,c)
-        if discordrelay.util.badcode[c] then
-            abort = abort + 1
-            discordrelay.log(2,tag,"failed",discordrelay.util.badcode[c],"retrying",abort)
-            return
-        else
-            abort = 0 -- all good now
-        end
-    end,
-    function(err)
-        discordrelay.log(3,tag,err)
-    end)
-end
-
-function status.Init()
-    status.DiscordrelayUpdateTopic()
-    gameevent.Listen("player_connect")
-    hook.Add("player_connect",tag,status.DiscordrelayUpdateTopic)
-    gameevent.Listen( "player_disconnect")
-    hook.Add("player_disconnect",tag,status.DiscordrelayUpdateTopic)
-end
 
 function status.Handle(input)
     if input.author.bot ~= true and string.StartWith(input.content, "<@"..discordrelay.user.id.."> status") or discordrelay.util.startsWith("status", input.content) then
@@ -84,8 +42,6 @@ function status.Handle(input)
 end
 
 function status.Remove()
-    hook.Remove("player_connect",tag)
-    hook.Remove("player_disconnect",tag)
     if discordrelay.modules.status then
         discordrelay.modules.status = nil
     end
