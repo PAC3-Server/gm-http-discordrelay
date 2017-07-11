@@ -4,15 +4,10 @@ local discordrelay = discordrelay
 function ingame_msg.Init()
 
     hook.Add("PlayerSay", "DiscordRelayChat", function(ply, text, teamChat)
-        if aowl then
-            local pattern = "^[%.|%/|%!]"
-            if string.match(text,pattern) then
-                local text,_ = string.gsub(text,pattern,"")
-                if aowl.cmds[string.Explode(" ",text)[1]] then
-                        return
-                end
-            end
+        if aowl and aowl.ParseString(text) then
+            return
         end
+
         if discordrelay and discordrelay.enabled then
             --Parse mentions and replace it into the message
             if string.match(text, "@%a+") then
