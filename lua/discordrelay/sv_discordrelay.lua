@@ -215,7 +215,7 @@ function discordrelay.util.startsWith(name, msg, param)
     if string.match(msg,"^[%.|%/|%!].*") then
         return true
     else
-        false
+        return false
     end
 end
 
