@@ -16,12 +16,14 @@ function discord_msg.Handle(input)
                 ret = ret .. "\n" .. attachments.url
             end
         end
-        net.Start( "DiscordMessage" )
-            net.WriteString(string.sub(input.author.username,1,14))
-            net.WriteString(string.sub(ret,1,400))
-        net.Broadcast()
-
-        hook.Run("DiscordRelayMessage", input)
+        local send = hook.Run("DiscordRelayMessage", input)
+        send = send or true
+        if send then
+            net.Start( "DiscordMessage" )
+                net.WriteString(string.sub(input.author.username,1,14))
+                net.WriteString(string.sub(ret,1,400))
+            net.Broadcast()
+        end
     end
 end
 
