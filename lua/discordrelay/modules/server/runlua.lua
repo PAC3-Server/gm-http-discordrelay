@@ -74,7 +74,7 @@ function runlua.Handle(input)
                     if cmd == "l" then
                         data = easylua.RunLua(nil, code)
                     elseif cmd == "lc" then
-                        data = luadev.RunOnClients(code)
+                        data = luadev.RunOnClients(code, "discord:lc")
                     elseif cmd == "lsc" then
                         local args = string.Split(code, ",")
                         if not args[1] or not args[2] then
@@ -83,13 +83,13 @@ function runlua.Handle(input)
                             args[2] = table.concat(args, ",", 2)
                             local ent = easylua.FindEntity(string.Replace(args[1], " ", ""))
                             if IsValid(ent) and ent:IsPlayer() then
-                                data = luadev.RunOnClient(args[2],  ent)
+                                data = luadev.RunOnClient(args[2], ent, "discord:lsc"))
                             else
                                 data = {error = "that is not a valid player!"}
                             end
                         end
                     elseif cmd == "ls" then
-                        data = luadev.RunOnShared(code)
+                        data = luadev.RunOnShared(code, "discord:ls")
                     elseif cmd == "print" then
                         data = easylua.RunLua(nil, "return "..code)
                     elseif cmd == "table" then
