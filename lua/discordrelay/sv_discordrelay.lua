@@ -1,73 +1,70 @@
-local function DiscordrelayInit()
-    discordrelay = discordrelay or {}
-    discordrelay.config = {}
+discordrelay = discordrelay or {}
+discordrelay.config = {}
 
-    -- token for reading messages and core functionality
-    local token = file.Read( "discordbot_token.txt", "DATA" )
+-- token for reading messages and core functionality
+local token = file.Read( "discordbot_token.txt", "DATA" )
 
-    if not token then
-        discordrelay.log(3,"discordbot_token.txt", "not found.")
-    end
-
-    if not token then return end
-
-    discordrelay.config.webhookenabled = true
-
-    -- webhooktoken for posting messages
-    local webhooktoken = file.Read( "webhook_token.txt", "DATA" )
-
-    if not webhooktoken then
-        discordrelay.log(2,"webhook_token.txt", " not found. Discordrelay unable to post messages on Discord.")
-        discordrelay.config.webhookenabled = false
-    end
-
-    -- main config
-    discordrelay.username = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool() and "Test Server" or "Server"
-    discordrelay.avatar = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png"
-    discordrelay.token = token
-    discordrelay.guild = "260866188962168832"
-    discordrelay.admin_roles = {"260870255486697472", "260932947140411412"}
-    discordrelay.relayChannel = "273575417401573377"
-
-    discordrelay.webhookid = "274957435091812352"
-    discordrelay.webhooktoken = webhooktoken
-
-    discordrelay.endpoints = discordrelay.endpoints or {}
-    discordrelay.endpoints.base = "https://discordapp.com/api"
-    discordrelay.endpoints.users = discordrelay.endpoints.base.."/users"
-    discordrelay.endpoints.guilds = discordrelay.endpoints.base.."/guilds"
-    discordrelay.endpoints.channels = discordrelay.endpoints.base.."/channels"
-    discordrelay.endpoints.webhook = discordrelay.endpoints.base.."/webhooks"
-
-    discordrelay.enabled = true
-
-    discordrelay.user = {}
-    discordrelay.user.username = "GMod-Relay"
-    discordrelay.user.id = "276379732726251521"
-
-    discordrelay.members = discordrelay.members or {}
-
-    discordrelay.prefixes = {".", "!"}
-
-    discordrelay.AvatarCache = discordrelay.AvatarCache or {}
-
-    discordrelay.modules = {}
-    discordrelay.extensions = {}
-
-    AccessorFunc(discordrelay, "enabled", "Enabled", FORCE_BOOL)
-
-    discordrelay.util = {}
-    discordrelay.util.badcode = {
-        [400] = "BAD REQUEST",
-        [401] = "UNAUTHORIZED",
-        [403] = "FORBIDDEN",
-        [404] = "NOT FOUND",
-        [405] = "METHOD NOT ALLOWED",
-        [429] = "TOO MANY REQUESTS",
-        [502] = "GATEWAY UNAVAILABLE"
-        }
+if not token then
+    discordrelay.log(3,"discordbot_token.txt", "not found.")
 end
-DiscordrelayInit()
+
+if not token then return end
+
+discordrelay.config.webhookenabled = true
+
+-- webhooktoken for posting messages
+local webhooktoken = file.Read( "webhook_token.txt", "DATA" )
+
+if not webhooktoken then
+    discordrelay.log(2,"webhook_token.txt", " not found. Discordrelay unable to post messages on Discord.")
+    discordrelay.config.webhookenabled = false
+end
+
+-- main config
+discordrelay.username = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool() and "Test Server" or "Server"
+discordrelay.avatar = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png"
+discordrelay.token = token
+discordrelay.guild = "260866188962168832"
+discordrelay.admin_roles = {"260870255486697472", "260932947140411412"}
+discordrelay.relayChannel = "273575417401573377"
+
+discordrelay.webhookid = "274957435091812352"
+discordrelay.webhooktoken = webhooktoken
+
+discordrelay.endpoints = discordrelay.endpoints or {}
+discordrelay.endpoints.base = "https://discordapp.com/api"
+discordrelay.endpoints.users = discordrelay.endpoints.base.."/users"
+discordrelay.endpoints.guilds = discordrelay.endpoints.base.."/guilds"
+discordrelay.endpoints.channels = discordrelay.endpoints.base.."/channels"
+discordrelay.endpoints.webhook = discordrelay.endpoints.base.."/webhooks"
+
+discordrelay.enabled = true
+
+discordrelay.user = {}
+discordrelay.user.username = "GMod-Relay"
+discordrelay.user.id = "276379732726251521"
+
+discordrelay.members = discordrelay.members or {}
+
+discordrelay.prefixes = {".", "!"}
+
+discordrelay.AvatarCache = discordrelay.AvatarCache or {}
+
+discordrelay.modules = {}
+discordrelay.extensions = {}
+
+AccessorFunc(discordrelay, "enabled", "Enabled", FORCE_BOOL)
+
+discordrelay.util = {}
+discordrelay.util.badcode = {
+    [400] = "BAD REQUEST",
+    [401] = "UNAUTHORIZED",
+    [403] = "FORBIDDEN",
+    [404] = "NOT FOUND",
+    [405] = "METHOD NOT ALLOWED",
+    [429] = "TOO MANY REQUESTS",
+    [502] = "GATEWAY UNAVAILABLE"
+    }
 
 function discordrelay.log(level,...)  -- most expensive print ever
     local arg = {...}
@@ -341,7 +338,6 @@ end
 hook.Add("NotagainPostLoad", "DiscordRelayLoadModules", discordrelay.InitializeModules)
 
 function discordrelay.reload()
-    DiscordrelayInit()
     discordrelay.InitializeModules()
     discordrelay.members = {}
     discordrelay.FetchMembers()
