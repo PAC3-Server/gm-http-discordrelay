@@ -211,13 +211,12 @@ function discordrelay.util.IsAdmin(userid, cb)
 end
 
 function discordrelay.util.startsWith(name, msg, param)
-    if not name or not msg then return end
-    for k,v in pairs(discordrelay.prefixes) do
-        if string.StartWith(msg, v..name) then
-            return true
-        end
+    if not name or not msg then return false end
+    if string.match(msg,"^[%.|%/|%!].*") then
+        return true
+    else
+        false
     end
-    return false
 end
 
 
