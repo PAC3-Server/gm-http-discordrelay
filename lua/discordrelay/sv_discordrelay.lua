@@ -342,6 +342,9 @@ function discordrelay.reload()
     discordrelay.InitializeModules()
     discordrelay.members = {}
     discordrelay.FetchMembers()
+    if not timer.Exists("DiscordRelayFetchMessages") then
+        timer.Create("DiscordRelayFetchMessages", 1.5, 0, DiscordRelayFetchMessages)
+    end
 end
 
 --It was either this or websockets. But this shouldn't be that bad of a solution
@@ -349,9 +352,9 @@ end
 local after = 0
 local abort = 0
 
-timer.Create("DiscordRelayFetchMessages", 1.5, 0, function()
-if abort >= 5 then discordrelay.log(3,"FetchMessages failed DESTROYING") timer.Destroy("DiscordRelayFetchMessages") return end -- prevent spam
-local url
+local function DiscordRelayFetchMessages()
+    if abort >= 5 then discordrelay.log(3,"FetchMessages failed DESTROYING") timer.Destroy("DiscordRelayFetchMessages") return end -- prevent spam
+    local url
     if after ~= 0 then
         url = discordrelay.endpoints.channels.."/"..discordrelay.relayChannel.."/messages?after="..after
     else
@@ -373,7 +376,7 @@ local url
                 if not (v and v.author) and discordrelay.user.id == v.author.id or type(v) == "number" then continue end
                 if v.webhook_id and v.webhook_id == discordrelay.webhookid then continue end
 
-                if v.id > after then
+                 if v.id > after then
                     after = v.id
                 end
 
@@ -410,7 +413,9 @@ local url
             after = json[1].id
         end
     end)
-end)
+end
+
+timer.Create("DiscordRelayFetchMessages", 1.5, 0, DiscordRelayFetchMessages)
 
 hook.Add("ShutDown", "DiscordRelayShutDown", function()
     if discordrelay and discordrelay.enabled then
