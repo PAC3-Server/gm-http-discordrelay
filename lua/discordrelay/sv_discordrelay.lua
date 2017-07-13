@@ -208,12 +208,13 @@ function discordrelay.util.IsAdmin(userid, cb)
 end
 
 function discordrelay.util.startsWith(name, msg, param)
-    if not name or not msg then return false end
-    if string.match(msg,"^[%.|%/|%!].*") then
-        return true
-    else
-        return false
+    if not name or not msg then return end
+    for k,v in pairs(discordrelay.prefixes) do
+        if string.StartWith(msg, v..name) then
+            return true
+        end
     end
+    return false
 end
 
 
@@ -347,7 +348,6 @@ end
 
 local after = 0
 local abort = 0
-local lastid
 
 timer.Create("DiscordRelayFetchMessages", 1.5, 0, function()
 if abort >= 5 then discordrelay.log(3,"FetchMessages failed DESTROYING") timer.Destroy("DiscordRelayFetchMessages") return end -- prevent spam
@@ -367,11 +367,15 @@ local url
             abort = 0
         end
         local json = util.JSONToTable(body)
-        if json and json[1] and after ~= 0 and lastid ~= json[1].id then
+        if json and json[1] and after ~= 0 and after ~= json[1].id then
             abort = 0 -- json is valid so we got something
             for k,v in ipairs(json) do
                 if not (v and v.author) and discordrelay.user.id == v.author.id or type(v) == "number" then continue end
                 if v.webhook_id and v.webhook_id == discordrelay.webhookid then continue end
+
+                if v.id > after then
+                    after = v.id
+                end
 
                 for name,dmodule in pairs(discordrelay.modules) do
                     if dmodule.Handle then
@@ -402,9 +406,8 @@ local url
             end
         end
 
-        if json and json[1] then
+        if json and json[1] and after == 0 then
             after = json[1].id
-            lastid = json[1].id
         end
     end)
 end)
