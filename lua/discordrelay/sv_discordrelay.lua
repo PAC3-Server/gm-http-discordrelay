@@ -376,7 +376,7 @@ local function DiscordRelayFetchMessages()
                 if not (v and v.author) and discordrelay.user.id == v.author.id or type(v) == "number" then continue end
                 if v.webhook_id and v.webhook_id == discordrelay.webhookid then continue end
 
-                 if v.id > after then
+                if v.id > after then
                     after = v.id
                 end
 
