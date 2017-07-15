@@ -2,7 +2,7 @@ local status = {}
 local discordrelay = discordrelay
 
 function status.Handle(input)
-    if input.author.bot ~= true and string.StartWith(input.content, "<@"..discordrelay.user.id.."> status") or discordrelay.util.startsWith("status", input.content) then
+    if input.author.bot ~= true and discordrelay.util.startsWith("status", input.content) then
         local embeds = {}
         local players = player.GetAll()
         local cache = discordrelay.AvatarCache -- todo check if not nil
