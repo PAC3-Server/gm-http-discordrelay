@@ -51,7 +51,6 @@ discordrelay.prefixes = {".", "!"}
 discordrelay.AvatarCache = discordrelay.AvatarCache or {}
 
 discordrelay.modules = {}
-discordrelay.extensions = {}
 
 AccessorFunc(discordrelay, "enabled", "Enabled", FORCE_BOOL)
 
