@@ -25,8 +25,8 @@ function scriptlog.Init()
                         abort = 0
                     end
                     end)
+                logBuffer = ""
             end)
-            logBuffer = ""
         end
     end)
 
