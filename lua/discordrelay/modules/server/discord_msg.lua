@@ -1,7 +1,9 @@
 local discord_msg = {}
 local discordrelay = discordrelay
 
-util.AddNetworkString("DiscordMessage")
+function discord_msg.Init()
+    util.AddNetworkString("DiscordMessage")
+end
 
 function discord_msg.Handle(input)
     if input.author.bot ~= true then
