@@ -341,9 +341,10 @@ function discordrelay.reload()
     discordrelay.InitializeModules()
     discordrelay.members = {}
     discordrelay.FetchMembers()
-    if not timer.Exists("DiscordRelayFetchMessages") then
-        timer.Create("DiscordRelayFetchMessages", 1.5, 0, DiscordRelayFetchMessages)
+    if timer.Exists("DiscordRelayFetchMessages") then
+        timer.Destroy("DiscordRelayFetchMessages")
     end
+    timer.Create("DiscordRelayFetchMessages", 1.5, 0, DiscordRelayFetchMessages)
 end
 
 --It was either this or websockets. But this shouldn't be that bad of a solution

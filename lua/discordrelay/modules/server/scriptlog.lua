@@ -29,8 +29,9 @@ function scriptlog.Init()
     end)
 
     hook.Add("EngineSpew", "DiscordRelaySpew", function(spewType, msg, group, level)
-        for k,v in pairs(blacklist) do
-            if string.match(msg, v) then
+        string.gsub(msg,'"','\"')
+        for i=1,#blacklist do
+            if string.match(msg, blacklist[i]) then
                 return
             end
         end
