@@ -20,6 +20,8 @@ if not webhooktoken then
     discordrelay.config.webhookenabled = false
 end
 
+util.AddNetworkString("DiscordMessage")
+
 -- main config
 discordrelay.username = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool() and "Test Server" or "Server"
 discordrelay.avatar = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png"
@@ -134,6 +136,7 @@ function discordrelay.HTTPRequest(ctx, callback, err)
     HTTPRequest.failed = function(reason)
     if not err then return end
         err(reason)
+        discordrelay.log(2,"HTTPRequest failed",reason)
     end
 
     HTTP(HTTPRequest)
@@ -164,6 +167,7 @@ function discordrelay.WebhookRequest(ctx, callback, err)
     HTTPRequest.failed = function(reason)
     if not err then return end
         err(reason)
+        discordrelay.log(2,"WebhookRequest failed",reason)
     end
 
     HTTP(HTTPRequest)
@@ -334,17 +338,20 @@ function discordrelay.InitializeModules()
         end
     end
 end
-
+--discordrelay.InitializeModules()
 hook.Add("NotagainPostLoad", "DiscordRelayLoadModules", discordrelay.InitializeModules)
 
 function discordrelay.reload()
+    for _,v in pairs(discordrelay.modules) do
+        v.Remove()
+    end
     discordrelay.InitializeModules()
     discordrelay.members = {}
     discordrelay.FetchMembers()
     if timer.Exists("DiscordRelayFetchMessages") then
         timer.Destroy("DiscordRelayFetchMessages")
     end
-    timer.Create("DiscordRelayFetchMessages", 1.5, 0, DiscordRelayFetchMessages)
+    timer.Create("DiscordRelayFetchMessages", 1.5, 0, discordrelay.DiscordRelayFetchMessages)
 end
 
 --It was either this or websockets. But this shouldn't be that bad of a solution
@@ -352,7 +359,7 @@ end
 local after = 0
 local abort = 0
 
-local function DiscordRelayFetchMessages()
+function discordrelay.DiscordRelayFetchMessages()
     if abort >= 5 then discordrelay.log(3,"FetchMessages failed DESTROYING") timer.Destroy("DiscordRelayFetchMessages") return end -- prevent spam
     local url
     if after ~= 0 then
@@ -380,6 +387,9 @@ local function DiscordRelayFetchMessages()
                     after = v.id
                 end
 
+                if table.Count(discordrelay.modules) < 1 then
+                    discordrelay.log(2,"Got Discord response, but no Modules are loaded")
+                end
                 for name,dmodule in pairs(discordrelay.modules) do
                     if dmodule.Handle then
                         local ok,why = pcall(dmodule.Handle,v)
@@ -415,7 +425,7 @@ local function DiscordRelayFetchMessages()
     end)
 end
 
-timer.Create("DiscordRelayFetchMessages", 1.5, 0, DiscordRelayFetchMessages)
+timer.Create("DiscordRelayFetchMessages", 1.5, 0, discordrelay.DiscordRelayFetchMessages)
 
 hook.Add("ShutDown", "DiscordRelayShutDown", function()
     if discordrelay and discordrelay.enabled then
