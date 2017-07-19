@@ -30,7 +30,7 @@ function scriptlog.Init()
 
     hook.Add("EngineSpew", "DiscordRelaySpew", function(spewType, msg, group, level)
         msg = string.gsub(msg,'"','\"')
-        msg = string.gsub(msg,"%d+%.%d+%.%d+%.%d","XXX.XXX.XXX.XXX")
+        msg = string.gsub(msg,"%d+%.%d+%.%d+%.%d+","XXX.XXX.XXX.XXX")
         for i=1,#blacklist do
             if string.match(msg, blacklist[i]) then
                 return
