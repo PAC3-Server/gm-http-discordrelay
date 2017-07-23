@@ -1,7 +1,7 @@
 local discord_msg = {}
 local discordrelay = discordrelay
 
-function discord_msg.Handle(input)
+function discord_msg.Handle(input,previous,future)
     if input.author.bot ~= true then
         local ret = input.content
         if input.mentions then

@@ -1,7 +1,7 @@
 local status = {}
 local discordrelay = discordrelay
 
-function status.Handle(input)
+function status.Handle(input,previous,future)
     if input.author.bot ~= true and discordrelay.util.startsWith("status", input.content) then
         local embeds = {}
         local players = player.GetAll()

@@ -7,7 +7,7 @@ function examplemodule.Init()
     hook.Add("Think","whyareyouevendoingthis",function() print("aa") end)
 end
 
-function examplemodule.Handle(input)
+function examplemodule.Handle(input,previous,future)  -- warning previous and future messages could also be a relay message so it's not reliable
     -- handle discord input here see https://discordapp.com/developers/docs/resources/channel#message-object
     -- don't declare the function if you don't want to handle incoming discord messages.
 

@@ -1,7 +1,7 @@
 local rcon = {}
 local discordrelay = discordrelay
 
-function rcon.Handle(input)
+function rcon.Handle(input,previous,future)
     if discordrelay.util.startsWith("rcon", input.content) then
         discordrelay.util.IsAdmin(input.author.id, function(access)
             if access then

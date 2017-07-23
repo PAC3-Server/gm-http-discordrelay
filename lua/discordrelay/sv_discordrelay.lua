@@ -356,14 +356,15 @@ end
 
 --It was either this or websockets. But this shouldn't be that bad of a solution
 
-local after = 0
+local around = 0
 local abort = 0
+
 
 function discordrelay.DiscordRelayFetchMessages()
     if abort >= 5 then discordrelay.log(3,"FetchMessages failed DESTROYING") timer.Destroy("DiscordRelayFetchMessages") return end -- prevent spam
     local url
-    if after ~= 0 then
-        url = discordrelay.endpoints.channels.."/"..discordrelay.relayChannel.."/messages?after="..after
+    if around ~= 0 then
+        url = discordrelay.endpoints.channels.."/"..discordrelay.relayChannel.."/messages?limit=3&around="..around
     else
         url = discordrelay.endpoints.channels.."/"..discordrelay.relayChannel.."/messages"
     end
@@ -377,54 +378,84 @@ function discordrelay.DiscordRelayFetchMessages()
             abort = 0
         end
         local json = util.JSONToTable(body)
-        if json and json[1] and after ~= 0 and after ~= json[1].id then
-            abort = 0 -- json is valid so we got something
-            for k,v in ipairs(json) do
-                if not (v and v.author) and discordrelay.user.id == v.author.id or type(v) == "number" then continue end
-                if v.webhook_id and v.webhook_id == discordrelay.webhookid then continue end
 
-                if v.id > after then
-                    after = v.id
-                end
+        local previous
+        local current
+        local future
 
-                if table.Count(discordrelay.modules) < 1 then
-                    discordrelay.log(2,"Got Discord response, but no Modules are loaded")
-                end
-                for name,dmodule in pairs(discordrelay.modules) do
-                    if dmodule.Handle then
-                        local ok,why = pcall(dmodule.Handle,v)
-                        if not ok then
-                            discordrelay.log(3,"Module Error:",name,why)
-                            discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
-                                ["username"] = discordrelay.username,
-                                ["avatar_url"] = discordrelay.avatar,
-                                ["embeds"] = {
-                                    [1] = {
-                                        ["title"] = "MODULE ERROR: "..name,
-                                        ["description"] = "```"..why.."```",
-                                        ["type"] = "rich",
-                                        ["color"] = 0xb30000
-                                    }
+        -- todo: maybe sort incoming table from discord in case they send the table different?
+        if around ~= 0 then
+            if #json == 3 then
+                current = json[1]
+                previous = json[2]
+                future = json[3]
+            elseif #json == 2 then
+                current = json[1]
+                previous = json[2]
+            end
+        else
+            current = json[1]
+        end
+
+        if current and (around ~= 0 and around ~= current.id) then
+            abort = 0
+            if discordrelay.user.id == current.author.id or type(current) == "number" then -- ignore the relays own message (CreateMessage)
+                around = current.id
+                return
+            end
+
+            if current.webhook_id and current.webhook_id == discordrelay.webhookid then -- our own webhook (messages) skipping..
+                around = current.id
+                return
+            end
+
+            if table.Count(discordrelay.modules) < 1 then
+                discordrelay.log(2,"Got Discord response, but no Modules are loaded")
+            end
+
+            for name,dmodule in pairs(discordrelay.modules) do
+                if dmodule.Handle then
+                    local ok,why = pcall(dmodule.Handle,current,previous,future)
+                    if not ok then
+                        discordrelay.log(3,"Module Error:",name,why)
+                        discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
+                            ["username"] = discordrelay.username,
+                            ["avatar_url"] = discordrelay.avatar,
+                            ["embeds"] = {
+                                [1] = {
+                                    ["title"] = "MODULE ERROR: "..name,
+                                    ["description"] = "```"..why.."```",
+                                    ["type"] = "rich",
+                                    ["color"] = 0xb30000
                                 }
-                            })
-                            if discordrelay.modules[name].Remove then
-                                discordrelay.modules[name].Remove()
-                            else
-                                discordrelay.log(2,"Module Error:",name,"has no remove function and might not be unloaded correctly!")
-                                discordrelay.modules[name] = nil -- fallback so it doesn't keep erroring
-                            end
+                            }
+                        })
+                        if discordrelay.modules[name].Remove then
+                            discordrelay.modules[name].Remove()
+                        else
+                            discordrelay.log(2,"Module Error:",name,"has no remove function and might not be unloaded correctly!")
+                            discordrelay.modules[name] = nil -- fallback so it doesn't keep erroring
                         end
                     end
                 end
             end
+            if current.id > around then
+                around = current.id
+            end
+        elseif not json then
+        discordrelay.log(2,"json nil???",code,url)
+        elseif not current then
+        discordrelay.log(2,"json empty???",code,url)
+        elseif not current.id then
+        discordrelay.log(2,"json no id???",code,url)
         end
-
-        if json and json[1] and after == 0 then
-            after = json[1].id
+        if json and current and around == 0 then
+            around = current.id
         end
     end)
 end
-
+--discordrelay.DiscordRelayFetchMessages()
+--discordrelay.DiscordRelayFetchMessages()
 timer.Create("DiscordRelayFetchMessages", 1.5, 0, discordrelay.DiscordRelayFetchMessages)
 
 hook.Add("ShutDown", "DiscordRelayShutDown", function()
