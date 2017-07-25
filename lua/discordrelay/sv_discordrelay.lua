@@ -1,4 +1,45 @@
 discordrelay = discordrelay or {}
+
+function discordrelay.log(level,...)  -- most expensive print ever
+    local arg = {...}
+    local color = {
+        [1] = Color(255,255,255),
+        [2] = Color(255,222,102),
+        [3] = Color(255,0,0)
+    }
+    local prefix = {
+        [1] = {Color(255,182,79),"[DiscordRelay:",Color(255,255,255),"info",Color(255,182,79),"] "},
+        [2] = {Color(255,182,79),"[DiscordRelay:",Color(255,222,102),"warning",Color(255,182,79),"] "},
+        [3] = {Color(255,182,79),"[DiscordRelay:",Color(255,0,0),"error",Color(255,182,79),"] "}
+    }
+    local level = math.Clamp(level, 1, #prefix) -- lol
+    MsgC(unpack(prefix[level]))
+    local out = ""
+    local tablespew = {}
+    local function insert(inc,val)
+        if inc == 1 then
+            return val
+        else
+            return " "..val
+        end
+    end
+    for i,val in ipairs(arg) do
+        if type(val) == "table" then
+            table.insert(tablespew, val)
+        else
+            out = out..insert(i,tostring(val))
+        end
+    end
+    MsgC(color[level],out,"\n")
+    if tablespew then
+        for _,tbl in ipairs(tablespew) do
+            for key,value in pairs(tbl) do -- subtables??? who knows
+                MsgC(color[level],key," --> ",value,"\n")
+            end
+        end
+    end
+end
+
 discordrelay.config = {}
 
 -- token for reading messages and core functionality
@@ -67,45 +108,6 @@ discordrelay.util.badcode = {
     [502] = "GATEWAY UNAVAILABLE"
     }
 
-function discordrelay.log(level,...)  -- most expensive print ever
-    local arg = {...}
-    local color = {
-        [1] = Color(255,255,255),
-        [2] = Color(255,222,102),
-        [3] = Color(255,0,0)
-    }
-    local prefix = {
-        [1] = {Color(255,182,79),"[DiscordRelay:",Color(255,255,255),"info",Color(255,182,79),"] "},
-        [2] = {Color(255,182,79),"[DiscordRelay:",Color(255,222,102),"warning",Color(255,182,79),"] "},
-        [3] = {Color(255,182,79),"[DiscordRelay:",Color(255,0,0),"error",Color(255,182,79),"] "}
-    }
-    local level = math.Clamp(level, 1, #prefix) -- lol
-    MsgC(unpack(prefix[level]))
-    local out = ""
-    local tablespew = {}
-    local function insert(inc,val)
-        if inc == 1 then
-            return val
-        else
-            return " "..val
-        end
-    end
-    for i,val in ipairs(arg) do
-        if type(val) == "table" then
-            table.insert(tablespew, val)
-        else
-            out = out..insert(i,tostring(val))
-        end
-    end
-    MsgC(color[level],out,"\n")
-    if tablespew then
-        for _,tbl in ipairs(tablespew) do
-            for key,value in pairs(tbl) do -- subtables??? who knows
-                MsgC(color[level],key," --> ",value,"\n")
-            end
-        end
-    end
-end
 
 function discordrelay.HTTPRequest(ctx, callback, err)
     local HTTPRequest = {}
