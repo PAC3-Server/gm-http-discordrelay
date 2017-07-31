@@ -50,7 +50,7 @@ function runlua.Init()
                         ["title"] = "",
                         ["description"] = "ran " .. identifier .. " " .. where,
                         ["author"] = {
-                            ["name"] = ply:Nick(),
+                            ["name"] = string.gsub(ply:Nick(),"<.->",""),
                             ["icon_url"] = ret,
                             ["url"] = "http://steamcommunity.com/profiles/" .. ply:SteamID64()
                         },
