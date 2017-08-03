@@ -10,7 +10,7 @@ function status.Handle(input,previous,future)
             local commid = util.SteamIDTo64(ply:SteamID()) -- move to player meta?
             embeds[i] = {
                 ["author"] = {
-                    ["name"] = ply:Nick(),["icon_url"] = cache[commid],
+                    ["name"] = string.gsub(ply:Nick(),"<.->",""),["icon_url"] = cache[commid],
                     ["url"] = "http://steamcommunity.com/profiles/" .. commid
                 },
                 ["color"] = (ply:IsAFK() ~= nil and ply:IsAFK()) and 0xffff00 or 0x00b300
