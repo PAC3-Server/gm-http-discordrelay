@@ -4,6 +4,7 @@ local discordrelay = discordrelay
 function status.Handle(input,previous,future)
     if input.author.bot ~= true and discordrelay.util.startsWith("status", input.content) then
         local embeds = {}
+        local amount = player.GetCount()
         local cache = discordrelay.AvatarCache -- todo check if not nil
         for i,ply in pairs(player.GetAll()) do
             local commid = util.SteamIDTo64(ply:SteamID()) -- move to player meta?
@@ -15,11 +16,11 @@ function status.Handle(input,previous,future)
                 ["color"] = (ply:IsAFK() ~= nil and ply:IsAFK()) and 0xffff00 or 0x00b300
             }
         end
-        if player.GetCount() > 0 then
+        if amount > 0 then
             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                 ["username"] = "Server status:",
                 ["avatar_url"] = discordrelay.avatar,
-                ["content"] = "**Hostname:** "..GetHostName().."\n**Uptime:** "..string.FormattedTime(SysTime()/3600,"%02i:%02i:%02i").."\n**Map:** `"..game.GetMap().."`\n**Players:** "..#players.."/"..game.MaxPlayers(),
+                ["content"] = "**Hostname:** "..GetHostName().."\n**Uptime:** "..string.FormattedTime(SysTime()/3600,"%02i:%02i:%02i").."\n**Map:** `"..game.GetMap().."`\n**Players:** "..#amount.."/"..game.MaxPlayers(),
                 ["embeds"] = embeds
         })
         else
