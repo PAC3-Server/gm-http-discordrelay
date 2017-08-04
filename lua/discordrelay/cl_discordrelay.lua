@@ -25,7 +25,9 @@ net.Receive( "DiscordMessage", function()
     if ChathudImage then
         ChathudImage(message)
     end
-
+    
+    local ok = hook.Run("OnDiscordMessage",nick,message)
+    if ok == false then return end
     if nick ~= "" then
         chat.AddText( Color(114,137,218,255), "[Discord] "..nick, Color(255,255,255,255),": "..message)
     else
