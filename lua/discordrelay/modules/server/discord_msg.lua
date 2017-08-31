@@ -25,7 +25,7 @@ function discord_msg.Handle(input,previous,future)
         local name = input.author.username
         local test = discordrelay.test
         local istest = string.Right(name,6) == "@ test" -- well it works
-        local isnormal = string.Right(name,8) == "@ main"
+        local isnormal = string.Right(name,6) == "@ main"
         if (test and isnormal and not istest) or (not test and not isnormal and istest) then -- kill me
             local send = hook.Run("DiscordRelayXMessage", input)
             if send ~= false then
