@@ -26,13 +26,11 @@ function discord_msg.Handle(input,previous,future)
         local test = discordrelay.test
         local istest = string.Right(name,6) == "@ test" -- well it works
         local isnormal = string.Right(name,8) == "@ server"
-        local pos = test and string.find(name,"@ test") or string.find(name,"@ server") -- there has to be a better way
         if (test and isnormal and not istest) or (not test and not isnormal and istest) then -- kill me
-            local nick = string.sub(name,1,pos)
             local send = hook.Run("DiscordRelayXMessage", input)
             if send ~= false then
                 net.Start( "DiscordXMessage" )
-                    net.WriteString(string.sub(nick,1,14))
+                    net.WriteString(string.sub(name,1,14))
                     net.WriteString(string.sub(input.content,1,400))
                     net.WriteBool(test)
                 net.Broadcast()

@@ -14,7 +14,7 @@ function join_leave_msg.Init()
                 ["embeds"] = {
                     [1] = {
                         ["title"] = "",
-                        ["description"] = "is joining the ".. (discordrelay.test and "Test" or "") .." Server.",
+                        ["description"] = "is joining the".. (discordrelay.test and " Test" or "") .." Server.",
                         ["author"] = {
                             ["name"] = data.name,
                             ["icon_url"] = ret,
@@ -42,7 +42,7 @@ function join_leave_msg.Init()
                     ["embeds"] = {
                         [1] = {
                             ["title"] = "",
-                            ["description"] = "left the ".. (discordrelay.test and "Test" or "") .." Server.",
+                            ["description"] = "left the".. (discordrelay.test and " Test" or "") .." Server.",
                             ["author"] = {
                                 ["name"] = data.name,
                                 ["icon_url"] = ret,
