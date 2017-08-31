@@ -15,8 +15,7 @@ function discord_msg.Handle(input,previous,future)
             end
         end
         local send = hook.Run("DiscordRelayMessage", input)
-        send = send or true
-        if send then
+        if send ~= false then
             net.Start( "DiscordMessage" )
                 net.WriteString(string.sub(input.author.username,1,14))
                 net.WriteString(string.sub(ret,1,400))

@@ -14,7 +14,7 @@ function ingame_msg.Init()
                 for n in string.gmatch( text, "@(%a+)") do
                     local member = discordrelay.members[string.lower(n)]
                     if member then
-                        text = string.Replace(text, "@"..n, "<@"..member.user.id..">")
+                        text = string.Replace((string.gsub(text,"<.->","")), "@"..n, "<@"..member.user.id..">")
                     end
                 end
             end
@@ -25,7 +25,7 @@ function ingame_msg.Init()
             discordrelay.util.GetAvatar(ply:SteamID(), function(ret)
                 discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                     ["username"] = (string.gsub(ply:Nick(),"<.->","")),
-                    ["content"] = (string.gsub(text,"<.->","")),
+                    ["content"] = text,
                     ["avatar_url"] = ret
                 })
             end)
