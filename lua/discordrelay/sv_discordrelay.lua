@@ -1,5 +1,5 @@
 discordrelay = discordrelay or {}
-
+CreateConVar("sv_testing","0",{FCVAR_NOTIFY,FCVAR_ARCHIVE,FCVAR_REPLICATED},"testing mode") -- hack hack
 function discordrelay.log(level,...)  -- most expensive print ever
     local arg = {...}
     local color = {
