@@ -462,13 +462,14 @@ timer.Create("DiscordRelayFetchMessages", 1.5, 0, discordrelay.DiscordRelayFetch
 
 hook.Add("ShutDown", "DiscordRelayShutDown", function()
     if discordrelay and discordrelay.enabled then
+    local testing = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool()
         discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
             ["username"] = discordrelay.username,
             ["avatar_url"] = discordrelay.avatar,
             ["embeds"] = {
                 [1] = {
                     ["title"] = "",
-                    ["description"] = "**Server has shutdown.**",
+                    ["description"] = "**".. (testing and " Test" or "") .." Server has shutdown.**",
                     ["type"] = "rich",
                     ["color"] = 0xb30000
                 }
