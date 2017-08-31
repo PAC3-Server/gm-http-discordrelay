@@ -17,8 +17,8 @@ function discord_msg.Handle(input,previous,future)
         local send = hook.Run("DiscordRelayMessage", input)
         if send ~= false then
             net.Start( "DiscordMessage" )
-                net.WriteString(string.sub(input.author.username,1,14))
-                net.WriteString(string.sub(ret,1,400))
+                net.WriteString(string.sub(input.author.username,1,25))
+                net.WriteString(string.sub(ret,1,600))
             net.Broadcast()
         end
     elseif input.webhook_id then
@@ -30,8 +30,8 @@ function discord_msg.Handle(input,previous,future)
             local send = hook.Run("DiscordRelayXMessage", input)
             if send ~= false then
                 net.Start( "DiscordXMessage" )
-                    net.WriteString(string.sub(name,1,14))
-                    net.WriteString(string.sub(input.content,1,400))
+                    net.WriteString(string.sub(name,1,25))
+                    net.WriteString(string.sub(input.content,1,600))
                     net.WriteBool(test)
                 net.Broadcast()
             end
