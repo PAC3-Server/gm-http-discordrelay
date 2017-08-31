@@ -22,14 +22,19 @@ function discord_msg.Handle(input,previous,future)
             net.Broadcast()
         end
     elseif input.webhook_id then
+        local name = input.author.username
         local test = discordrelay.test
-        local istest = string.Right(input.author.username,6) == "@ test" -- well it works
-        if (test and not istest) or (not test and istest) then -- kill me
-            local send = hook.Run("DiscordRelayMessage", input)
+        local istest = string.Right(name,6) == "@ test" -- well it works
+        local isnormal = string.Right(name,8) == "@ server"
+        local pos = test and string.find(name,"@ test") or string.find(name,"@ server") -- there has to be a better way
+        if (test and isnormal and not istest) or (not test and not isnormal and istest) then -- kill me
+            local nick = string.sub(name,1,pos)
+            local send = hook.Run("DiscordRelayXMessage", input)
             if send ~= false then
-                net.Start( "DiscordMessage" )
-                    net.WriteString(string.sub(input.author.username,1,14))
+                net.Start( "DiscordXMessage" )
+                    net.WriteString(string.sub(nick,1,14))
                     net.WriteString(string.sub(input.content,1,400))
+                    net.WriteBool(test)
                 net.Broadcast()
             end
         end

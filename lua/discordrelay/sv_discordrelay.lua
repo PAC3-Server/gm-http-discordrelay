@@ -62,6 +62,7 @@ if not webhooktoken then
 end
 
 util.AddNetworkString("DiscordMessage")
+util.AddNetworkString("DiscordXMessage")
 
 -- main config
 discordrelay.test = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool()
@@ -407,10 +408,10 @@ function discordrelay.DiscordRelayFetchMessages()
                 return
             end
 
-            if current.webhook_id and current.webhook_id == discordrelay.webhookid then -- our own webhook (messages) skipping..
-                around = current.id
-                return
-            end
+            -- if current.webhook_id and current.webhook_id == discordrelay.webhookid then -- our own webhook (messages) skipping..
+            --     around = current.id
+            --     return
+            -- end
 
             if table.Count(discordrelay.modules) < 1 then
                 discordrelay.log(2,"Got Discord response, but no Modules are loaded")
