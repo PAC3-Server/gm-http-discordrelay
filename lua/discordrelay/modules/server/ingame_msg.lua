@@ -24,7 +24,7 @@ function ingame_msg.Init()
 
             discordrelay.util.GetAvatar(ply:SteamID(), function(ret)
                 discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
-                    ["username"] = (string.gsub(ply:Nick(),"<.->","")),
+                    ["username"] = (string.gsub(ply:Nick(),"<.->","")) .. discordrelay.testing and " @ test" or "",
                     ["content"] = text,
                     ["avatar_url"] = ret
                 })

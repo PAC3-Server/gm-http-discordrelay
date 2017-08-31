@@ -7,7 +7,6 @@ function join_leave_msg.Init()
         if discordrelay and discordrelay.enabled then
             discordrelay.util.GetAvatar(data.networkid, function(ret)
             local commid = util.SteamIDTo64(data.networkid)
-            local testing = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool()
 
             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                 ["username"] = discordrelay.username,
@@ -15,7 +14,7 @@ function join_leave_msg.Init()
                 ["embeds"] = {
                     [1] = {
                         ["title"] = "",
-                        ["description"] = "is joining the ".. (testing and "Test" or "") .." Server.",
+                        ["description"] = "is joining the ".. (discordrelay.test and "Test" or "") .." Server.",
                         ["author"] = {
                             ["name"] = data.name,
                             ["icon_url"] = ret,
@@ -35,7 +34,6 @@ function join_leave_msg.Init()
         if discordrelay and discordrelay.enabled then
             local commid = util.SteamIDTo64(data.networkid)
             local reason = (string.StartWith(data.reason ,"Map") or string.StartWith(data.reason ,data.name) or string.StartWith(data.reason ,"Client" )) and ":interrobang: "..data.reason or data.reason
-            local testing = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool()
 
             discordrelay.util.GetAvatar(data.networkid, function(ret)
                 discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
@@ -44,7 +42,7 @@ function join_leave_msg.Init()
                     ["embeds"] = {
                         [1] = {
                             ["title"] = "",
-                            ["description"] = "left the ".. (testing and "Test" or "") .." Server.",
+                            ["description"] = "left the ".. (discordrelay.test and "Test" or "") .." Server.",
                             ["author"] = {
                                 ["name"] = data.name,
                                 ["icon_url"] = ret,

@@ -64,7 +64,8 @@ end
 util.AddNetworkString("DiscordMessage")
 
 -- main config
-discordrelay.username = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool() and "Test Server" or "Server"
+discordrelay.test = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool()
+discordrelay.username = discordrelay.test and "Test Server" or "Server"
 discordrelay.avatar = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png"
 discordrelay.token = token
 discordrelay.guild = "260866188962168832"
@@ -462,14 +463,14 @@ timer.Create("DiscordRelayFetchMessages", 1.5, 0, discordrelay.DiscordRelayFetch
 
 hook.Add("ShutDown", "DiscordRelayShutDown", function()
     if discordrelay and discordrelay.enabled then
-    local testing = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool()
+
         discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
             ["username"] = discordrelay.username,
             ["avatar_url"] = discordrelay.avatar,
             ["embeds"] = {
                 [1] = {
                     ["title"] = "",
-                    ["description"] = "**".. (testing and " Test" or "") .." Server has shutdown.**",
+                    ["description"] = "**".. (discordrelay.test and " Test" or "") .." Server has shutdown.**",
                     ["type"] = "rich",
                     ["color"] = 0xb30000
                 }
