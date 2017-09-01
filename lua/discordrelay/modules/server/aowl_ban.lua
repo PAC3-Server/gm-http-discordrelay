@@ -14,7 +14,7 @@ function aowl_ban.Init()
                     ["embeds"] = {
                         [1] = {
                             ["title"] = "",
-                            ["description"] = "**BANNED:** " .. (string.gsub(target:Nick(),"<.->",""),
+                            ["description"] = "**BANNED:** " .. (string.gsub(target:Nick(),"<.->","")),
                             ["author"] = {
                                 ["name"] = (string.gsub(ply:Nick(),"<.->","")),
                                 ["icon_url"] = ret,
