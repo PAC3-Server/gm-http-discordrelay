@@ -27,7 +27,7 @@ function aowl_ban.Init()
                                     ["value"] = reason,
                                     ["inline"] = false
                                 }
-                            }
+                            },
                             ["color"] = 0xb30000
                         }
                     }
