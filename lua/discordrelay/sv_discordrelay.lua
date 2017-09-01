@@ -63,7 +63,7 @@ end
 util.AddNetworkString("DiscordMessage")
 
 -- main config
-discordrelay.username = "Main Server"
+discordrelay.username = "GMod Server"
 discordrelay.avatar = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png"
 discordrelay.token = token
 discordrelay.guild = "260866188962168832"
