@@ -20,9 +20,6 @@ function join_leave_msg.Init()
                                 ["icon_url"] = ret,
                                 ["url"] = "http://steamcommunity.com/profiles/" .. commid
                             },
-                            ["footer"] = {
-                                ["text"] = "📥"
-                            },
                             ["type"] = "rich",
                             ["color"] = 0x00b300
                         }
@@ -50,9 +47,6 @@ function join_leave_msg.Init()
                                 ["name"] = data.name,
                                 ["icon_url"] = ret,
                                 ["url"] = "http://steamcommunity.com/profiles/" .. commid
-                            },
-                            ["footer"] = {
-                                ["text"] = "📤"
                             },
                             ["type"] = "rich",
                             ["color"] = 0xb30000,
