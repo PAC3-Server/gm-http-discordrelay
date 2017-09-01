@@ -176,7 +176,8 @@ end
 
 function discordrelay.util.GetAvatar(steamid, callback)
     local commid = util.SteamIDTo64(steamid)
-    if discordrelay.AvatarCache[commid] then
+    local cache = discordrelay.AvatarCache
+    if cache[commid] then
         callback(discordrelay.AvatarCache[commid])
     else
         http.Fetch("http://steamcommunity.com/profiles/" .. commid .. "?xml=1",
