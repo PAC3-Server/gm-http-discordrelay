@@ -14,9 +14,9 @@ function join_leave_msg.Init()
                     ["embeds"] = {
                         [1] = {
                             ["title"] = "",
-                            ["description"] = "**is joining the Server.**",
+                            ["description"] = "",
                             ["author"] = {
-                                ["name"] = data.name,
+                                ["name"] = data.name .. " is joining the Server.",
                                 ["icon_url"] = ret,
                                 ["url"] = "http://steamcommunity.com/profiles/" .. commid
                             },
@@ -42,9 +42,9 @@ function join_leave_msg.Init()
                     ["embeds"] = {
                         [1] = {
                             ["title"] = "",
-                            ["description"] = "**left the Server.**",
+                            ["description"] = "",
                             ["author"] = {
-                                ["name"] = data.name,
+                                ["name"] = data.name .. " left the Server.",
                                 ["icon_url"] = ret,
                                 ["url"] = "http://steamcommunity.com/profiles/" .. commid
                             },
