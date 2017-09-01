@@ -5,26 +5,29 @@ function join_leave_msg.Init()
     gameevent.Listen( "player_connect" )
     hook.Add("player_connect", "DiscordRelayPlayerConnect", function(data)
         if discordrelay and discordrelay.enabled then
-            discordrelay.util.GetAvatar(data.networkid, function(ret)
             local commid = util.SteamIDTo64(data.networkid)
 
-            discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
-                ["username"] = discordrelay.username,
-                ["avatar_url"] = discordrelay.avatar,
-                ["embeds"] = {
-                    [1] = {
-                        ["title"] = "",
-                        ["description"] = ":inbox_tray:\n**is joining the Server.**",
-                        ["author"] = {
-                            ["name"] = data.name,
-                            ["icon_url"] = ret,
-                            ["url"] = "http://steamcommunity.com/profiles/" .. commid
-                        },
-                        ["type"] = "rich",
-                        ["color"] = 0x00b300
+            discordrelay.util.GetAvatar(data.networkid, function(ret)
+                discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
+                    ["username"] = discordrelay.username,
+                    ["avatar_url"] = discordrelay.avatar,
+                    ["embeds"] = {
+                        [1] = {
+                            ["title"] = "",
+                            ["description"] = "**is joining the Server.**",
+                            ["author"] = {
+                                ["name"] = data.name,
+                                ["icon_url"] = ret,
+                                ["url"] = "http://steamcommunity.com/profiles/" .. commid
+                            },
+                            ["footer"] = {
+                                ["text"] = ":inbox_tray:"
+                            },
+                            ["type"] = "rich",
+                            ["color"] = 0x00b300
+                        }
                     }
-                }
-            })
+                })
             end)
         end
     end)
@@ -42,11 +45,14 @@ function join_leave_msg.Init()
                     ["embeds"] = {
                         [1] = {
                             ["title"] = "",
-                            ["description"] = ":outbox_tray:\n**left the Server.**",
+                            ["description"] = "**left the Server.**",
                             ["author"] = {
                                 ["name"] = data.name,
                                 ["icon_url"] = ret,
                                 ["url"] = "http://steamcommunity.com/profiles/" .. commid
+                            },
+                            ["footer"] = {
+                                ["text"] = ":outbox_tray:"
                             },
                             ["type"] = "rich",
                             ["color"] = 0xb30000,
