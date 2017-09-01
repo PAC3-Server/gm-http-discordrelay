@@ -14,7 +14,7 @@ function join_leave_msg.Init()
                 ["embeds"] = {
                     [1] = {
                         ["title"] = "",
-                        ["description"] = "is joining the Server.",
+                        ["description"] = ":inbox_tray: is joining the Server.",
                         ["author"] = {
                             ["name"] = data.name,
                             ["icon_url"] = ret,
@@ -42,7 +42,7 @@ function join_leave_msg.Init()
                     ["embeds"] = {
                         [1] = {
                             ["title"] = "",
-                            ["description"] = "left the Server.",
+                            ["description"] = ":outbox_tray: left the Server.",
                             ["author"] = {
                                 ["name"] = data.name,
                                 ["icon_url"] = ret,
