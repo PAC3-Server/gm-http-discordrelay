@@ -35,32 +35,54 @@ function join_leave_msg.Init()
             local commid = util.SteamIDTo64(data.networkid)
             local reason = (string.StartWith(data.reason ,"Map") or string.StartWith(data.reason ,data.name) or string.StartWith(data.reason ,"Client" )) and ":interrobang: "..data.reason or data.reason
 
-            discordrelay.util.GetAvatar(data.networkid, function(ret)
-                discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
-                    ["username"] = discordrelay.username,
-                    ["avatar_url"] = discordrelay.avatar,
-                    ["embeds"] = {
-                        [1] = {
-                            ["title"] = "",
-                            ["description"] = "",
-                            ["author"] = {
-                                ["name"] = data.name .. " left the Server.",
-                                ["icon_url"] = ret,
-                                ["url"] = "http://steamcommunity.com/profiles/" .. commid
-                            },
-                            ["type"] = "rich",
-                            ["color"] = 0xb30000,
-                            ["fields"] = {
-                                [1] = {
-                                    ["name"] = "Reason:",
-                                    ["value"] = reason,
-                                    ["inline"] = false
+            if reason ~= "Disconnect by user." then
+                discordrelay.util.GetAvatar(data.networkid, function(ret)
+                    discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
+                        ["username"] = discordrelay.username,
+                        ["avatar_url"] = discordrelay.avatar,
+                        ["embeds"] = {
+                            [1] = {
+                                ["title"] = "",
+                                ["description"] = "",
+                                ["author"] = {
+                                    ["name"] = data.name .. " left the Server.",
+                                    ["icon_url"] = ret,
+                                    ["url"] = "http://steamcommunity.com/profiles/" .. commid
+                                },
+                                ["type"] = "rich",
+                                ["color"] = 0xb30000,
+                                ["fields"] = {
+                                    [1] = {
+                                        ["name"] = "Reason:",
+                                        ["value"] = reason,
+                                        ["inline"] = false
+                                    }
                                 }
                             }
                         }
-                    }
-                })
-            end)
+                    })
+                end)
+            else
+                discordrelay.util.GetAvatar(data.networkid, function(ret)
+                    discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
+                        ["username"] = discordrelay.username,
+                        ["avatar_url"] = discordrelay.avatar,
+                        ["embeds"] = {
+                            [1] = {
+                                ["title"] = "",
+                                ["description"] = "",
+                                ["author"] = {
+                                    ["name"] = data.name .. " left the Server.",
+                                    ["icon_url"] = ret,
+                                    ["url"] = "http://steamcommunity.com/profiles/" .. commid
+                                },
+                                ["type"] = "rich",
+                                ["color"] = 0xb30000
+                            }
+                        }
+                    })
+                end)
+            end
         end
     end)
 end
