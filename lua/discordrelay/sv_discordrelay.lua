@@ -107,68 +107,65 @@ discordrelay.util.badcode = {
     [502] = "GATEWAY UNAVAILABLE"
     }
 
-
 function discordrelay.HTTPRequest(ctx, callback, err)
-    local HTTPRequest = {}
-    HTTPRequest.method = ctx.method
-    HTTPRequest.url = ctx.url
-    HTTPRequest.headers = {
-        ["Authorization"]= "Bot "..discordrelay.token,
-        ["Content-Type"] = "application/json",
-        ["User-Agent"] = "DiscordBot (https://github.com/PAC3-Server/gm-http-discordrelay, 1.0.0)"
+    local ctx = ctx
+    local HTTPRequest = {
+        ["method"] = ctx.method,
+        ["url"] = ctx.url,
+        ["type"] = "application/json",
+        ["headers"] = {
+            ["Authorization"] = "Bot "..discordrelay.token,
+            ["Content-Type"] = "application/json",
+            ["User-Agent"] = "DiscordBot (https://github.com/PAC3-Server/gm-http-discordrelay, 1.0.0)"
+        },
+        ["success"] = function(code, body, headers)
+            if discordrelay.util.badcode[code] then
+                discordrelay.log(2,"HTTPRequest",ctx.url,discordrelay.util.badcode[code])
+            end
+            if not callback then return end
+            callback(headers, body, code)
+        end,
+        ["failed"] = function(reason)
+            if not err then return end
+            err(reason)
+            discordrelay.log(2,"HTTPRequest failed",reason)
+        end
     }
-
-    HTTPRequest.type = "application/json"
 
     if ctx.body then
         HTTPRequest.body = ctx.body
     elseif ctx.parameters then
         HTTPRequest.parameters = ctx.parameters
-    end
-
-    HTTPRequest.success = function(code, body, headers)
-        if discordrelay.util.badcode[code] then
-            discordrelay.log(2,"HTTPRequest",ctx.url,discordrelay.util.badcode[code])
-        end
-        if not callback then return end
-        callback(headers, body, code)
-    end
-
-    HTTPRequest.failed = function(reason)
-    if not err then return end
-        err(reason)
-        discordrelay.log(2,"HTTPRequest failed",reason)
     end
 
     HTTP(HTTPRequest)
 end
 
 function discordrelay.WebhookRequest(ctx, callback, err)
-    local HTTPRequest = {}
-    HTTPRequest.method = ctx.method
-    HTTPRequest.url = ctx.url
-    HTTPRequest.headers = {
-        ["Content-Type"] = "application/json",
-        ["Content-Length"] = string.len(ctx.body) or "0"
+    local ctx = ctx
+    local HTTPRequest = {
+        ["method"] = ctx.method,
+        ["url"] = ctx.url,
+        ["type"] = "application/json",
+        ["headers"] = {
+            ["Content-Type"] = "application/json",
+            ["Content-Length"] = string.len(ctx.body) or "0"
+        },
+        ["success"] = function(code, body, headers)
+            if not callback then return end
+            callback(headers, body)
+        end,
+        ["failed"] = function(reason)
+            if not err then return end
+            err(reason)
+            discordrelay.log(2,"WebhookRequest failed",reason)
+        end
     }
-
-    HTTPRequest.type = "application/json"
 
     if ctx.body then
         HTTPRequest.body = ctx.body
     elseif ctx.parameters then
         HTTPRequest.parameters = ctx.parameters
-    end
-
-    HTTPRequest.success = function(code, body, headers)
-    if not callback then return end
-        callback(headers, body)
-    end
-
-    HTTPRequest.failed = function(reason)
-    if not err then return end
-        err(reason)
-        discordrelay.log(2,"WebhookRequest failed",reason)
     end
 
     HTTP(HTTPRequest)
@@ -221,7 +218,6 @@ function discordrelay.util.startsWith(name, msg, param)
     end
     return false
 end
-
 
 function discordrelay.CreateMessage(channelid, msg, cb)
     local res
@@ -309,7 +305,6 @@ local function LoadModule(path)
 end
 
 function discordrelay.InitializeModules()
-
     if file.Exists("discordrelay/modules/server","LUA") then
         for _,file in pairs (file.Find("discordrelay/modules/server/*.lua", "LUA")) do
             local name = string.StripExtension(file)
