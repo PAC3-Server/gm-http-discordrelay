@@ -21,7 +21,7 @@ function join_leave_msg.Init()
                                 ["url"] = "http://steamcommunity.com/profiles/" .. commid
                             },
                             ["footer"] = {
-                                ["text"] = ":inbox_tray:"
+                                ["text"] = "📥"
                             },
                             ["type"] = "rich",
                             ["color"] = 0x00b300
@@ -52,7 +52,7 @@ function join_leave_msg.Init()
                                 ["url"] = "http://steamcommunity.com/profiles/" .. commid
                             },
                             ["footer"] = {
-                                ["text"] = ":outbox_tray:"
+                                ["text"] = "📤"
                             },
                             ["type"] = "rich",
                             ["color"] = 0xb30000,
