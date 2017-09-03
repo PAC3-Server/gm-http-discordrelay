@@ -6,8 +6,9 @@ function aowl_ban.Init()
         if not what == "ban" then return end
             if discordrelay and discordrelay.enabled then
             local steamid = ply:SteamID()
+            local targetid = type(target) == "string" and target or target:SteamID()
             local commid = util.SteamIDTo64(steamid)
-            local url = "http://steamcommunity.com/profiles/" .. util.SteamIDTo64(target:SteamID())
+            local url = "http://steamcommunity.com/profiles/" .. util.SteamIDTo64(targetid)
 
             discordrelay.util.GetAvatar(steamid, function(ret)
                 discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
@@ -43,7 +44,8 @@ function aowl_ban.Init()
             if discordrelay and discordrelay.enabled then
             local steamid = ply:SteamID()
             local commid = util.SteamIDTo64(steamid)
-            local url = "http://steamcommunity.com/profiles/" .. util.SteamIDTo64(target:SteamID())
+            local targetid = type(target) == "string" and target or target:SteamID()
+            local url = "http://steamcommunity.com/profiles/" .. util.SteamIDTo64(targetid)
 
             discordrelay.util.GetAvatar(steamid, function(ret)
                 discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
