@@ -3,8 +3,8 @@ local discordrelay = discordrelay
 
 function aowl_ban.Init()
     hook.Add("AowlTargetCommand", "DiscordrelayBanMsg", function(ply, what, target, reason)
-        if not what == "ban" then return end
-            if discordrelay and discordrelay.enabled then
+        if what ~= "ban" then return end
+        if discordrelay and discordrelay.enabled then
             local steamid = ply:SteamID()
             local targetid = type(target) == "string" and target or target:SteamID()
             local commid = util.SteamIDTo64(steamid)
@@ -40,7 +40,7 @@ function aowl_ban.Init()
     end)
 
     hook.Add("AowlTargetCommand", "DiscordrelayUnbanMsg", function(ply, what, target, reason)
-        if not what == "unban" then return end
+        if what ~= "unban" then return end
             if discordrelay and discordrelay.enabled then
             local steamid = ply:SteamID()
             local commid = util.SteamIDTo64(steamid)
@@ -54,7 +54,7 @@ function aowl_ban.Init()
                     ["embeds"] = {
                         [1] = {
                             ["title"] = "",
-                            ["description"] = "**BANNED:** " .. url,
+                            ["description"] = "**UNBANNED:** " .. url,
                             ["author"] = {
                                 ["name"] = (string.gsub(ply:Nick(),"<.->","")),
                                 ["icon_url"] = ret,
@@ -68,7 +68,7 @@ function aowl_ban.Init()
                                     ["inline"] = false
                                 }
                             },
-                            ["color"] = 0xb30000
+                            ["color"] = 0x00b300
                         }
                     }
                 })
