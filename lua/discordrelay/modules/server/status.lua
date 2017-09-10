@@ -20,7 +20,7 @@ function status.Handle(input,previous,future)
             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                 ["username"] = "Server status:",
                 ["avatar_url"] = discordrelay.avatar,
-                ["content"] = "**Hostname:** "..GetHostName().."\n**Uptime:** "..string.FormattedTime(SysTime()/3600,"%02i:%02i:%02i").."\n**Map:** `"..game.GetMap().."`\n**Players:** "..amount.."/"..game.MaxPlayers(),
+                ["content"] = "**Hostname:** "..GetHostName().."\n**Uptime:** "..string.FormattedTime(SysTime()/3600,"%02i:%02i:%02i").."\n**Map:** `"..game.GetMap().."`\n**Players:** "..amount.."/"..game.MaxPlayers().."\nWant to join? Click this link: steam://connect/threekelv.in",
                 ["embeds"] = embeds
         })
         else
@@ -30,7 +30,7 @@ function status.Handle(input,previous,future)
                 ["embeds"] = {
                     [1] = {
                         ["title"] = "Server status:",
-                        ["description"] = "No Players are currently on the Server...",
+                        ["description"] = "No Players are currently on the Server...\nWant to join? Click this link: steam://connect/threekelv.in",
                         ["type"] = "rich",
                         ["color"] = 0x5a5a5a
                     }
