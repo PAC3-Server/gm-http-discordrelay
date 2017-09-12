@@ -4,8 +4,6 @@ local prefixes = discordrelay.prefixes
 local easylua = requirex('easylua')
 local luadev = requirex('luadev')
 
-if not easylua or not luadev then discordrelay.log(2,"easylua or luadev not found, runlua disabled.") return false end
-
 local function getType(cmds, msg)
     if not cmds or not msg then return end
     for k,v in pairs(prefixes) do
@@ -20,6 +18,7 @@ end
 
 function runlua.Init()
     local webhookid_scriptlog = "285359393124384770"
+
     local webhooktoken_scriptlog = file.Read( "webhook_token_scriptlog.txt", "DATA" )
 
     if not webhooktoken_scriptlog then
