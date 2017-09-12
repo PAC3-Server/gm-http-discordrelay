@@ -2,10 +2,7 @@ local scriptlog = {}
 local discordrelay = discordrelay
 
 function scriptlog.Init()
-    local easylua = requirex('easylua')
-    local luadev = requirex('luadev')
     local logChannel = "337186861111836684"
-    if not easylua or not luadev then discordrelay.log(2,"easylua or luadev not found, scriptlogging disabled.") return false end
 
     local blacklist = {"suicided", "Bad SetLocalOrigin","Changing collision rules"}
     local logBuffer = ""
