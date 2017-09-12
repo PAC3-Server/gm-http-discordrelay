@@ -19,8 +19,10 @@ function luaerror_to_channel.Init()
         ["notagain"] = "https://github.com/PAC3-Server/notagain/tree/master/lua/",
         ["easychat"] = "https://github.com/PAC3-Server/EasyChat/tree/master/lua/"
     }
+
     hook.Add("EngineSpew", "DiscordRelayErrorMsg", function(spewType, msg, group, level)
-        if not msg or (msg:sub(1,1) ~= "[" and msg:sub(1,2) ~= "\n[") then return end
+        if not msg or (msg:sub(1,1) ~= "[" and msg:sub(1,2) ~= "\n[") or (RealTime() - last < 5) then return end
+
         if msg:find("] Lua Error:",1,true) then -- client error
             local err = msg
             local pl, userid = false, err:match(".+|(%d*)|.-$")
@@ -35,8 +37,8 @@ function luaerror_to_channel.Init()
 
             who = (IsValid(pl) and tostring(pl) or err)
             last = RealTime()
-            --return
         end
+
         if msg:sub(1,9)=="\n[ERROR] " then -- server error
             local err=msg:sub(10,-1)
             local now = RealTime()
@@ -57,9 +59,8 @@ function luaerror_to_channel.Init()
                     ["type"] = "rich",
                     ["color"] = 0xb30000
                 }
-            }
-            )
-            return
+            })
+            spam = RealTime()
         end
     end)
 end
