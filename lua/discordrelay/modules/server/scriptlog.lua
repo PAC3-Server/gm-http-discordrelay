@@ -20,7 +20,7 @@ function scriptlog.Init()
                 else
                     abort = 0
                 end
-                end)
+            end)
             logBuffer = ""
         end
     end)
