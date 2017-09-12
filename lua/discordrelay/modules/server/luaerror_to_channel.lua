@@ -21,7 +21,7 @@ function luaerror_to_channel.Init()
     }
 
     hook.Add("EngineSpew", "DiscordRelayErrorMsg", function(spewType, msg, group, level)
-        if not msg or (msg:sub(1,1) ~= "[" and msg:sub(1,2) ~= "\n[") or (RealTime() - last < 5) then return end
+        if not msg or (msg:sub(1,1) ~= "[" and msg:sub(1,2) ~= "\n[") or (RealTime() - spam < 5) then return end
 
         if msg:find("] Lua Error:",1,true) then -- client error
             local err = msg
