@@ -11,7 +11,7 @@ function scriptlog.Init()
     timer.Create("DiscordRelayAddLog", 5, 0, function()
         if abort >= 5 then discordrelay.log(3,"DiscordRelayAddLog failed DESTROYING") timer.Destroy("DiscordRelayAddLog") return end -- prevent spam
         if logBuffer ~= "" then
-            discordrelay.CreateMessage(logChannel, "```"..logBuffer.."```",function(h,b,c)
+            discordrelay.CreateMessage(logChannel, "```"..string.sub(logBuffer,1,2000).."```",function(h,b,c)
                 if discordrelay.util.badcode[c] then
                     abort = abort + 1
                     logBuffer = "" -- clear buffer to get rid of potentally massive logs
