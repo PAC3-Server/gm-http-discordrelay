@@ -11,7 +11,8 @@ local function post(channel,msg)
 end
 
 function luaerror_to_channel.Init()
-    local channel = "278624981192146944"
+    local channel = "337186861111836684"
+    local programming = "278624981192146944"
     local who, last
     local spam = 0
 
@@ -19,6 +20,10 @@ function luaerror_to_channel.Init()
         ["pac3"] = "https://github.com/CapsAdmin/pac3/tree/master/lua/",
         ["notagain"] = "https://github.com/PAC3-Server/notagain/tree/master/lua/",
         ["easychat"] = "https://github.com/PAC3-Server/EasyChat/tree/master/lua/"
+    }
+
+    local important = { -- will be posted to #programming
+        "pac3"
     }
 
     hook.Add("EngineSpew", "DiscordRelayErrorMsg", function(spewType, msg, group, level)
@@ -52,7 +57,7 @@ function luaerror_to_channel.Init()
             local laddon = string.lower(addon)
             local path, line = msg:match("%[ERROR%] addons/.-/lua/(.+):(%d+):.+")
 
-            post(channel,
+            post(important[addon] and programming or channel,
             {
                 ["embed"] = {
                     ["title"] = addon .. " error" .. ((now and now < 2) and (" from: " .. who) or ""),
