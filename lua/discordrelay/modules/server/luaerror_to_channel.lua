@@ -13,7 +13,7 @@ end
 function luaerror_to_channel.Init()
     local channel = "337186861111836684"
     local programming = "278624981192146944"
-    local who, last
+    local who, last, lasterr
     local spam = 0
 
     local github = {
@@ -47,6 +47,8 @@ function luaerror_to_channel.Init()
 
         if msg:sub(1,9)=="\n[ERROR] " then -- server error
             local err=msg:sub(10,-1)
+            if lasterr and lasterr == err then return end
+            lasterr = err
             local now = RealTime()
 
             if last then
