@@ -12,7 +12,8 @@ end
 
 function luaerror_to_channel.Init()
     local channel = "278624981192146944"
-    local who, last, spam
+    local who, last
+    local spam = 0
 
     local github = {
         ["pac3"] = "https://github.com/CapsAdmin/pac3/tree/master/lua/",
