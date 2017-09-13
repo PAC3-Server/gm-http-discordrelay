@@ -23,7 +23,7 @@ function luaerror_to_channel.Init()
     }
 
     local important = { -- will be posted to #programming
-        "pac3"
+        "pac3" = true
     }
 
     hook.Add("EngineSpew", "DiscordRelayErrorMsg", function(spewType, msg, group, level)
@@ -61,7 +61,7 @@ function luaerror_to_channel.Init()
             {
                 ["embed"] = {
                     ["title"] = addon .. " error" .. ((now and now < 2) and (" from: " .. who) or ""),
-                    ["description"] = "```"..err.."```" .. (github[laddon] and "\n" .. (github[laddon] .. path .. (line and "#L".. line or "")) or ""),
+                    ["description"] = "```"..err.."```" .. (github[laddon] and ( "\n" .. github[laddon] .. path .. (line and "#L".. line or "")) or ""),
                     ["type"] = "rich",
                     ["color"] = 0xb30000
                 }
