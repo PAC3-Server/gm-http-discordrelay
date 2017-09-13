@@ -57,7 +57,7 @@ function luaerror_to_channel.Init()
             local laddon = string.lower(addon)
             local path, line = msg:match("%[ERROR%] addons/.-/lua/(.+):(%d+):.+")
 
-            post(important[addon] and programming or channel,
+            post(important[laddon] and programming or channel,
             {
                 ["embed"] = {
                     ["title"] = addon .. " error" .. ((now and now < 2) and (" from: " .. who) or ""),
