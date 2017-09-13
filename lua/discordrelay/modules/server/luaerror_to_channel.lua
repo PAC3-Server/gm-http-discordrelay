@@ -23,7 +23,7 @@ function luaerror_to_channel.Init()
     }
 
     local important = { -- will be posted to #programming
-        "pac3" = true
+        pac3 = true
     }
 
     hook.Add("EngineSpew", "DiscordRelayErrorMsg", function(spewType, msg, group, level)
