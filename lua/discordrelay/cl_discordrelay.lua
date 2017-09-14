@@ -47,7 +47,7 @@ net.Receive( "DiscordXMessage", function()
     local ok = hook.Run("OnDiscordMessage",nick,message)
     if ok == false then return end
     if nick ~= "" then
-        chat.AddText(Color(120,120,120),(test and "Test" or "Main").." ⮞ ",Color(200,200,200),nick,Color(255,255,255),": "..message)
+        chat.AddText(Color(120,120,120),(test and "Main" or "Test").." ⮞ ",Color(200,200,200),nick,Color(255,255,255),": "..message)
     else
         chat.AddText(Color(255,255,255,255), message)
     end
