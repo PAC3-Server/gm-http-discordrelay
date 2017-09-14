@@ -34,3 +34,21 @@ net.Receive( "DiscordMessage", function()
         chat.AddText(Color(255,255,255,255), message)
     end
 end)
+
+net.Receive( "DiscordXMessage", function()
+    local nick = net.ReadString()
+    local message = net.ReadString()
+    local test = net.ReadBool()
+
+    if ChathudImage then
+        ChathudImage(message)
+    end
+
+    local ok = hook.Run("OnDiscordMessage",nick,message)
+    if ok == false then return end
+    if nick ~= "" then
+        chat.AddText( Color(244,167,66), nick, Color(255,255,255,255),": "..message)
+    else
+        chat.AddText(Color(255,255,255,255), message)
+    end
+end)

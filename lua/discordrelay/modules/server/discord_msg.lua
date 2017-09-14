@@ -21,6 +21,21 @@ function discord_msg.Handle(input,previous,future)
                 net.WriteString(string.sub(ret,1,600))
             net.Broadcast()
         end
+    elseif input.webhook_id then
+        local name = input.author.username
+        local test = discordrelay.test
+        local istest = string.Right(name,6) == "@ test" -- well it works
+        local isnormal = string.Right(name,6) == "@ main"
+        if (test and isnormal and not istest) or (not test and not isnormal and istest) then -- kill me
+            local send = hook.Run("DiscordRelayXMessage", input)
+            if send ~= false then
+                net.Start( "DiscordXMessage" )
+                    net.WriteString(string.sub(name,1,25))
+                    net.WriteString(string.sub(input.content,1,600))
+                    net.WriteBool(test)
+                net.Broadcast()
+            end
+        end
     end
 end
 
