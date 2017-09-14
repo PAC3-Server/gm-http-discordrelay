@@ -65,8 +65,8 @@ util.AddNetworkString("DiscordMessage")
 util.AddNetworkString("DiscordXMessage")
 
 -- main config
-discordrelay.username = discordrelay.test and "Test Server" or "Main Server"
 discordrelay.test = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool()
+discordrelay.username = discordrelay.test and "Test Server" or "Main Server"
 discordrelay.avatar = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png"
 discordrelay.token = token
 discordrelay.guild = "260866188962168832"
