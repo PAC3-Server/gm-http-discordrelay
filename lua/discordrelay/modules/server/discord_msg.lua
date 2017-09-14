@@ -24,8 +24,8 @@ function discord_msg.Handle(input,previous,future)
     elseif input.webhook_id then
         local name = input.author.username
         local test = discordrelay.test
-        local istest = string.Right(name,6) == "@ test" -- well it works
-        local isnormal = string.Right(name,6) == "@ main"
+        local istest = string.match(name,"Test ⮞ ") and true or false -- well it works
+        local isnormal = string.match(name,"Main ⮞ ") and true or false
         if (test and isnormal and not istest) or (not test and not isnormal and istest) then -- kill me
             local send = hook.Run("DiscordRelayXMessage", input)
             if send ~= false then
