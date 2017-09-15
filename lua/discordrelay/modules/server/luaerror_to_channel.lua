@@ -15,7 +15,6 @@ function luaerror_to_channel.Init()
     local channel = "337186861111836684"
     local programming = "278624981192146944"
     local who, last
-    local spam = 0
 
     local github = {
         ["pac3"] = {
@@ -34,7 +33,7 @@ function luaerror_to_channel.Init()
     }
 
     hook.Add("EngineSpew", "DiscordRelayErrorMsg", function(spewType, msg, group, level)
-        if not msg or (msg:sub(1, 1) ~= "[" and msg:sub(1, 2) ~= "\n[") or (RealTime() - spam < 5) then return end
+        if not msg or (msg:sub(1, 1) ~= "[" and msg:sub(1, 2) ~= "\n[") then return end
 
         if msg:find("] Lua Error:", 1, true) then -- client error
             local err = msg
@@ -77,7 +76,6 @@ function luaerror_to_channel.Init()
                 }
             })
             luaerror_to_channel.errors[id] = {laddon,err}
-            spam = RealTime()
         end
     end)
 end
