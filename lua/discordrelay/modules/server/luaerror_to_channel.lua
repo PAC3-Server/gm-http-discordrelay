@@ -1,10 +1,10 @@
 local luaerror_to_channel = {}
 local discordrelay = discordrelay
 
-local function post(channel,msg)
-    discordrelay.CreateMessage(channel, msg, function(h,b,c)
+local function post(channel, msg)
+    discordrelay.CreateMessage(channel, msg, function(h, b, c)
         if discordrelay.util.badcode[c] then
-            discordrelay.log(2,"DiscordRelayErrorMsg failed",discordrelay.util.badcode[c])
+            discordrelay.log(2, "DiscordRelayErrorMsg failed", discordrelay.util.badcode[c])
             return
         end
     end)
@@ -33,9 +33,9 @@ function luaerror_to_channel.Init()
     }
 
     hook.Add("EngineSpew", "DiscordRelayErrorMsg", function(spewType, msg, group, level)
-        if not msg or (msg:sub(1,1) ~= "[" and msg:sub(1,2) ~= "\n[") or (RealTime() - spam < 5) then return end
+        if not msg or (msg:sub(1, 1) ~= "[" and msg:sub(1, 2) ~= "\n[") or (RealTime() - spam < 5) then return end
 
-        if msg:find("] Lua Error:",1,true) then -- client error
+        if msg:find("] Lua Error:", 1, true) then -- client error
             local err = msg
             local pl, userid = false, err:match(".+|(%d*)|.-$")
 
@@ -44,15 +44,15 @@ function luaerror_to_channel.Init()
                 pl = Player(userid)
             end
 
-            err = err and err:gsub("^\n*","") -- trim newlines from beginning
-            err = err and err:gsub("[\n ]+$","") -- and end
+            err = err and err:gsub("^\n*", "") -- trim newlines from beginning
+            err = err and err:gsub("[\n ]+$", "") -- and end
 
             who = (IsValid(pl) and tostring(pl) or err)
             last = RealTime()
         end
 
-        if msg:sub(1,9)=="\n[ERROR] " then -- server error
-            local err=msg:sub(10,-1)
+        if msg:sub(1, 9) == "\n[ERROR] " then -- server error
+            local err = msg:sub(10, -1)
             if lasterr and lasterr == err then return end
             lasterr = err
             local now = RealTime()
@@ -67,10 +67,10 @@ function luaerror_to_channel.Init()
 
             post(github[laddon].important and programming or channel,
             {
-                ["content"] = github[laddon].mention and ("<@".. github[laddon].mention .. ">\n") or "" ,
+                ["content"] = github[laddon].mention and ("<@" .. github[laddon].mention .. ">\n") or "",
                 ["embed"] = {
                     ["title"] = addon .. " error" .. ((now and now < 2) and (" from: " .. who) or ""),
-                    ["description"] = "```"..err.."```" .. (github[laddon] and ( "\n" .. github[laddon].url .. path .. (line and "#L".. line or "")) or ""),
+                    ["description"] = "```" .. err .. "```" .. (github[laddon] and ( "\n(Github Link)[" .. github[laddon].url .. path .. (line and "#L".. line or "") .. "]") or ""),
                     ["type"] = "rich",
                     ["color"] = 0xb30000
                 }
