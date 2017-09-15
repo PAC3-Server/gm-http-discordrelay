@@ -1,5 +1,6 @@
 local luaerror_to_channel = {}
 local discordrelay = discordrelay
+local luaerror_to_channel.errors = luaerror_to_channel.errors or {}
 
 local function post(channel, msg)
     discordrelay.CreateMessage(channel, msg, function(h, b, c)
@@ -13,7 +14,7 @@ end
 function luaerror_to_channel.Init()
     local channel = "337186861111836684"
     local programming = "278624981192146944"
-    local who, last, lasterr
+    local who, last
     local spam = 0
 
     local github = {
@@ -53,8 +54,8 @@ function luaerror_to_channel.Init()
 
         if msg:sub(1, 9) == "\n[ERROR] " then -- server error
             local err = msg:sub(10, -1)
-            if lasterr and (lasterr == err) then return end
-            lasterr = err
+            local id = util.CRC(err)
+            if luaerror_to_channel.errors[id] then return end
             local now = RealTime()
 
             if last then
@@ -75,6 +76,7 @@ function luaerror_to_channel.Init()
                     ["color"] = 0xb30000
                 }
             })
+            luaerror_to_channel.errors[id] = {laddon,err}
             spam = RealTime()
         end
     end)
