@@ -53,7 +53,7 @@ function luaerror_to_channel.Init()
 
         if msg:sub(1, 9) == "\n[ERROR] " then -- server error
             local err = msg:sub(10, -1)
-            if lasterr and lasterr == err then return end
+            if lasterr and (lasterr == err) then return end
             lasterr = err
             local now = RealTime()
 
@@ -70,7 +70,7 @@ function luaerror_to_channel.Init()
                 ["content"] = github[laddon] and (github[laddon].mention and ("<@" .. github[laddon].mention .. ">\n")) or "",
                 ["embed"] = {
                     ["title"] = addon .. " error" .. ((now and now < 2) and (" from: " .. who) or ""),
-                    ["description"] = "```" .. err .. "```" .. (github[laddon] and ( "\n(Github Link)[" .. github[laddon].url .. path .. (line and "#L".. line or "") .. "]") or ""),
+                    ["description"] = "```" .. err .. "```" .. (github[laddon] and ( "\n[Github Link](" .. github[laddon].url .. path .. (line and "#L".. line or "") .. ")") or ""),
                     ["type"] = "rich",
                     ["color"] = 0xb30000
                 }
