@@ -17,7 +17,6 @@
 
 --todo clientside modules????????
 
-print("hello")
 -- standard message
 net.Receive( "DiscordMessage", function()
     local nick = net.ReadString()
