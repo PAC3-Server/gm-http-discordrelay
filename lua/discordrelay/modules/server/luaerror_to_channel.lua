@@ -65,9 +65,9 @@ function luaerror_to_channel.Init()
             local laddon = string.lower(addon)
             local path, line = msg:match("%[ERROR%] addons/.-/lua/(.+):(%d+):.+")
 
-            post(github[laddon].important and programming or channel,
+            post(github[laddon] and (github[laddon].important and programming) or channel,
             {
-                ["content"] = github[laddon].mention and ("<@" .. github[laddon].mention .. ">\n") or "",
+                ["content"] = github[laddon] and (github[laddon].mention and ("<@" .. github[laddon].mention .. ">\n")) or "",
                 ["embed"] = {
                     ["title"] = addon .. " error" .. ((now and now < 2) and (" from: " .. who) or ""),
                     ["description"] = "```" .. err .. "```" .. (github[laddon] and ( "\n(Github Link)[" .. github[laddon].url .. path .. (line and "#L".. line or "") .. "]") or ""),
