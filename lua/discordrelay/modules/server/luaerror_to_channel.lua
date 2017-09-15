@@ -17,13 +17,19 @@ function luaerror_to_channel.Init()
     local spam = 0
 
     local github = {
-        ["pac3"] = "https://github.com/CapsAdmin/pac3/tree/master/lua/",
-        ["notagain"] = "https://github.com/PAC3-Server/notagain/tree/master/lua/",
-        ["easychat"] = "https://github.com/PAC3-Server/EasyChat/tree/master/lua/"
-    }
-
-    local important = { -- will be posted to #programming
-        pac3 = true
+        ["pac3"] = {
+            ["url"] = "https://github.com/CapsAdmin/pac3/tree/master/lua/",
+            ["mention"] = "208633661787078657", -- caps
+            ["important"] = true
+        },
+        ["notagain"] = {
+            ["url"] = "https://github.com/PAC3-Server/notagain/tree/master/lua/",
+            ["mention"] = "" -- notagain or server role maybe?
+        },
+        ["easychat"] = {
+            ["url"] = "https://github.com/PAC3-Server/EasyChat/tree/master/lua/",
+            ["mention"] = "205976012050268160" -- earu
+        }
     }
 
     hook.Add("EngineSpew", "DiscordRelayErrorMsg", function(spewType, msg, group, level)
@@ -59,11 +65,12 @@ function luaerror_to_channel.Init()
             local laddon = string.lower(addon)
             local path, line = msg:match("%[ERROR%] addons/.-/lua/(.+):(%d+):.+")
 
-            post(important[laddon] and programming or channel,
+            post(github[laddon].important and programming or channel,
             {
+                ["content"] = github[laddon].mention and ("<@".. github[laddon].mention .. ">\n") or "" ,
                 ["embed"] = {
                     ["title"] = addon .. " error" .. ((now and now < 2) and (" from: " .. who) or ""),
-                    ["description"] = "```"..err.."```" .. (github[laddon] and ( "\n" .. github[laddon] .. path .. (line and "#L".. line or "")) or ""),
+                    ["description"] = "```"..err.."```" .. (github[laddon] and ( "\n" .. github[laddon].url .. path .. (line and "#L".. line or "")) or ""),
                     ["type"] = "rich",
                     ["color"] = 0xb30000
                 }
