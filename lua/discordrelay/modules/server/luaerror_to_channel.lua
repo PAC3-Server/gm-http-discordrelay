@@ -1,6 +1,6 @@
 local luaerror_to_channel = {}
 local discordrelay = discordrelay
-local luaerror_to_channel.errors = luaerror_to_channel.errors or {}
+luaerror_to_channel.errors = luaerror_to_channel.errors or {}
 
 local function post(channel, msg)
     discordrelay.CreateMessage(channel, msg, function(h, b, c)
