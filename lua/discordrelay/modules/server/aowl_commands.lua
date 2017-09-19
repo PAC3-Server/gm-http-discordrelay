@@ -1,6 +1,5 @@
 local aowl_commands = {}
 local discordrelay = discordrelay
-hook.Run
 function aowl_commands.Init()
 
     hook.Add("AowlCommand", "DiscordrelayAowlMsg", function(command, alias, ply, arg_line, args)
