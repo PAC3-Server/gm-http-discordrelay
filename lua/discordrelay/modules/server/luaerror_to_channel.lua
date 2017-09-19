@@ -29,6 +29,10 @@ function luaerror_to_channel.Init()
         ["easychat"] = {
             ["url"] = "https://github.com/PAC3-Server/EasyChat/tree/master/lua/",
             ["mention"] = "205976012050268160" -- earu
+        },
+        ["gm-http-discordrelay"] = {
+            ["url"] = "https://github.com/PAC3-Server/gm-http-discordrelay/tree/master/lua",
+            ["mention"] = "94829082360942592", -- techbot
         }
     }
 
