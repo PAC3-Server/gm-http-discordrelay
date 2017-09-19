@@ -139,6 +139,7 @@ end
 function aowl_commands.Remove()
     hook.Remove("AowlTargetCommand", "DiscordrelayBanMsg")
     hook.Remove("AowlTargetCommand", "DiscordrelayUnbanMsg")
+    hook.Remove("AowlCommand", "DiscordrelayAowlMsg")
     if discordrelay.modules.aowl_commands then
         discordrelay.modules.aowl_commands = nil
     end
