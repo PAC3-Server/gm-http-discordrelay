@@ -24,7 +24,7 @@ function luaerror_to_channel.Init()
         },
         ["notagain"] = {
             ["url"] = "https://github.com/PAC3-Server/notagain/tree/master/lua/",
-            ["mention"] = "" -- notagain or server role maybe?
+            ["mention"] = nil -- notagain or server role maybe?
         },
         ["easychat"] = {
             ["url"] = "https://github.com/PAC3-Server/EasyChat/tree/master/lua/",
