@@ -377,7 +377,12 @@ function discordrelay.DiscordRelayFetchMessages()
         else
             abort = 0
         end
+
         local json = util.JSONToTable(body)
+        if not json or (type(json) ~= "table") then
+            discordrelay.log(2,"Invalid Discord response?", code, body)
+            return
+        end
 
         local previous
         local current
