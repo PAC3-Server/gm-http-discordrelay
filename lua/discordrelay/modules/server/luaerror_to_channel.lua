@@ -65,7 +65,7 @@ function luaerror_to_channel.Init()
                 now = now - last
             end
 
-            local addon = msg:match("%[ERROR%] addons/(.-)/") or "lua"
+            local addon = msg:match("%[ERROR%] addons/(.-)/lua/") or "lua"
             local laddon = string.lower(addon)
             local path, line = addon:match("(.+):(%d+):.+")
 
