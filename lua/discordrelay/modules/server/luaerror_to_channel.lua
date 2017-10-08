@@ -67,7 +67,7 @@ function luaerror_to_channel.Init()
 
             local addon = msg:match("%[ERROR%] addons/(.-)/lua/") or "lua"
             local laddon = string.lower(addon)
-            local path, line = addon:match("(.+):(%d+):.+")
+            local path, line = msg:match("/lua/(.+):(%d+):.+")
 
             post(github[laddon] and (github[laddon].important and programming) or channel,
             {
