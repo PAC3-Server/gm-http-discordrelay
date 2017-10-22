@@ -13,15 +13,17 @@ function aowl_commands.Init()
         }
         if not tracked[alias] then return end
 
+        local steamid = ply:SteamID()
+        local commid = util.SteamIDTo64(steamid)
         if IsValid(ply) then
-            discordrelay.util.GetAvatar(ply:SteamID(), function(ret)
+            discordrelay.util.GetAvatar(steamid, function(ret)
                 discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                     ["username"] = discordrelay.username,
                     ["avatar_url"] = discordrelay.avatar,
                     ["embeds"] = {
                         [1] = {
                             ["title"] = "",
-                            ["description"] = "**aowl:** ",
+                            ["description"] = "**aowl:**",
                             ["author"] = {
                                 ["name"] = (string.gsub(ply:Nick(),"<.->","")),
                                 ["icon_url"] = ret,
@@ -30,8 +32,8 @@ function aowl_commands.Init()
                             ["type"] = "rich",
                             ["fields"] = {
                                 [1] = {
-                                    ["name"] = "Command:",
-                                    ["value"] = alias .. tostring(unpack(args)),
+                                    ["name"] = alias,
+                                    ["value"] = tostring(args),
                                     ["inline"] = false
                                 }
                             },
@@ -47,15 +49,15 @@ function aowl_commands.Init()
                 ["embeds"] = {
                     [1] = {
                         ["title"] = "",
-                        ["description"] = "**aowl:** ",
+                        ["description"] = "**aowl:**",
                         ["author"] = {
                             ["name"] = "???"
                         },
                         ["type"] = "rich",
                         ["fields"] = {
                             [1] = {
-                                ["name"] = "Command:",
-                                ["value"] = alias .. tostring(unpack(args)),
+                                ["name"] = alias,
+                                ["value"] = tostring(args),
                                 ["inline"] = false
                             }
                         },
