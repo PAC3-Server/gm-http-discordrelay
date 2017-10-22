@@ -21,7 +21,7 @@ function aowl_commands.Init()
                     ["embeds"] = {
                         [1] = {
                             ["title"] = "",
-                            ["description"] = "**aowl:** " .. url,
+                            ["description"] = "**aowl:** ",
                             ["author"] = {
                                 ["name"] = (string.gsub(ply:Nick(),"<.->","")),
                                 ["icon_url"] = ret,
@@ -47,7 +47,7 @@ function aowl_commands.Init()
                 ["embeds"] = {
                     [1] = {
                         ["title"] = "",
-                        ["description"] = "**aowl:** " .. url,
+                        ["description"] = "**aowl:** ",
                         ["author"] = {
                             ["name"] = "???"
                         },
