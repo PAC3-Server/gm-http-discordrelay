@@ -64,7 +64,7 @@ function luaerror_to_channel.Init()
                     ["color"] = 0xb30000
                 }
             })
-        luaerror_to_channel.errors[id] = {addon or "generic", {info = info, locals = locals, trace = trace}}
+        luaerror_to_channel.errors[id] = {addon or "generic", {info = {infotbl[1], infotbl[2]}, locals = locals, trace = trace}}
     end)
 end
 
