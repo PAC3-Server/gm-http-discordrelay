@@ -14,73 +14,50 @@ end
 function luaerror_to_channel.Init()
     local channel = "337186861111836684"
     local programming = "278624981192146944"
-    local who, last
 
     local github = {
         ["pac3"] = {
-            ["url"] = "https://github.com/CapsAdmin/pac3/tree/master/lua/",
+            ["url"] = "https://github.com/CapsAdmin/pac3/tree/master/",
             ["mention"] = "208633661787078657", -- caps
             ["important"] = true
         },
         ["notagain"] = {
-            ["url"] = "https://github.com/PAC3-Server/notagain/tree/master/lua/",
+            ["url"] = "https://github.com/PAC3-Server/notagain/tree/master/",
             ["mention"] = nil -- notagain or server role maybe?
         },
         ["easychat"] = {
-            ["url"] = "https://github.com/PAC3-Server/EasyChat/tree/master/lua/",
+            ["url"] = "https://github.com/PAC3-Server/EasyChat/tree/master/",
             ["mention"] = "205976012050268160" -- earu
         },
         ["gm-http-discordrelay"] = {
-            ["url"] = "https://github.com/PAC3-Server/gm-http-discordrelay/tree/master/lua",
+            ["url"] = "https://github.com/PAC3-Server/gm-http-discordrelay/tree/master/",
             ["mention"] = "94829082360942592", -- techbot
         }
     }
 
-    hook.Add("EngineSpew", "DiscordRelayErrorMsg", function(spewType, msg, group, level)
-        if not msg or (msg:sub(1, 1) ~= "[" and msg:sub(1, 2) ~= "\n[") then return end
+    hook.Add("LuaError", "DiscordRelayErrorMsg", function(info, locals, trace)
+        local addon = string.lower(src:match("addons/(.-)/lua/"))
+        local path = src:match("/(lua/.+)")
+        local line = info["currentline"]
+        local start = info["linedefined"]
+        local last = info["lastlinedefined"]
 
-        if msg:find("] Lua Error:", 1, true) then -- client error
-            local err = msg
-            local pl, userid = false, err:match(".+|(%d*)|.-$")
+        local id = util.CRC(trace)
+        if luaerror_to_channel.errors[id] then return end
 
-            if userid then
-                userid = tonumber(userid)
-                pl = Player(userid)
-            end
-
-            err = err and err:gsub("^\n*", "") -- trim newlines from beginning
-            err = err and err:gsub("[\n ]+$", "") -- and end
-
-            who = (IsValid(pl) and tostring(pl) or err)
-            last = RealTime()
-        end
-
-        if msg:sub(1, 9) == "\n[ERROR] " then -- server error
-            local err = msg:sub(10, -1)
-            local id = util.CRC(err)
-            if luaerror_to_channel.errors[id] then return end
-            local now = RealTime()
-
-            if last then
-                now = now - last
-            end
-
-            local addon = msg:match("%[ERROR%] addons/(.-)/lua/") or "lua"
-            local laddon = string.lower(addon)
-            local path, line = msg:match("/lua/(.+):(%d+):.+")
-
-            post(github[laddon] and (github[laddon].important and programming) or channel,
+        post(github[addon] and (github[addon].important and programming) or channel,
             {
-                ["content"] = github[laddon] and (github[laddon].mention and ("<@" .. github[laddon].mention .. ">\n")) or "",
+                ["content"] = github[addon] and (github[addon].mention and ("<@" .. github[addon].mention .. ">\n")) or "",
                 ["embed"] = {
-                    ["title"] = addon .. " error" .. ((now and now < 2) and (" from: " .. who) or ""),
-                    ["description"] = "```" .. err .. "```" .. (github[laddon] and ( "\n[Github Link](" .. github[laddon].url .. path .. (line and "#L".. line or "") .. ")") or ""),
+                    ["title"] = (addon or "Lua") .. " error",
+                    ["description"] = "```" .. trace .. "```" .. (github[addon] and
+                        ("\n[Function](" .. github[addon].url .. path .. "#L".. line .. ")\n[At](" .. github[addon].url .. path .. "#L".. start .. "-L" .. last .. ")")
+                        or ""),
                     ["type"] = "rich",
                     ["color"] = 0xb30000
                 }
             })
-            luaerror_to_channel.errors[id] = {laddon,err}
-        end
+        luaerror_to_channel.errors[id] = {addon or "generic", {info = info, locals = locals, trace = trace}}
     end)
 end
 
