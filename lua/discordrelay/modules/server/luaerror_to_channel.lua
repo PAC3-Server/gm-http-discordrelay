@@ -58,7 +58,7 @@ function luaerror_to_channel.Init()
                 ["embed"] = {
                     ["title"] = (addon or "lua") .. " error",
                     ["description"] = "```" .. trace .. "```" .. (github[addon] and
-                        ("\n[Error at Function](" .. github[addon].url .. path .. "#L".. line .. ")\n[Error at line](" .. github[addon].url .. path .. "#L".. start .. "-L" .. last .. ")")
+                        ("\n[Error at Function](" .. github[addon].url .. path .. "#L".. start .. "-L" .. last .. ")\n[Error at line](" .. github[addon].url .. path .. "#L".. line .. ")")
                         or ""),
                     ["type"] = "rich",
                     ["color"] = 0xb30000
