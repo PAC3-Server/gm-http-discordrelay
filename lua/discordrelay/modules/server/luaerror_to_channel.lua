@@ -43,7 +43,7 @@ function luaerror_to_channel.Init()
             local prev_src = prev["short_src"]:match("addons/(.-)/lua/")
             addon = prev_src and string.lower(prev_src)
         end
-        local path = src:match("/(lua/.+)")
+        local path = src:match("/(lua/.+)") or info["short_src"]
         local line = info["currentline"]
         local start = info["linedefined"]
         local last = info["lastlinedefined"]
