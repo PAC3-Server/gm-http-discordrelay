@@ -34,8 +34,7 @@ function luaerror_to_channel.Init()
             ["mention"] = "94829082360942592", -- techbot
         }
     }
-
-    hook.Add("LuaError", "DiscordRelayErrorMsg", function(infotbl, locals, trace)
+    local function DoError(infotbl, locals, trace, client)
         local info = infotbl[1]
         local src = info["short_src"]
         local addon = src:match("addons/(.-)/lua/")
@@ -56,7 +55,7 @@ function luaerror_to_channel.Init()
             {
                 ["content"] = github[addon] and (github[addon].mention and ("<@" .. github[addon].mention .. ">\n")) or "",
                 ["embed"] = {
-                    ["title"] = (addon or "lua") .. " error",
+                    ["title"] = (addon or "lua") .. " error" .. (client and (" from: " .. client.Nick()) or (" from: ???") or ""),
                     ["description"] = "```" .. trace .. "```" .. (github[addon] and
                         ("\n[Error at Function](" .. github[addon].url .. path .. "#L".. start .. "-L" .. last .. ")\n[Error at line](" .. github[addon].url .. path .. "#L".. line .. ")")
                         or ""),
@@ -65,11 +64,19 @@ function luaerror_to_channel.Init()
                 }
             })
         luaerror_to_channel.errors[id] = {addon or "generic", {info = {infotbl[1], infotbl[2]}, locals = locals, trace = trace}}
+    end
+
+    hook.Add("LuaError", "DiscordRelayErrorMsg", function(infotbl, locals, trace)
+        DoError(infotbl, locals, trace, false)
+    end)
+    hook.Add("ClientLuaError", "DiscordRelayClientErrorMsg", function(client, infotbl, locals, trace)
+        DoError(infotbl, locals, trace, client)
     end)
 end
 
 function luaerror_to_channel.Remove()
     hook.Remove("LuaError", "DiscordRelayErrorMsg")
+    hook.Remove("ClientLuaError", "DiscordRelayClientErrorMsg")
 
     if discordrelay.modules.luaerror_to_channel then
         discordrelay.modules.luaerror_to_channel = nil
