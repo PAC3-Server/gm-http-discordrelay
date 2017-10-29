@@ -50,7 +50,7 @@ function luaerror_to_channel.Init()
             {
                 ["content"] = github[addon] and (github[addon].mention and ("<@" .. github[addon].mention .. ">\n")) or "",
                 ["embed"] = {
-                    ["title"] = (addon or "Lua") .. " error",
+                    ["title"] = (addon or "lua") .. " error",
                     ["description"] = "```" .. trace .. "```" .. (github[addon] and
                         ("\n[Function](" .. github[addon].url .. path .. "#L".. line .. ")\n[At](" .. github[addon].url .. path .. "#L".. start .. "-L" .. last .. ")")
                         or ""),
