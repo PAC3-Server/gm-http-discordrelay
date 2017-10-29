@@ -36,17 +36,22 @@ function luaerror_to_channel.Init()
     }
     local function DoError(infotbl, locals, trace, client)
         local info = infotbl[1]
+        local info2 = infotbl[2]
         local src = info["short_src"]
         local addon = src:match("addons/(.-)/lua/")
-        if not addon then
-            local prev = infotbl[2]
-            local prev_src = prev["short_src"]:match("addons/(.-)/lua/")
-            addon = prev_src and string.lower(prev_src)
-        end
-        local path = src:match("/(lua/.+)") or info["short_src"]
+        local path = src:match("/(lua/.+)")
         local line = info["currentline"]
         local start = info["linedefined"]
         local last = info["lastlinedefined"]
+        if not addon then
+            local prev_src = info2["short_src"]:match("addons/(.-)/lua/")
+            local prev_path = info2["short_src"]:match("/(lua/.+)")
+            line = info2["currentline"]
+            start = info2["linedefined"]
+            last = info2["lastlinedefined"]
+            addon = prev_src and string.lower(prev_src)
+            path = prev_path
+        end
 
         local id = util.CRC(trace)
         if luaerror_to_channel.errors[id] then return end
