@@ -63,7 +63,7 @@ function luaerror_to_channel.Init()
 end
 
 function luaerror_to_channel.Remove()
-    hook.Remove("EngineSpew", "DiscordRelayErrorMsg")
+    hook.Remove("LuaError", "DiscordRelayErrorMsg")
 
     if discordrelay.modules.luaerror_to_channel then
         discordrelay.modules.luaerror_to_channel = nil
