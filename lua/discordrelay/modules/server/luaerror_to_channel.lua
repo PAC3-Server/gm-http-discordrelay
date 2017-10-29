@@ -37,7 +37,7 @@ function luaerror_to_channel.Init()
 
     hook.Add("LuaError", "DiscordRelayErrorMsg", function(info, locals, trace)
         local src = info["short_src"]
-        local addon = string.lower(src:match("addons/(.-)/lua/"))
+        local addon = src:match("addons/(.-)/lua/") and string.lower(src:match("addons/(.-)/lua/"))
         local path = src:match("/(lua/.+)")
         local line = info["currentline"]
         local start = info["linedefined"]
