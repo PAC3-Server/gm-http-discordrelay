@@ -39,9 +39,9 @@ function luaerror_to_channel.Init()
         local src = info["short_src"]
         local addon = src:match("addons/(.-)/lua/")
         if not addon then
-            local prev = infotbl[2]
-            local prev_src = prev["short_src"]:match("addons/(.-)/lua/")
-            addon = prev_src and string.lower(prev_src)
+            info = infotbl[2]
+            src = info["short_src"]:match("addons/(.-)/lua/")
+            addon = src and string.lower(prev_src)
         end
         local path = src:match("/(lua/.+)")
         local line = info["currentline"]
