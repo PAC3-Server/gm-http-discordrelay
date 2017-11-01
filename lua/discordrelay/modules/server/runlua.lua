@@ -10,7 +10,11 @@ local function getType(msg, cmds)
     if not cmds or not msg or type(cmds) ~= "table" then return end
     local found
     for i=1, #cmds do
-        found = string.match(msg, "[".. table.concat(prefixes, "|") .."](" .. cmds[i] .. ")")
+        found = string.match(msg, "[".. table.concat(discordrelay.prefixes, "|") .."](" .. cmds[i] .. ")")
+        if found then
+            found = found
+            break
+        end
     end
     return found
 end
