@@ -215,8 +215,17 @@ end
 function discordrelay.util.startsWith(str, name)
     if not str or not name then return false end
     local prefixes = discordrelay.prefixes
-    local str = string.Trim(str)
-    return string.match(str, "[".. table.concat(discordrelay.prefixes, "|") .."]" .. name) ~= nil
+    if type(name) == "table" then
+        local ret = false
+        for i=1,#name do
+            ret = string.match(str, "[".. table.concat(prefixes, "|") .."]" .. name[i]) ~= nil
+            if ret then break end
+        end
+        return ret
+    else
+        local str = string.Trim(str)
+        return string.match(str, "[".. table.concat(prefixes, "|") .."]" .. name) ~= nil
+    end
 end
 
 function discordrelay.CreateMessage(channelid, msg, cb)
