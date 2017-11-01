@@ -107,4 +107,4 @@ function info.Remove()
 end
 
 --return info
-discordrelay.modules.info = info
+return info
