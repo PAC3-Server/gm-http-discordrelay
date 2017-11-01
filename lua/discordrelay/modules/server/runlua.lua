@@ -6,16 +6,13 @@ local luadev = requirex('luadev')
 
 if not easylua or not luadev then discordrelay.log(2,"easylua or luadev not found, runlua disabled.") return false end
 
-local function getType(cmds, msg)
-    if not cmds or not msg then return end
-    for k,v in pairs(prefixes) do
-        for k,cmd in pairs(cmds) do
-            if string.StartWith(msg, v..cmd.." ") then
-                return cmd
-            end
-        end
+local function getType(msg, cmds)
+    if not cmds or not msg or type(cmds) ~= "table" then return end
+    local found
+    for i=1, #cmds do
+        found = string.match(msg, "[".. table.concat(prefixes, "|") .."]" .. cmds[i])
     end
-    return false
+    return found
 end
 
 function runlua.Init()
@@ -66,10 +63,10 @@ function runlua.Init()
 end
 
 function runlua.Handle(input)
-    if input.author.bot ~= true and discordrelay.util.startsWith("l", input.content) or discordrelay.util.startsWith("print", input.content) or discordrelay.util.startsWith("table", input.content) then
+    if input.author.bot ~= true and discordrelay.util.startsWith(input.content, {"l", "print", "table"}) then
         discordrelay.util.IsAdmin(input.author.id, function(access)
             if access then
-                local cmd = getType({"l", "lc", "ls", "lsc", "print", "table"}, input.content)
+                local cmd = getType(input.content, {"l", "lc", "ls", "lsc", "print", "table"})
                 local code = string.sub(input.content, #cmd + 2, #input.content)
                 if code and code ~= "" then
                     local data
