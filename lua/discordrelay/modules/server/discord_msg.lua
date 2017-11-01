@@ -2,7 +2,8 @@ local discord_msg = {}
 local discordrelay = discordrelay
 
 function discord_msg.Handle(input,previous,future)
-    if input.author.id ~= discordrelay.user.id or input.author.descriminator ~= 0000 then
+    if input.author.discriminator ~= "0000" then
+        discordrelay.log(1,input,input.author)
         local ret = input.content
         if input.mentions then
             for k,mention in pairs(input.mentions) do
@@ -16,7 +17,7 @@ function discord_msg.Handle(input,previous,future)
         end
         if input.embeds then
             for i=1,#input.embeds do
-                ret = ret .. "\n" .. input.embeds[i].title .. input.embeds[i].description
+                ret = ret .. "\n" .. input.embeds[i].title .. "\n" .. input.embeds[i].description
             end
         end
         local send = hook.Run("DiscordRelayMessage", input)
@@ -51,4 +52,4 @@ function discord_msg.Remove()
     end
 end
 
-return discord_msg
+discordrelay.modules.discord_msg = discord_msg
