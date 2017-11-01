@@ -52,4 +52,4 @@ function discord_msg.Remove()
     end
 end
 
-discordrelay.modules.discord_msg = discord_msg
+return discord_msg
