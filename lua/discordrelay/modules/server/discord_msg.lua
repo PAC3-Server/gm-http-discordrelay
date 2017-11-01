@@ -3,7 +3,6 @@ local discordrelay = discordrelay
 
 function discord_msg.Handle(input,previous,future)
     if input.author.discriminator ~= "0000" then
-        discordrelay.log(1,input,input.author)
         local ret = input.content
         if input.mentions then
             for k,mention in pairs(input.mentions) do
