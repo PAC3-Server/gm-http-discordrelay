@@ -1,7 +1,7 @@
 local status = {}
 local discordrelay = discordrelay
 
-function status.Handle(input,previous,future)
+function status.Handle(input, previous, future)
     if input.author.bot ~= true and discordrelay.util.startsWith(input.content, "status") then
         local embeds = {}
         local amount = player.GetCount()
