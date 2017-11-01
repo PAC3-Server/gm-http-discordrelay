@@ -2,7 +2,7 @@ local discord_msg = {}
 local discordrelay = discordrelay
 
 function discord_msg.Handle(input,previous,future)
-    if input.author.bot ~= true then
+    if input.author.id ~= discordrelay.user.id then
         local ret = input.content
         if input.mentions then
             for k,mention in pairs(input.mentions) do
