@@ -32,7 +32,8 @@ function info.Handle(input, previous, future)
                     ["⛩"] = ply:HasGodMode(),
                     ["💡"] = ply:FlashlightIsOn(),
                     ["💀"] = not ply:Alive(),
-                    ["🕴"] = ply:GetMoveType() == MOVETYPE_NOCLIP
+                    ["🕴"] = ply:GetMoveType() == MOVETYPE_NOCLIP,
+                    ["💤"] = ply:IsAFK(),
                     --[""] = ply:IsMuted(),
                     --[""] = ply:IsSpeaking(),
                 }
