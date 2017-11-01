@@ -91,7 +91,7 @@ discordrelay.user.id = "276379732726251521"
 
 discordrelay.members = discordrelay.members or {}
 
-discordrelay.prefixes = {".", "!"}
+discordrelay.prefixes = {"%.", "!"}
 
 discordrelay.AvatarCache = discordrelay.AvatarCache or {}
 
@@ -212,14 +212,11 @@ function discordrelay.util.IsAdmin(userid, cb)
     end)
 end
 
-function discordrelay.util.startsWith(name, msg, param)
-    if not name or not msg then return end
-    for k,v in pairs(discordrelay.prefixes) do
-        if string.StartWith(msg, v..name) then
-            return true
-        end
-    end
-    return false
+function discordrelay.util.startsWith(str, name)
+    if not str or not name then return false end
+    local prefixes = discordrelay.prefixes
+    local str = string.Trim(str)
+    return string.match(str, "[".. table.concat(discordrelay.prefixes, "|") .."]" .. name) ~= nil
 end
 
 function discordrelay.CreateMessage(channelid, msg, cb)
