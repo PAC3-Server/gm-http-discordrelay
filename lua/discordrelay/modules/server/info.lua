@@ -8,7 +8,7 @@ function info.Handle(input, previous, future)
             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                 ["username"] = discordrelay.username,
                 ["avatar_url"] = discordrelay.avatar,
-                ["content"] = "```Shows info about a user.```\n<:poseparameter:289507359699632129> = ping\n:heartpulse: = health\n:clock: = time on server\n :first_place: = JRPG level\nhttps://cdn.discordapp.com/attachments/273575417401573377/375370730780622850/unknown.png",
+                ["content"] = "<:poseparameter:289507359699632129> = ping\n:heartpulse: = health\n:clock: = time on server\n :first_place: = JRPG level\nhttps://cdn.discordapp.com/attachments/273575417401573377/375679561687498753/unknown.png",
             })
         else
             local ply
