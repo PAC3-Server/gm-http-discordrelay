@@ -1,5 +1,5 @@
 discordrelay = discordrelay or {}
-CreateConVar("sv_testing","0",{FCVAR_NOTIFY,FCVAR_ARCHIVE,FCVAR_REPLICATED},"testing mode") -- hack hack
+
 function discordrelay.log(level,...)  -- most expensive print ever
     local arg = {...}
     local color = {
@@ -62,11 +62,9 @@ if not webhooktoken then
 end
 
 util.AddNetworkString("DiscordMessage")
-util.AddNetworkString("DiscordXMessage")
 
 -- main config
-discordrelay.test = GetConVar("sv_testing") and GetConVar("sv_testing"):GetBool()
-discordrelay.username = discordrelay.test and "Test Server" or "Main Server"
+discordrelay.username = "Server"
 discordrelay.avatar = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png"
 discordrelay.token = token
 discordrelay.guild = "260866188962168832"
@@ -471,16 +469,31 @@ timer.Create("DiscordRelayFetchMessages", 1.5, 0, discordrelay.DiscordRelayFetch
 
 hook.Add("ShutDown", "DiscordRelayShutDown", function()
     if discordrelay and discordrelay.enabled then
-
         discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
             ["username"] = discordrelay.username,
             ["avatar_url"] = discordrelay.avatar,
             ["embeds"] = {
                 [1] = {
                     ["title"] = "",
-                    ["description"] = "**".. (discordrelay.test and " Test" or " Main") .." Server has shutdown.**",
+                    ["description"] = "**Server has shutdown.**",
                     ["type"] = "rich",
                     ["color"] = 0xb30000
+                }
+            }
+        })
+    end
+end)
+hook.Add("Initialize", "DiscordRelayStartup", function()
+    if discordrelay and discordrelay.enabled then
+        discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
+            ["username"] = discordrelay.username,
+            ["avatar_url"] = discordrelay.avatar,
+            ["embeds"] = {
+                [1] = {
+                    ["title"] = "",
+                    ["description"] = "**Server has started.**",
+                    ["type"] = "rich",
+                    ["color"] = 0x182687
                 }
             }
         })

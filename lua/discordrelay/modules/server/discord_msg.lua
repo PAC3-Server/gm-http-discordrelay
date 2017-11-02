@@ -2,7 +2,7 @@ local discord_msg = {}
 local discordrelay = discordrelay
 
 function discord_msg.Handle(input,previous,future)
-    if input.author.discriminator ~= "0000" then
+    if input.author.discriminator ~= "0000" then -- ignore webhooks but allow other bots
         local ret = input.content
         if input.mentions then
             for k,mention in pairs(input.mentions) do
@@ -26,22 +26,8 @@ function discord_msg.Handle(input,previous,future)
                 net.WriteString(string.sub(ret,1,600))
             net.Broadcast()
         end
-    elseif input.webhook_id then
-        local name = input.author.username
-        local test = discordrelay.test
-        local istest = string.match(name,"Test ⮞ ") and true or false -- well it works
-        local isnormal = string.match(name,"Main ⮞ ") and true or false
-        name = string.gsub(name,"([A-Za-z]+%s⮞%s","")
-        if (test and isnormal and not istest) or (not test and not isnormal and istest) then -- kill me
-            local send = hook.Run("DiscordRelayXMessage", input)
-            if send ~= false then
-                net.Start( "DiscordXMessage" )
-                    net.WriteString(string.sub(name,1,25))
-                    net.WriteString(string.sub(input.content,1,600))
-                    net.WriteBool(test)
-                net.Broadcast()
-            end
-        end
+    elseif input.webhook_id then -- handle webhook
+        return
     end
 end
 
