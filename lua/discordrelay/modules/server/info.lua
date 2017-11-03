@@ -21,7 +21,7 @@ function info.Handle(input, previous, future)
             if ply and IsValid(ply) then
                 local cache = discordrelay.AvatarCache
                 local commid = util.SteamIDTo64(ply:SteamID())
-                local godmode = ply:GetInfo("cl_godmode")
+                local godmode = ply:GetInfo("cl_godmode") or 1
                 local emojis = {
                     ["🚗"] = ply:InVehicle(),
                     ["⌨"] = ply:IsTyping(),
@@ -30,7 +30,7 @@ function info.Handle(input, previous, future)
                     ["🤖"] = ply:IsBot(),
                     ["🛡"] = ply:IsAdmin(),
                     ["👍"] = ply:IsPlayingTaunt(),
-                    ["⛩"] = ply:HasGodMode() or ((tonumber(godmode) and tonumber(godmode) > 0)) or godmode ~= "0",
+                    ["⛩"] = ply:HasGodMode() or ((tonumber(godmode) and tonumber(godmode) > 0)) or godmode ~= 0,
                     ["💡"] = ply:FlashlightIsOn(),
                     ["💀"] = not ply:Alive(),
                     ["🕴"] = ply:GetMoveType() == MOVETYPE_NOCLIP,
