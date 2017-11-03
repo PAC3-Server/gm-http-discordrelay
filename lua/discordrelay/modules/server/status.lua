@@ -9,7 +9,6 @@ function status.Handle(input, previous, future)
         for i,ply in pairs(player.GetAll()) do
             local commid = util.SteamIDTo64(ply:SteamID()) -- move to player meta?
             local cache = discordrelay.AvatarCache
-            local commid = util.SteamIDTo64(ply:SteamID())
             local emojis = {
                 ["🚗"] = ply:InVehicle(),
                 ["⌨"] = ply:IsTyping(),
@@ -18,7 +17,7 @@ function status.Handle(input, previous, future)
                 ["🤖"] = ply:IsBot(),
                 ["🛡"] = ply:IsAdmin(),
                 ["👍"] = ply:IsPlayingTaunt(),
-                ["⛩"] = ply:HasGodMode(),
+                ["⛩"] = (ply:HasGodMode() or (tonumber(ply:GetInfo("cl_godmode")) and tonumber(ply:GetInfo("cl_godmode")) > 0)),
                 ["💡"] = ply:FlashlightIsOn(),
                 ["💀"] = not ply:Alive(),
                 ["🕴"] = ply:GetMoveType() == MOVETYPE_NOCLIP,
@@ -27,7 +26,7 @@ function status.Handle(input, previous, future)
                 --[""] = ply:IsSpeaking(),
             }
             local emojistr = ""
-            for emoji,yes in pairs(emojis) do
+            for emoji, yes in pairs(emojis) do
                 if yes then
                     emojistr = " " .. emojistr .. emoji
                 end

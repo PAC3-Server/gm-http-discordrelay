@@ -29,7 +29,7 @@ function info.Handle(input, previous, future)
                     ["🤖"] = ply:IsBot(),
                     ["🛡"] = ply:IsAdmin(),
                     ["👍"] = ply:IsPlayingTaunt(),
-                    ["⛩"] = ply:HasGodMode(),
+                    ["⛩"] = (ply:HasGodMode() or (tonumber(ply:GetInfo("cl_godmode")) and tonumber(ply:GetInfo("cl_godmode")) > 0)),
                     ["💡"] = ply:FlashlightIsOn(),
                     ["💀"] = not ply:Alive(),
                     ["🕴"] = ply:GetMoveType() == MOVETYPE_NOCLIP,
@@ -108,4 +108,4 @@ function info.Remove()
 end
 
 --return info
-return info
+discordrelay.modules.info = info
