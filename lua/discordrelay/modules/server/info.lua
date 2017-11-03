@@ -38,7 +38,7 @@ function info.Handle(input, previous, future)
                     --[""] = ply:IsSpeaking(),
                 }
                 local emojistr = ""
-                for emoji,yes in pairs(emojis) do
+                for emoji, yes in pairs(emojis) do
                     if yes then
                         emojistr = " " .. emojistr .. emoji
                     end
@@ -107,5 +107,4 @@ function info.Remove()
     end
 end
 
---return info
-discordrelay.modules.info = info
+return info
