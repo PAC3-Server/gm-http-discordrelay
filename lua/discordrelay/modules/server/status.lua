@@ -17,7 +17,7 @@ function status.Handle(input, previous, future)
                 ["🤖"] = ply:IsBot(),
                 ["🛡"] = ply:IsAdmin(),
                 ["👍"] = ply:IsPlayingTaunt(),
-                ["⛩"] = ply:HasGodMode() or ((tonumber(godmode) and tonumber(godmode) > 0)) or godmode ~= 0,
+                ["⛩"] = ply:HasGodMode() or ((tonumber(godmode) and tonumber(godmode) > 0)) or godmode ~= "0",
                 ["💡"] = ply:FlashlightIsOn(),
                 ["💀"] = not ply:Alive(),
                 ["🕴"] = ply:GetMoveType() == MOVETYPE_NOCLIP,
