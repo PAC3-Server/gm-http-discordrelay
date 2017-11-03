@@ -216,13 +216,13 @@ function discordrelay.util.startsWith(str, name)
     if type(name) == "table" then
         local ret = false
         for i=1,#name do
-            ret = string.match(str, "[".. table.concat(prefixes, "|") .."]" .. name[i]) ~= nil
+            ret = string.match(string.sub(str, 1, #name[i] + 1), "[".. table.concat(prefixes, "|") .."]" .. name[i]) ~= nil
             if ret then break end
         end
         return ret
     else
         local str = string.Trim(str)
-        return string.match(str, "[".. table.concat(prefixes, "|") .."]" .. name) ~= nil
+        return string.match(string.sub(str, 1, #name + 1), "[".. table.concat(prefixes, "|") .."]" .. name) ~= nil
     end
 end
 
