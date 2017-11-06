@@ -13,7 +13,7 @@ end
 
 function luaerror_to_channel.Init()
     local channel = "337186861111836684"
-    local programming = "278624981192146944"
+    local development = "374455098614743041"
 
     local github = {
         ["pac3"] = {
@@ -56,7 +56,7 @@ function luaerror_to_channel.Init()
         local id = util.CRC(trace)
         if luaerror_to_channel.errors[id] then return end
 
-        post(github[addon] and (github[addon].important and programming) or channel,
+        post(github[addon] and (github[addon].important and development) or channel,
             {
                 ["content"] = github[addon] and (github[addon].mention and ("<@" .. github[addon].mention .. ">\n")) or "",
                 ["embed"] = {
