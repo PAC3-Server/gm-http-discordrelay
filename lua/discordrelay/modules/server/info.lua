@@ -30,7 +30,7 @@ function info.Handle(input, previous, future)
                     ["🤖"] = ply:IsBot(),
                     ["🛡"] = ply:IsAdmin(),
                     ["👍"] = ply:IsPlayingTaunt(),
-                    ["⛩"] = ply:HasGodMode() or ((tonumber(godmode) and tonumber(godmode) > 0)) or godmode ~= "0",
+                    ["⛩"] = ply:HasGodMode() or (tonumber(godmode) and tonumber(godmode) > 0) or godmode ~= "0",
                     ["💡"] = ply:FlashlightIsOn(),
                     ["💀"] = not ply:Alive(),
                     ["🕴"] = ply:GetMoveType() == MOVETYPE_NOCLIP,
@@ -75,13 +75,13 @@ function info.Handle(input, previous, future)
                             },
                             [4] = {
                                 ["name"] = ":first_place:",
-                                ["value"] = (ply.GetLevel and ply:GetLevel() or 0),
+                                ["value"] = ply.GetLevel and ply:GetLevel() or 0,
                                 ["inline"] = true
 
                             },
                         },
                             ["type"] = "rich",
-                            ["color"] = (ply:IsAFK() and 0xffff00 or (ply:Alive() and 0x00b300 or 0xb30000))
+                            ["color"] = ply:IsAFK() and 0xffff00 or (ply:Alive() and 0x00b300 or 0xb30000)
                         }
                     }
                 })
