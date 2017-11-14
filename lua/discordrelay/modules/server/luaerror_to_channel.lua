@@ -18,23 +18,28 @@ function luaerror_to_channel.Init()
     local github = {
         ["pac3"] = {
             ["url"] = "https://github.com/CapsAdmin/pac3/tree/master/",
+            ["icon"] = "https://avatars3.githubusercontent.com/u/204157?v=4",
             ["mention"] = "208633661787078657", -- caps
             ["important"] = true
         },
         ["notagain"] = {
             ["url"] = "https://github.com/PAC3-Server/notagain/tree/master/",
+            ["icon"] = "https://avatars1.githubusercontent.com/u/25587531?v=4",
             ["mention"] = nil -- notagain or server role maybe?
         },
         ["easychat"] = {
             ["url"] = "https://github.com/PAC3-Server/EasyChat/tree/master/",
+            ["icon"] = "https://avatars2.githubusercontent.com/u/20880060?v=4",
             ["mention"] = "205976012050268160" -- earu
         },
         ["gm-http-discordrelay"] = {
             ["url"] = "https://github.com/PAC3-Server/gm-http-discordrelay/tree/master/",
+            ["icon"] = "https://avatars0.githubusercontent.com/u/3000604?v=4",
             ["mention"] = "94829082360942592", -- techbot
         },
         ["includes"] = { -- garry stuff
             ["url"] = "https://github.com/Facepunch/garrysmod/tree/master/garrysmod/",
+            ["icon"] = "https://avatars0.githubusercontent.com/u/3371040?v=4",
             ["mention"] = nil
         }
     }
@@ -77,7 +82,11 @@ function luaerror_to_channel.Init()
                     ["title"] = (addon or "lua") .. " error" .. (client and (" from: " .. client:Nick()) or "" ),
                     ["description"] = "```lua\n" .. locals .. "```\n" .. markup,
                     ["type"] = "rich",
-                    ["color"] = 0xb30000
+                    ["color"] = 0xb30000,
+                    ["footer"] = {
+                        ["text"] = tostring(os.date()),
+                        ["icon_url"] = github[addon] and github[addon].icon or "",
+                    }
                 }
             })
 
