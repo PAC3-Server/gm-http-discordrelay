@@ -1,16 +1,16 @@
 local runlua = {}
 local discordrelay = discordrelay
 local prefixes = discordrelay.prefixes
-local easylua = requirex('easylua')
-local luadev = requirex('luadev')
+local easylua = requirex("easylua")
+local luadev = requirex("luadev")
 
-if not easylua or not luadev then discordrelay.log(2,"easylua or luadev not found, runlua disabled.") return false end
+if not easylua or not luadev then discordrelay.log(2, "easylua or luadev not found, runlua disabled.") return false end
 
 local function getType(msg, cmds)
     if not cmds or not msg or type(cmds) ~= "table" then return end
     local found
-    for i=1, #cmds do
-        found = string.match(msg, "[".. table.concat(discordrelay.prefixes, "|") .."](" .. cmds[i] .. ")")
+    for i = 1, #cmds do
+        found = string.match(msg, "[" .. table.concat(prefixes, "|") .. "](" .. cmds[i] .. ")")
         if found then
             found = found
             break
@@ -25,7 +25,7 @@ function runlua.Init()
     local webhooktoken_scriptlog = file.Read( "webhook_token_scriptlog.txt", "DATA" )
 
     if not webhooktoken_scriptlog then
-        discordrelay.log(2,"scriptlog.lua","webhooktoken_scriptlog.txt", " not found. Script logging will be disabled.")
+        discordrelay.log(2, "scriptlog.lua", "webhooktoken_scriptlog.txt", " not found. Script logging will be disabled.")
         return false
     end
 
@@ -37,7 +37,7 @@ function runlua.Init()
 
         if targets then
             local str = {}
-            for k,v in pairs(targets) do
+            for k, v in pairs(targets) do
                 table.insert(str, tostring(v))
             end
             where = table.concat(str, ", ")
@@ -47,13 +47,13 @@ function runlua.Init()
             discordrelay.ExecuteWebhook(webhookid_scriptlog, webhooktoken_scriptlog, {
                 ["username"] = discordrelay.username,
                 ["avatar_url"] = discordrelay.avatar,
-                ["content"] = "```lua\n"..string.sub(script, 0, 1990).."\n```",
+                ["content"] = "```lua\n" .. string.sub(script, 0, 1990) .. "\n```",
                 ["embeds"] = {
                     [1] = {
                         ["title"] = "",
                         ["description"] = "ran " .. identifier .. " " .. where,
                         ["author"] = {
-                            ["name"] = string.gsub(ply:Nick(),"<.->",""),
+                            ["name"] = string.gsub(ply:Nick(), "<.->", ""),
                             ["icon_url"] = ret,
                             ["url"] = "http://steamcommunity.com/profiles/" .. ply:SteamID64()
                         },
@@ -79,11 +79,11 @@ function runlua.Handle(input)
                     elseif cmd == "lc" then
                         data = luadev.RunOnClients(code, "discord:lc")
                     elseif cmd == "lsc" then
-                        local args = string.Split(code, ",")
+                        local args = string.Split(code, ", ")
                         if not args[1] or not args[2] then
                             data = {error = "you need to supply both a player and code!"}
                         else
-                            args[2] = table.concat(args, ",", 2)
+                            args[2] = table.concat(args, ", ", 2)
                             local ent = easylua.FindEntity(string.Replace(args[1], " ", ""))
                             if IsValid(ent) and ent:IsPlayer() then
                                 data = luadev.RunOnClient(args[2], ent, "discord:lsc")
@@ -94,9 +94,9 @@ function runlua.Handle(input)
                     elseif cmd == "ls" then
                         data = luadev.RunOnShared(code, "discord:ls")
                     elseif cmd == "print" then
-                        data = easylua.RunLua(nil, "return "..code)
+                        data = easylua.RunLua(nil, "return " .. code)
                     elseif cmd == "table" then
-                        data = easylua.RunLua(nil, "return table.ToString("..code..")")
+                        data = easylua.RunLua(nil, "return table.ToString(" .. code .. ")")
                     else
                         return
                     end
@@ -105,6 +105,8 @@ function runlua.Handle(input)
                         local ok, returnvals = data
                         if returnvals then
                             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
+                                ["username"] = discordrelay.username,
+                                ["avatar_url"] = discordrelay.avatar,
                                 ["embeds"] = {
                                     [1] = {
                                     ["description"] = returnvals,
@@ -115,6 +117,8 @@ function runlua.Handle(input)
                             })
                         else
                             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
+                                ["username"] = discordrelay.username,
+                                ["avatar_url"] = discordrelay.avatar,
                                 ["embeds"] = {
                                     [1] = {
                                     ["description"] = ":ok_hand:",
@@ -135,6 +139,8 @@ function runlua.Handle(input)
                             res = ":ok_hand:"
                         end
                         discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
+                            ["username"] = discordrelay.username,
+                            ["avatar_url"] = discordrelay.avatar,
                             ["embeds"] = {
                                 [1] = {
                                 ["description"] = res,
@@ -145,9 +151,11 @@ function runlua.Handle(input)
                         })
                     else
                         discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
+                            ["username"] = discordrelay.username,
+                            ["avatar_url"] = discordrelay.avatar,
                             ["embeds"] = {
                                 [1] = {
-                                ["description"] = ":interrobang: **Error: **"..data.error,
+                                ["description"] = ":interrobang: **Error: **" .. data.error,
                                     ["type"] = "rich",
                                     ["color"] = 0xb30000
                                 }
@@ -156,6 +164,8 @@ function runlua.Handle(input)
                     end
                 else
                     discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
+                        ["username"] = discordrelay.username,
+                        ["avatar_url"] = discordrelay.avatar,
                         ["embeds"] = {
                             [1] = {
                                 ["description"] = ":interrobang: **Cannot run nothing!**",
@@ -167,6 +177,8 @@ function runlua.Handle(input)
                 end
             else
                 discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
+                    ["username"] = discordrelay.username,
+                    ["avatar_url"] = discordrelay.avatar,
                     ["embeds"] = {
                         [1] = {
                             ["description"] = ":no_entry: **Access denied!**",
