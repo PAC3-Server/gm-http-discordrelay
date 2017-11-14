@@ -36,7 +36,14 @@ function luaerror_to_channel.Init()
         ["includes"] = { -- garry stuff
             ["url"] = "https://github.com/Facepunch/garrysmod/tree/master/garrysmod/",
             ["mention"] = nil
-        }
+        },
+        ["vgui"] = github["includes"],
+        ["weapons"] = github["includes"],
+        ["entities"] = github["includes"],
+        ["derma"] = github["includes"],
+        ["menu"] = github["includes"],
+        ["vgui"] = github["includes"],
+        ["weapons"] = github["includes"],
     }
 
     local function DoError(infotbl, locals, trace, client)
