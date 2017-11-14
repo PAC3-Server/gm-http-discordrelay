@@ -79,13 +79,17 @@ function luaerror_to_channel.Init()
             {
                 ["content"] = github[addon] and (github[addon].mention and ("<@" .. github[addon].mention .. ">\n")) or "",
                 ["embed"] = {
-                    ["title"] = (addon or "lua") .. " error" .. (client and (" from: " .. client:Nick()) or "" ),
+                    ["title"] = "",
                     ["description"] = "```lua\n" .. locals .. "```\n" .. markup,
                     ["type"] = "rich",
                     ["color"] = 0xb30000,
+                    ["author"] = {
+                        ["name"] = (addon or "lua") .. " error" .. (client and (" from: " .. client:Nick()) or "" ),
+                        ["url"] = github[addon] and github[addon].url or "",
+                        ["icon_url"] = github[addon] and github[addon].icon or "https://identicons.github.com/jasonlong.png"
+                    },
                     ["footer"] = {
-                        ["text"] = tostring(os.date()),
-                        ["icon_url"] = github[addon] and github[addon].icon or "",
+                        ["text"] = tostring(os.date())
                     }
                 }
             })
