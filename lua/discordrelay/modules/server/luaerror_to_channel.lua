@@ -58,7 +58,7 @@ function luaerror_to_channel.Init()
         local info2 = infotbl[2]
         local src = info["short_src"]
         local addon = src:match("lua/(.-)/")
-        addon = string.lower(addon)
+        addon = addon and string.lower(addon)
 
         if not github[addon] then -- try info2
             local prev_addon = info2["short_src"]:match("lua/(.-)/")
