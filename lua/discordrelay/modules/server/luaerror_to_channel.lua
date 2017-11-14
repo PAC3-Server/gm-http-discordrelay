@@ -42,6 +42,17 @@ function luaerror_to_channel.Init()
     local function DoError(infotbl, locals, trace, client)
         local id = util.CRC(trace)
         if luaerror_to_channel.errors[id] then return end
+        local info = infotbl[1]
+        local info2 = infotbl[2]
+        local src = info["short_src"]
+        local addon = src:match("lua/(.-)/")
+        addon = string.lower(addon)
+
+        if not github[addon] then -- try info2
+            local prev_addon = info2["short_src"]:match("lua/(.-)/")
+            addon = prev_addon and string.lower(prev_addon)
+        end
+
         trace = trace:gsub(">", "\\>")
         trace = trace:gsub("<", "\\<")
         local markup = string.gsub(trace, "(lua/.-):(%d+):?", function(l, n)
