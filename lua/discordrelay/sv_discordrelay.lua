@@ -1,40 +1,40 @@
 discordrelay = discordrelay or {}
 
-function discordrelay.log(level,...)  -- most expensive print ever
+function discordrelay.log(level, ...)  -- most expensive print ever
     local arg = {...}
     local color = {
-        [1] = Color(255,255,255),
-        [2] = Color(255,222,102),
-        [3] = Color(255,0,0)
+        [1] = Color(255, 255, 255),
+        [2] = Color(255, 222, 102),
+        [3] = Color(255, 0, 0)
     }
     local prefix = {
-        [1] = {Color(255,182,79),"[DiscordRelay:",Color(255,255,255),"info",Color(255,182,79),"] "},
-        [2] = {Color(255,182,79),"[DiscordRelay:",Color(255,222,102),"warning",Color(255,182,79),"] "},
-        [3] = {Color(255,182,79),"[DiscordRelay:",Color(255,0,0),"error",Color(255,182,79),"] "}
+        [1] = {Color(255, 182, 79), "[DiscordRelay:", Color(255, 255, 255), "info", Color(255, 182, 79), "] "},
+        [2] = {Color(255, 182, 79), "[DiscordRelay:", Color(255, 222, 102), "warning", Color(255, 182, 79), "] "},
+        [3] = {Color(255, 182, 79), "[DiscordRelay:", Color(255, 0, 0), "error", Color(255, 182, 79), "] "}
     }
     local level = math.Clamp(level, 1, #prefix) -- lol
     MsgC(unpack(prefix[level]))
     local out = ""
     local tablespew = {}
-    local function insert(inc,val)
+    local function insert(inc, val)
         if inc == 1 then
             return val
         else
             return " " .. val
         end
     end
-    for i,val in ipairs(arg) do
+    for i, val in ipairs(arg) do
         if type(val) == "table" then
             table.insert(tablespew, val)
         else
-            out = out .. insert(i,tostring(val))
+            out = out .. insert(i, tostring(val))
         end
     end
-    MsgC(color[level],out,"\n")
+    MsgC(color[level], out, "\n")
     if tablespew then
-        for _,tbl in ipairs(tablespew) do
-            for key,value in pairs(tbl) do -- subtables??? who knows
-                MsgC(color[level],key," --> ",value,"\n")
+        for _, tbl in ipairs(tablespew) do
+            for key, value in pairs(tbl) do -- subtables??? who knows
+                MsgC(color[level], key, " --> ", value, "\n")
             end
         end
     end
@@ -46,7 +46,7 @@ discordrelay.config = {}
 local token = file.Read( "discordbot_token.txt", "DATA" )
 
 if not token then
-    discordrelay.log(3,"discordbot_token.txt", "not found.")
+    discordrelay.log(3, "discordbot_token.txt", "not found.")
 end
 
 if not token then return end
@@ -57,7 +57,7 @@ discordrelay.config.webhookenabled = true
 local webhooktoken = file.Read( "webhook_token.txt", "DATA" )
 
 if not webhooktoken then
-    discordrelay.log(2,"webhook_token.txt", " not found. Discordrelay unable to post messages on Discord.")
+    discordrelay.log(2, "webhook_token.txt", " not found. Discordrelay unable to post messages on Discord.")
     discordrelay.config.webhookenabled = false
 end
 
@@ -121,7 +121,7 @@ function discordrelay.HTTPRequest(ctx, callback, err)
         },
         ["success"] = function(code, body, headers)
             if discordrelay.util.badcode[code] then
-                discordrelay.log(2,"HTTPRequest",ctx.url,discordrelay.util.badcode[code])
+                discordrelay.log(2, "HTTPRequest", ctx.url, discordrelay.util.badcode[code])
             end
             if not callback then return end
             callback(headers, body, code)
@@ -129,7 +129,7 @@ function discordrelay.HTTPRequest(ctx, callback, err)
         ["failed"] = function(reason)
             if not err then return end
             err(reason)
-            discordrelay.log(2,"HTTPRequest failed",reason)
+            discordrelay.log(2, "HTTPRequest failed", reason)
         end
     }
 
@@ -159,7 +159,7 @@ function discordrelay.WebhookRequest(ctx, callback, err)
         ["failed"] = function(reason)
             if not err then return end
             err(reason)
-            discordrelay.log(2,"WebhookRequest failed",reason)
+            discordrelay.log(2, "WebhookRequest failed", reason)
         end
     }
 
@@ -185,7 +185,7 @@ function discordrelay.util.GetAvatar(steamid, callback)
             callback(ret)
         end,
         function(err)
-            discordrelay.log(3,"GetAvatar failed for:",steamid,err)
+            discordrelay.log(3, "GetAvatar failed for:", steamid, err)
         end)
     end
 end
@@ -198,8 +198,8 @@ function discordrelay.util.IsAdmin(userid, cb)
     function(headers, body)
         local tbl = util.JSONToTable(body)
         if tbl.roles then
-            for k,role in pairs(discordrelay.admin_roles) do
-                for k,v in pairs(tbl.roles) do
+            for k, role in pairs(discordrelay.admin_roles) do
+                for k, v in pairs(tbl.roles) do
                     if role == v then
                         return cb(true)
                     end
@@ -215,7 +215,7 @@ function discordrelay.util.startsWith(str, name)
     local prefixes = discordrelay.prefixes
     if type(name) == "table" then
         local ret = false
-        for i = 1,#name do
+        for i = 1, #name do
             ret = string.match(string.sub(str, 1, #name[i] + 1), "[" .. table.concat(prefixes, "|") .. "]" .. name[i]) ~= nil
             if ret then break end
         end
@@ -233,7 +233,7 @@ function discordrelay.CreateMessage(channelid, msg, cb)
     elseif type(msg) == "table" then
         res = util.TableToJSON(msg)
     else
-        return discordrelay.log(3,"Relay: attempting to send a invalid message")
+        return discordrelay.log(3, "Relay: attempting to send a invalid message")
     end
     discordrelay.HTTPRequest({
         ["method"] = "post",
@@ -243,10 +243,10 @@ function discordrelay.CreateMessage(channelid, msg, cb)
     function(headers, body, code)
         if not cb then return end
         local tbl = util.JSONToTable(body)
-        cb(headers,tbl,code)
+        cb(headers, tbl, code)
     end,
     function(err)
-        discordrelay.log(3,"CreateMessage failed:",channelid,msg,err)
+        discordrelay.log(3, "CreateMessage failed:", channelid, msg, err)
     end)
 end
 
@@ -258,7 +258,7 @@ function discordrelay.ExecuteWebhook(whid, whtoken, msg, cb)
     elseif type(msg) == "table" then
         res = util.TableToJSON(msg)
     else
-        return discordrelay.log(3,"Relay: attempting to send a invalid message")
+        return discordrelay.log(3, "Relay: attempting to send a invalid message")
     end
     discordrelay.WebhookRequest({
         ["method"] = "POST",
@@ -272,7 +272,7 @@ function discordrelay.ExecuteWebhook(whid, whtoken, msg, cb)
         cb(tbl)
     end,
     function(err)
-        discordrelay.log(3,"WebhookFailed:",whid,msg,err)
+        discordrelay.log(3, "WebhookFailed:", whid, msg, err)
     end)
 end
 
@@ -281,14 +281,14 @@ function discordrelay.FetchMembers()
     discordrelay.HTTPRequest({["method"] = "get", ["url"] = url},
     function(headers, body, code)
         if discordrelay.util.badcode[code] then
-            discordrelay.log(2,"DiscordRelayFetchMembers failed:",discordrelay.util.badcode[code])
+            discordrelay.log(2, "DiscordRelayFetchMembers failed:", discordrelay.util.badcode[code])
             if code == 502 then
                 discordrelay.FetchMembers() -- try again
             else
                 return
             end
         end
-        for k,v in pairs(util.JSONToTable(body)) do
+        for k, v in pairs(util.JSONToTable(body)) do
             discordrelay.members[string.lower(v.user.username)] = v
         end
     end)
@@ -301,8 +301,8 @@ hook.Add("PostGamemodeLoaded", "DiscordRelayFetchMembersStartup", discordrelay.F
 -- modules
 
 local function LoadModule(path)
-    if not file.Exists(path,"LUA") then
-        discordrelay.log(3,"Modules Error:",path,"not found")
+    if not file.Exists(path, "LUA") then
+        discordrelay.log(3, "Modules Error:", path, "not found")
     end
     local func = CompileFile(path)
     if type(func) ~= "string" then
@@ -312,31 +312,31 @@ local function LoadModule(path)
 end
 
 function discordrelay.InitializeModules()
-    if file.Exists("discordrelay/modules/server","LUA") then
-        for _,file in pairs (file.Find("discordrelay/modules/server/*.lua", "LUA")) do
+    if file.Exists("discordrelay/modules/server", "LUA") then
+        for _, file in pairs (file.Find("discordrelay/modules/server/*.lua", "LUA")) do
             local name = string.StripExtension(file)
             local func = LoadModule("discordrelay/modules/server/" .. file)
             local ok, mod = pcall(func)
             if type(mod) == "string" then
-                discordrelay.log(3,"Module Error:",mod,file,"contained errors and will not be loaded!")
+                discordrelay.log(3, "Module Error:", mod, file, "contained errors and will not be loaded!")
                 continue
             elseif mod == false then
-                discordrelay.log(3,"Module:",file,"NOT loaded. (returned false)")
+                discordrelay.log(3, "Module:", file, "NOT loaded. (returned false)")
                 continue
             elseif mod == nil then
-                 discordrelay.log(3,"Module:",file,"NOT loaded. (no Functions defined)")
+                 discordrelay.log(3, "Module:", file, "NOT loaded. (no Functions defined)")
                 continue
             end
             discordrelay.modules[name] = mod
             if discordrelay.modules[name].Init then
                 discordrelay.modules[name].Init()
             else
-                discordrelay.log(2,"Discord Module:",name,"not initialized!")
+                discordrelay.log(2, "Discord Module:", name, "not initialized!")
             end
-            discordrelay.log(1,"Discord Module:",name,"loaded.")
+            discordrelay.log(1, "Discord Module:", name, "loaded.")
         end
     end
-    if file.Exists("discordrelay/modules/client","LUA") then
+    if file.Exists("discordrelay/modules/client", "LUA") then
         for _, f in pairs (file.Find("discordrelay/modules/client/*.lua", "LUA")) do
             AddCSLuaFile("discordrelay/modules/client/" .. f)
         end
@@ -346,7 +346,7 @@ end
 hook.Add("NotagainPostLoad", "DiscordRelayLoadModules", discordrelay.InitializeModules)
 
 function discordrelay.reload()
-    for _,v in pairs(discordrelay.modules) do
+    for _, v in pairs(discordrelay.modules) do
         v.Remove()
     end
     discordrelay.InitializeModules()
@@ -372,7 +372,7 @@ local function setDelay(delay)
 end
 
 function discordrelay.DiscordRelayFetchMessages()
-    if abort >= 5 then discordrelay.log(3,"FetchMessages failed DESTROYING") timer.Remove("DiscordRelayFetchMessages") return end -- prevent spam
+    if abort >= 5 then discordrelay.log(3, "FetchMessages failed DESTROYING") timer.Remove("DiscordRelayFetchMessages") return end -- prevent spam
     local url
     if around ~= 0 then
         url = discordrelay.endpoints.channels .. "/" .. discordrelay.relayChannel .. "/messages?limit=3&around=" .. around
@@ -383,7 +383,7 @@ function discordrelay.DiscordRelayFetchMessages()
     function(headers, body, code)
         if discordrelay.util.badcode[code] then
             abort = abort + 1
-            discordrelay.log(2, "FetchMessages failed", discordrelay.util.badcode[code], "retrying",abort)
+            discordrelay.log(2, "FetchMessages failed", discordrelay.util.badcode[code], "retrying", abort)
             return
         elseif code == 500 and not throttled then -- spooky shit let's delay
             setDelay(30)
@@ -402,7 +402,7 @@ function discordrelay.DiscordRelayFetchMessages()
 
         local json = util.JSONToTable(body)
         if not json or (type(json) ~= "table") then
-            discordrelay.log(2,"Invalid Discord response?", code, body)
+            discordrelay.log(2, "Invalid Discord response?", code, body)
             return
         end
 
@@ -437,14 +437,14 @@ function discordrelay.DiscordRelayFetchMessages()
             -- end
 
             if table.Count(discordrelay.modules) < 1 then
-                discordrelay.log(2,"Got Discord response, but no Modules are loaded")
+                discordrelay.log(2, "Got Discord response, but no Modules are loaded")
             end
 
-            for name,dmodule in pairs(discordrelay.modules) do
+            for name, dmodule in pairs(discordrelay.modules) do
                 if dmodule.Handle then
-                    local ok,why = pcall(dmodule.Handle,current,previous,future)
+                    local ok, why = pcall(dmodule.Handle, current, previous, future)
                     if not ok then
-                        discordrelay.log(3,"Module Error:",name,why)
+                        discordrelay.log(3, "Module Error:", name, why)
                         discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                             ["username"] = discordrelay.username,
                             ["avatar_url"] = discordrelay.avatar,
@@ -460,7 +460,7 @@ function discordrelay.DiscordRelayFetchMessages()
                         if discordrelay.modules[name].Remove then
                             discordrelay.modules[name].Remove()
                         else
-                            discordrelay.log(2,"Module Error:",name,"has no remove function and might not be unloaded correctly!")
+                            discordrelay.log(2, "Module Error:", name, "has no remove function and might not be unloaded correctly!")
                             discordrelay.modules[name] = nil -- fallback so it doesn't keep erroring
                         end
                     end
@@ -470,11 +470,11 @@ function discordrelay.DiscordRelayFetchMessages()
                 around = current.id
             end
         elseif not json then
-        discordrelay.log(2,"json nil???",code,url)
+        discordrelay.log(2, "json nil???", code, url)
         elseif not current then
-        discordrelay.log(2,"json empty???",code,url)
+        discordrelay.log(2, "json empty???", code, url)
         elseif not current.id then
-        discordrelay.log(2,"json no id???",code,url)
+        discordrelay.log(2, "json no id???", code, url)
         end
         if json and current and around == 0 then
             around = current.id
