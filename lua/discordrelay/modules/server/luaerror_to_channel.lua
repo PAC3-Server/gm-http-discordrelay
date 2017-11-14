@@ -55,6 +55,7 @@ function luaerror_to_channel.Init()
 
         trace = trace:gsub(">", "\\>")
         trace = trace:gsub("<", "\\<")
+
         local markup = string.gsub(trace, "(lua/.-):(%d+):?", function(l, n)
             local n = n or ""
             local addon = l:match("lua/(.-)/")
@@ -72,12 +73,14 @@ function luaerror_to_channel.Init()
                     ["color"] = 0xb30000
                 }
             })
+
         luaerror_to_channel.errors[id] = {addon or "generic", {info = {infotbl[1], infotbl[2]}, locals = locals, trace = trace}}
     end
 
     hook.Add("LuaError", "DiscordRelayErrorMsg", function(infotbl, locals, trace)
         DoError(infotbl, locals, trace, false)
     end)
+
     hook.Add("ClientLuaError", "DiscordRelayClientErrorMsg", function(client, infotbl, locals, trace)
         DoError(infotbl, locals, trace, client)
     end)
