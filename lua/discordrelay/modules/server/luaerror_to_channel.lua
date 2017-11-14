@@ -68,7 +68,7 @@ function luaerror_to_channel.Init()
         trace = trace:gsub(">", "\\>")
         trace = trace:gsub("<", "\\<")
 
-        local markup = string.gsub(trace, "(lua/.-):(%d+):?", function(l, n)
+        trace = trace:gsub("(lua/.-):(%d+):?", function(l, n)
             local n = n or ""
             local addon = l:match("lua/(.-)/")
             return addon and (github[addon] and "[" .. l .. ":" .. n .. ":](" .. github[addon].url .. l .. "#L" .. n .. ")")
@@ -80,7 +80,7 @@ function luaerror_to_channel.Init()
                 ["content"] = github[addon] and (github[addon].mention and ("<@" .. github[addon].mention .. ">\n")) or "",
                 ["embed"] = {
                     ["title"] = "",
-                    ["description"] = "```lua\n" .. locals .. "```\n" .. markup,
+                    ["description"] = "```lua\n" .. locals .. "```\n" .. trace,
                     ["type"] = "rich",
                     ["color"] = 0xb30000,
                     ["author"] = {
