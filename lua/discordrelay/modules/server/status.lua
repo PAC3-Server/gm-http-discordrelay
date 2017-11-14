@@ -17,7 +17,7 @@ function status.Handle(input, previous, future)
                 ["🤖"] = ply:IsBot(),
                 ["🛡"] = ply:IsAdmin(),
                 ["👍"] = ply:IsPlayingTaunt(),
-                ["⛩"] = ply:HasGodMode() or ((tonumber(godmode) and tonumber(godmode) > 0)) or godmode ~= "0",
+                ["⛩"] = ply:HasGodMode() or (tonumber(godmode) and tonumber(godmode) > 0) or godmode ~= "0",
                 ["💡"] = ply:FlashlightIsOn(),
                 ["💀"] = not ply:Alive(),
                 ["🕴"] = ply:GetMoveType() == MOVETYPE_NOCLIP,
@@ -56,14 +56,18 @@ function status.Handle(input, previous, future)
                         ["inline"] = true
                     }
                 },
-                ["color"] = (ply:IsAFK() and 0xffff00 or (ply:Alive() and 0x00b300 or 0xb30000))
+                ["color"] = ply:IsAFK() and 0xffff00 or (ply:Alive() and 0x00b300 or 0xb30000)
             }
         end
         if amount > 0 then
             discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                 ["username"] = "Server status:",
                 ["avatar_url"] = discordrelay.avatar,
-                ["content"] = "**Hostname:** "..GetHostName().."\n**Uptime:** "..string.NiceTime(CurTime()).."\n**Map:** `"..game.GetMap().."`\n**Players:** "..amount.."/"..game.MaxPlayers().."\nWant to join? Click this link: steam://connect/threekelv.in",
+                ["content"] = "**Hostname:** " .. GetHostName() ..
+                    "\n**Uptime:** " .. string.NiceTime(CurTime()) ..
+                    "\n**Map:** `" .. game.GetMap() ..
+                    "`\n**Players:** " .. amount .. "/" ..  game.MaxPlayers() ..
+                    "\nWant to join? Click this link: steam://connect/threekelv.in",
                 ["embeds"] = embeds
         })
         else
