@@ -481,8 +481,7 @@ function discordrelay.DiscordRelayFetchMessages()
         end
     end)
 end
---discordrelay.DiscordRelayFetchMessages()
---discordrelay.DiscordRelayFetchMessages()
+
 timer.Create("DiscordRelayFetchMessages", 1.5, 0, discordrelay.DiscordRelayFetchMessages)
 
 hook.Add("ShutDown", "DiscordRelayShutDown", function()
@@ -501,6 +500,7 @@ hook.Add("ShutDown", "DiscordRelayShutDown", function()
         })
     end
 end)
+
 hook.Add("Initialize", "DiscordRelayStartup", function()
     if discordrelay and discordrelay.enabled then
         discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
