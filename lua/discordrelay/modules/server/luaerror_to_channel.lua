@@ -86,7 +86,7 @@ function luaerror_to_channel.Init()
                     ["author"] = {
                         ["name"] = (addon or "lua") .. " error" .. (client and (" from: " .. client:Nick()) or "" ),
                         ["url"] = github[addon] and github[addon].url or "",
-                        ["icon_url"] = github[addon] and github[addon].icon or "https://identicons.github.com/jasonlong.png"
+                        ["icon_url"] = github[addon] and github[addon].icon or "https://identicons.github.com/" .. addon .. ".png"
                     },
                     ["footer"] = {
                         ["text"] = tostring(os.date())
