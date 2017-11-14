@@ -43,7 +43,7 @@ function luaerror_to_channel.Init()
         local id = util.CRC(trace)
         if luaerror_to_channel.errors[id] then return end
 
-        local markup = string.gsub(trace, "(lua/.-):(%d+):", function(l, n)
+        local markup = string.gsub(trace, "(lua/.-):(%d+):?", function(l, n)
             local n = n or ""
             local addon = l:match("lua/(.-)/")
             return addon and (github[addon] and "[" .. l .. ":" .. n .. ":](" .. github[addon].url .. l .. "#L" .. n .. ")")
