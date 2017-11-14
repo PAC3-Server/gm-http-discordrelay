@@ -107,6 +107,7 @@ discordrelay.util.badcode = {
     [429] = "TOO MANY REQUESTS",
     [502] = "GATEWAY UNAVAILABLE"
     }
+discordrelay.ready = false
 
 function discordrelay.HTTPRequest(ctx, callback, err)
     local ctx = ctx
@@ -533,3 +534,5 @@ hook.Add("Initialize", "DiscordRelayStartup", function()
         })
     end
 end)
+
+discordrelay.ready = true
