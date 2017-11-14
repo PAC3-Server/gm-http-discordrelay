@@ -345,6 +345,8 @@ end
 --discordrelay.InitializeModules()
 hook.Add("NotagainPostLoad", "DiscordRelayLoadModules", discordrelay.InitializeModules)
 
+local delay = 1.5
+
 function discordrelay.reload()
     for _,v in pairs(discordrelay.modules) do
         v.Remove()
@@ -353,7 +355,7 @@ function discordrelay.reload()
     discordrelay.members = {}
     discordrelay.FetchMembers()
     if timer.Exists("DiscordRelayFetchMessages") then
-        timer.Destroy("DiscordRelayFetchMessages")
+        timer.Remove("DiscordRelayFetchMessages")
     end
     timer.Create("DiscordRelayFetchMessages", 1.5, 0, discordrelay.DiscordRelayFetchMessages)
 end
@@ -362,10 +364,17 @@ end
 
 local around = 0
 local abort = 0
+local throttled = false
 
+local function setDelay(delay)
+    if timer.Exists("DiscordRelayFetchMessages") then
+            timer.Remove("DiscordRelayFetchMessages")
+        end
+    timer.Create("DiscordRelayFetchMessages", delay, 0, discordrelay.DiscordRelayFetchMessages)
+end
 
 function discordrelay.DiscordRelayFetchMessages()
-    if abort >= 5 then discordrelay.log(3,"FetchMessages failed DESTROYING") timer.Destroy("DiscordRelayFetchMessages") return end -- prevent spam
+    if abort >= 5 then discordrelay.log(3,"FetchMessages failed DESTROYING") timer.Remove("DiscordRelayFetchMessages") return end -- prevent spam
     local url
     if around ~= 0 then
         url = discordrelay.endpoints.channels.."/"..discordrelay.relayChannel.."/messages?limit=3&around="..around
@@ -378,9 +387,18 @@ function discordrelay.DiscordRelayFetchMessages()
             abort = abort + 1
             discordrelay.log(2,"FetchMessages failed",discordrelay.util.badcode[code],"retrying",abort)
             return
-        else
-            abort = 0
+        elseif code == 500 and not throttled then -- spooky shit let's delay
+            setDelay(30)
+            throttled = true
+            return
+        elseif throttled then -- no bad code and 500? back to normal
+            setDelay(1.5)
+            throttled = false
+            return
         end
+
+        abort = 0
+        throttled = false
 
         local json = util.JSONToTable(body)
         if not json or (type(json) ~= "table") then
@@ -465,7 +483,7 @@ function discordrelay.DiscordRelayFetchMessages()
 end
 --discordrelay.DiscordRelayFetchMessages()
 --discordrelay.DiscordRelayFetchMessages()
-timer.Create("DiscordRelayFetchMessages", 1.5, 0, discordrelay.DiscordRelayFetchMessages)
+timer.Create("DiscordRelayFetchMessages", delay, 0, discordrelay.DiscordRelayFetchMessages)
 
 hook.Add("ShutDown", "DiscordRelayShutDown", function()
     if discordrelay and discordrelay.enabled then
