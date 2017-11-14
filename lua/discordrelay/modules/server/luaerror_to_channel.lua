@@ -32,38 +32,30 @@ function luaerror_to_channel.Init()
         ["gm-http-discordrelay"] = {
             ["url"] = "https://github.com/PAC3-Server/gm-http-discordrelay/tree/master/",
             ["mention"] = "94829082360942592", -- techbot
+        },
+        ["includes"] = { -- garry stuff
+            ["url"] = "https://github.com/Facepunch/garrysmod/tree/master/garrysmod/",
+            ["mention"] = nil
         }
     }
-    local function DoError(infotbl, locals, trace, client)
-        local info = infotbl[1]
-        local info2 = infotbl[2]
-        local src = info["short_src"]
-        local addon = src:match("addons/(.-)/lua/")
-        local path = src:match("/(lua/.+)")
-        local line = info["currentline"]
-        local start = info["linedefined"]
-        local last = info["lastlinedefined"]
-        if not addon then
-            local prev_src = info2["short_src"]:match("addons/(.-)/lua/")
-            local prev_path = info2["short_src"]:match("/(lua/.+)")
-            line = info2["currentline"]
-            start = info2["linedefined"]
-            last = info2["lastlinedefined"]
-            addon = prev_src and string.lower(prev_src)
-            path = prev_path
-        end
 
+    local function DoError(infotbl, locals, trace, client)
         local id = util.CRC(trace)
         if luaerror_to_channel.errors[id] then return end
+
+        local markup = string.gsub(trace, "(lua/.-):(%d+):", function(l, n)
+            local n = n or ""
+            local addon = l:match("lua/(.-)/")
+            return addon and (github[addon] and "[" .. l .. ":" .. n .. ":](" .. github[addon].url .. l .. "#L" .. n .. ")")
+                or l .. n
+        end)
 
         post(github[addon] and (github[addon].important and development) or channel,
             {
                 ["content"] = github[addon] and (github[addon].mention and ("<@" .. github[addon].mention .. ">\n")) or "",
                 ["embed"] = {
                     ["title"] = (addon or "lua") .. " error" .. (client and (" from: " .. client:Nick()) or "" ),
-                    ["description"] = "```lua\n" .. locals .. "```\n```" .. trace .. "```" .. (github[addon] and
-                        ("\n[Error at Function](" .. github[addon].url .. path .. "#L".. start .. "-L" .. last .. ")\n[Error at line](" .. github[addon].url .. path .. "#L".. line .. ")")
-                        or ""),
+                    ["description"] = "```lua\n" .. locals .. "```\n" .. markup,
                     ["type"] = "rich",
                     ["color"] = 0xb30000
                 }
