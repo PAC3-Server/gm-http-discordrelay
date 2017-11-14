@@ -172,6 +172,22 @@ function discordrelay.WebhookRequest(ctx, callback, err)
     HTTP(HTTPRequest)
 end
 
+function discordrelay.notify(...)
+    discordrelay.log(1, ...)
+    discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
+        ["username"] = discordrelay.username,
+        ["avatar_url"] = discordrelay.avatar,
+        ["embeds"] = {
+            [1] = {
+                ["title"] = "INFO",
+                ["description"] = tostring(...),
+                ["type"] = "rich",
+                ["color"] = 0xffff00
+            }
+        }
+    })
+end
+
 function discordrelay.util.GetAvatar(steamid, callback)
     local commid = util.SteamIDTo64(steamid)
     local cache = discordrelay.AvatarCache
@@ -388,11 +404,11 @@ function discordrelay.DiscordRelayFetchMessages()
         elseif code == 500 and not throttled then -- spooky shit let's delay
             setDelay(30)
             throttled = true
-            discordrelay.log(2, "Got Code 500, throttling...")
+            discordrelay.notify("Got Code 500, throttling...")
             return
         elseif throttled then -- no bad code and 500? back to normal
             setDelay(1.5)
-            discordrelay.log(2, "Back to normal Speed")
+            discordrelay.notify("Back to normal speed!")
             throttled = false
             return
         end
