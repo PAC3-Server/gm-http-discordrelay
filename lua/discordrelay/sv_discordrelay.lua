@@ -403,7 +403,7 @@ function discordrelay.DiscordRelayFetchMessages()
             discordrelay.log(2, "FetchMessages failed", discordrelay.util.badcode[code], "retrying", abort)
             return
         elseif code == 500 and not throttled then -- spooky shit let's delay
-            setDelay(30)
+            setDelay(60)
             throttled = true
             discordrelay.notify("Got Code 500, throttling...")
             return
