@@ -50,7 +50,7 @@ function info.Handle(input, previous, future)
                     ["embeds"] = {
                         [1] = {
                             ["author"] = {
-                                ["name"] = string.gsub(ply:Nick(), "<.->","") .. emojistr and ( " [" .. emojistr .. " ]") or "",
+                                ["name"] = string.gsub(ply:Nick(), "<.->","") .. (emojistr and ( " [" .. emojistr .. " ]") or ""),
                                 ["icon_url"] = cache[commid] or "https://i.imgur.com/ovW4MBM.png",
                                 ["url"] = "http://steamcommunity.com/profiles/" .. commid
                             },
