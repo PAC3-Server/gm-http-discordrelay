@@ -532,6 +532,7 @@ hook.Add("Initialize", "DiscordRelayStartup", function()
                 }
             }
         })
+        discordrelay.reload()
         discordrelay.ready = true
     end
 end)
