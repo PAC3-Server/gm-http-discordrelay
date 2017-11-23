@@ -75,6 +75,8 @@ function luaerror_to_channel.Init()
                 or l .. n
         end)
 
+        avatar = IsValid(client) and discordrelay.util.GetAvatar(client:SteamID(), function(a) return a end)
+
         post(github[addon] and (github[addon].important and development) or channel,
             {
                 ["content"] = github[addon] and (github[addon].mention and ("<@" .. github[addon].mention .. ">\n")) or "",
@@ -86,7 +88,7 @@ function luaerror_to_channel.Init()
                     ["author"] = {
                         ["name"] = (addon or "lua") .. " error" .. (client and (" from: " .. client:Nick()) or "" ),
                         ["url"] = github[addon] and github[addon].url or "",
-                        ["icon_url"] = github[addon] and github[addon].icon or "https://identicons.github.com/" .. addon .. ".png"
+                        ["icon_url"] = avatar and tostring(avatar) or (github[addon] and github[addon].icon or "https://identicons.github.com/" .. addon .. ".png")
                     },
                     ["footer"] = {
                         ["text"] = tostring(os.date())
