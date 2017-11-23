@@ -193,7 +193,8 @@ function discordrelay.util.GetAvatar(steamid, callback)
     local commid = util.SteamIDTo64(steamid)
     local cache = discordrelay.AvatarCache
     if cache[commid] then
-        callback(cache[commid])
+        if callback then callback(cache[commid]) end
+        return cache[commid]
     else
         http.Fetch("http://steamcommunity.com/profiles/" .. commid .. "?xml=1",
         function(content, size)
@@ -204,6 +205,7 @@ function discordrelay.util.GetAvatar(steamid, callback)
         function(err)
             discordrelay.log(3, "GetAvatar failed for:", steamid, err)
         end)
+        return false
     end
 end
 
