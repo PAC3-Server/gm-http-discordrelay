@@ -1,14 +1,14 @@
 local github = {}
 local discordrelay = discordrelay
 
-function github.Handle(input,previous,future)
+function github.Handle(input, previous, future)
     if input.webhook_id and string.lower(input.author.username) == "github" and input.embeds and input.embeds[1] then
         local embed = input.embeds[1]
         if string.match(embed.title, "new commit") then
-            local message = "GitHub: "..embed.title
+            local message = "GitHub: " .. embed.title
             for k,v in pairs(string.Split(embed.description, "\n")) do
                 local hash, url, commit = string.match(v, "%[`(.*)`%]%((.*)%) (.*)")
-                message = message.."\n	"..hash.." "..commit
+                message = message .. "\n	" .. hash .. " " .. commit
             end
             net.Start( "DiscordMessage" )
                 net.WriteString("")
@@ -17,7 +17,7 @@ function github.Handle(input,previous,future)
         else
             net.Start( "DiscordMessage" )
                 net.WriteString("")
-                net.WriteString("GitHub: "..embed.title)
+                net.WriteString("GitHub: " .. embed.title)
             net.Broadcast()
         end
     end

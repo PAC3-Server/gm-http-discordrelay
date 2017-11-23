@@ -6,7 +6,7 @@ function discord_msg.Handle(input,previous,future)
         local ret = input.content
         if input.mentions then
             for k,mention in pairs(input.mentions) do
-                ret = string.gsub(input.content, "<@!?"..mention.id..">", "@"..mention.username)
+                ret = string.gsub(input.content, "<@!?" .. mention.id .. ">", "@" .. mention.username)
             end
         end
         if input.attachments then
@@ -15,7 +15,7 @@ function discord_msg.Handle(input,previous,future)
             end
         end
         if input.embeds then
-            for i=1,#input.embeds do
+            for i = 1, #input.embeds do
                 ret = ret .. "\n" .. (input.embeds[i].title and input.embeds[i].title or "") .. "\n" .. input.embeds[i].description
             end
         end

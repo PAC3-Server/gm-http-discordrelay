@@ -33,7 +33,7 @@ function join_leave_msg.Init()
     hook.Add("player_disconnect", "DiscordRelayPlayerDisconnect", function(data)
         if discordrelay and discordrelay.enabled then
             local commid = util.SteamIDTo64(data.networkid)
-            local reason = (string.StartWith(data.reason ,"Map") or string.StartWith(data.reason ,data.name) or string.StartWith(data.reason ,"Client" )) and ":interrobang: "..data.reason or data.reason
+            local reason = (string.StartWith(data.reason ,"Map") or string.StartWith(data.reason ,data.name) or string.StartWith(data.reason ,"Client" )) and ":interrobang: " .. data.reason or data.reason
 
             if reason ~= "Disconnect by user." then
                 discordrelay.util.GetAvatar(data.networkid, function(ret)

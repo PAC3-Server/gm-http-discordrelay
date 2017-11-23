@@ -25,7 +25,7 @@ function aowl_commands.Init()
                             ["title"] = "",
                             ["description"] = "",
                             ["author"] = {
-                                ["name"] = (string.gsub(ply:Nick(),"<.->","")),
+                                ["name"] = string.gsub(ply:Nick(), "<.->", ""),
                                 ["icon_url"] = ret,
                                 ["url"] = "http://steamcommunity.com/profiles/" .. commid
                             },
@@ -87,7 +87,7 @@ function aowl_commands.Init()
                                 ["title"] = "",
                                 ["description"] = "**BANNED:** " .. url,
                                 ["author"] = {
-                                    ["name"] = (string.gsub(ply:Nick(),"<.->","")),
+                                    ["name"] = string.gsub(ply:Nick(), "<.->", ""),
                                     ["icon_url"] = ret,
                                     ["url"] = "http://steamcommunity.com/profiles/" .. commid
                                 },
@@ -119,7 +119,7 @@ function aowl_commands.Init()
                                 ["title"] = "",
                                 ["description"] = "**UNBANNED:** " .. url,
                                 ["author"] = {
-                                    ["name"] = (string.gsub(ply:Nick(),"<.->","")),
+                                    ["name"] = string.gsub(ply:Nick(), "<.->", ""),
                                     ["icon_url"] = ret,
                                     ["url"] = "http://steamcommunity.com/profiles/" .. commid
                                 },

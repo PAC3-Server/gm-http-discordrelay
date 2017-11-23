@@ -5,7 +5,7 @@ function rcon.Handle(input,previous,future)
     if discordrelay.util.startsWith(input.content, "rcon") then
         discordrelay.util.IsAdmin(input.author.id, function(access)
             if access then
-                game.ConsoleCommand(string.sub(input.content, 6, #input.content).."\n")
+                game.ConsoleCommand(string.sub(input.content, 6, #input.content) .. "\n")
                 discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
                     ["embeds"] = {
                         [1] = {
