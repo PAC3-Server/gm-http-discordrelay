@@ -32,7 +32,7 @@ function luaerror_to_channel.Init()
             ["icon"] = "https://avatars2.githubusercontent.com/u/20880060?v=4",
             ["mention"] = "205976012050268160" -- earu
         },
-        ["gm-http-discordrelay"] = {
+        ["discordrelay"] = {
             ["url"] = "https://github.com/PAC3-Server/gm-http-discordrelay/tree/master/",
             ["icon"] = "https://avatars0.githubusercontent.com/u/3000604?v=4",
             ["mention"] = "94829082360942592", -- techbot
@@ -56,12 +56,12 @@ function luaerror_to_channel.Init()
         if luaerror_to_channel.errors[id] then return end
         local info = infotbl[1]
         local info2 = infotbl[2]
-        local src = info["short_src"]
-        local addon = src:match("lua/(.-)/")
+        local src = info and info["short_src"] or "???"
+        local addon = src:match("lua/(.-)/") or "???"
         addon = addon and string.lower(addon)
 
         if not github[addon] then -- try info2
-            local prev_addon = info2["short_src"]:match("lua/(.-)/")
+            local prev_addon = info2["short_src"] and info2["short_src"]:match("lua/(.-)/") or "???"
             addon = prev_addon and string.lower(prev_addon)
         end
 
@@ -75,7 +75,7 @@ function luaerror_to_channel.Init()
                 or l .. n
         end)
 
-        avatar = IsValid(client) and discordrelay.util.GetAvatar(client:SteamID(), function(a) return a end)
+        avatar = IsValid(client) and discordrelay.util.GetAvatar(client:SteamID())
 
         post(github[addon] and (github[addon].important and development) or channel,
             {
