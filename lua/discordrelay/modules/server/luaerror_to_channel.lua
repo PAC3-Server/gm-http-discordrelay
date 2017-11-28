@@ -87,7 +87,7 @@ function luaerror_to_channel.Init()
                     ["color"] = 0xb30000,
                     ["author"] = {
                         ["name"] = (addon or "lua") .. " error" .. (client and (" from: " .. client:Nick()) or "" ),
-                        ["url"] = github[addon] and github[addon].url or "",
+                        ["url"] = avatar and ("http://steamcommunity.com/profiles/" .. tostring(util.SteamIDTo64(client:SteamID()))) or github[addon] and github[addon].url or "",
                         ["icon_url"] = avatar and tostring(avatar) or (github[addon] and github[addon].icon or "https://identicons.github.com/" .. addon .. ".png")
                     },
                     ["footer"] = {
