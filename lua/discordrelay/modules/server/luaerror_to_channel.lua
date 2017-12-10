@@ -57,7 +57,8 @@ function luaerror_to_channel.Init()
         local info = infotbl[1]
         local info2 = infotbl[2]
         local src = info and info["short_src"] or "???"
-        local addon = src:match("lua/(.-/.-)/") or src:match("lua/(.-)/") or "???"
+        local addon = src:match("lua/(.-)/") or "???"
+        local extra = src:match("lua/(.-/.-)/") or ""
         addon = addon and string.lower(addon)
 
         if not github[addon] then -- try info2
@@ -89,9 +90,9 @@ function luaerror_to_channel.Init()
                     ["type"] = "rich",
                     ["color"] = 0xb30000,
                     ["author"] = {
-                        ["name"] = (addon or "lua") .. " error" .. (client and (" from: " .. client:Nick()) or "" ),
+                        ["name"] = ((addon .. extra) or "lua") .. " error" .. (client and (" from: " .. client:Nick()) or "" ),
                         ["url"] = client and ("http://steamcommunity.com/profiles/" .. tostring(util.SteamIDTo64(client:SteamID()))) or (github[addon] and github[addon].url) or "",
-                        ["icon_url"] = avatar and tostring(avatar) or (github[addon] and github[addon].icon or "https://identicons.github.com/" .. (addon:match("(.-)/") or addon) .. ".png")
+                        ["icon_url"] = avatar and tostring(avatar) or (github[addon] and github[addon].icon or "https://identicons.github.com/" .. addon .. ".png")
                     },
                     ["footer"] = {
                         ["text"] = tostring(os.date())
