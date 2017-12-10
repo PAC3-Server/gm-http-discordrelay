@@ -200,7 +200,7 @@ function discordrelay.util.GetAvatar(steamid, callback)
         function(content, size)
             local ret = content:match("<avatarFull><!%[CDATA%[(.-)%]%]></avatarFull>") or "http://i.imgur.com/ovW4MBM.png"
             discordrelay.AvatarCache[commid] = ret
-            callback(ret)
+            if callback then callback(ret) end
         end,
         function(err)
             discordrelay.log(3, "GetAvatar failed for:", steamid, err)
