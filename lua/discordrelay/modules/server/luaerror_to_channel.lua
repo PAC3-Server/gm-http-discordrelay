@@ -5,7 +5,7 @@ luaerror_to_channel.errors = {}
 local function post(channel, msg)
     discordrelay.CreateMessage(channel, msg, function(h, b, c)
         if discordrelay.util.badcode[c] then
-            discordrelay.log(2, "DiscordRelayErrorMsg failed", discordrelay.util.badcode[c])
+            discordrelay.log(2, "DiscordRelayErrorMsg failed", discordrelay.util.badcode[c], b)
             return
         end
     end)
@@ -77,7 +77,7 @@ function luaerror_to_channel.Init()
 
         avatar = IsValid(client) and discordrelay.util.GetAvatar(client:SteamID())
 
-        locals = string.sub(locals, 1, 2035 - #trace) or "???"
+        locals = string.sub(locals, 1, 2030 - #trace) or "???"
 
         post(github[addon] and (github[addon].important and development) or channel,
             {
