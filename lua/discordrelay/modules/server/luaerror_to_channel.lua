@@ -91,7 +91,7 @@ function luaerror_to_channel.Init()
                     ["author"] = {
                         ["name"] = (addon or "lua") .. " error" .. (client and (" from: " .. client:Nick()) or "" ),
                         ["url"] = client and ("http://steamcommunity.com/profiles/" .. tostring(util.SteamIDTo64(client:SteamID()))) or (github[addon] and github[addon].url) or "",
-                        ["icon_url"] = avatar and tostring(avatar) or (github[addon] and github[addon].icon or "https://identicons.github.com/" .. addon .. ".png")
+                        ["icon_url"] = avatar and tostring(avatar) or (github[addon] and github[addon].icon or "https://identicons.github.com/" .. (addon:match("(.-)/") or addon) .. ".png")
                     },
                     ["footer"] = {
                         ["text"] = tostring(os.date())
