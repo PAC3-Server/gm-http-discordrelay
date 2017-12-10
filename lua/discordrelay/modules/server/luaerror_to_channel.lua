@@ -77,6 +77,8 @@ function luaerror_to_channel.Init()
 
         avatar = IsValid(client) and discordrelay.util.GetAvatar(client:SteamID())
 
+        locals = string.sub(locals, 1500)
+
         post(github[addon] and (github[addon].important and development) or channel,
             {
                 ["content"] = github[addon] and (github[addon].mention and ("<@" .. github[addon].mention .. ">\n")) or "",
