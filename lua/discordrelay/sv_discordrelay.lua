@@ -105,6 +105,7 @@ discordrelay.util.badcode = {
     [404] = "NOT FOUND",
     [405] = "METHOD NOT ALLOWED",
     [429] = "TOO MANY REQUESTS",
+    [500] = "INTERNAL SERVER ERROR",
     [502] = "GATEWAY UNAVAILABLE"
     }
 discordrelay.ready = false
@@ -301,14 +302,20 @@ function discordrelay.FetchMembers()
     function(headers, body, code)
         if discordrelay.util.badcode[code] then
             discordrelay.log(2, "DiscordRelayFetchMembers failed:", discordrelay.util.badcode[code])
-            if code == 502 then
+            if code == 502 || code == 500 then
                 discordrelay.FetchMembers() -- try again
             else
                 return
             end
         end
-        for k, v in pairs(util.JSONToTable(body)) do
-            discordrelay.members[string.lower(v.user.username)] = v
+        local json = util.JSONToTable(body)
+        if json then
+            for _, v in pairs(util.JSONToTable(body)) do
+                discordrelay.members[string.lower(v.user.username)] = v
+            end
+        else
+            discordrelay.log(2, "Invalid Discord Reply?", json)
+            return
         end
     end)
 end
