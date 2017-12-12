@@ -70,12 +70,14 @@ function luaerror_to_channel.Init()
         trace = trace:gsub(">", "\\>")
         trace = trace:gsub("<", "\\<")
 
-        trace = trace:gsub("(lua/.-):(%d+):?", function(l, n)
+        local function getLink(l, n)
             local n = n or ""
             local addon = l:match("lua/(.-)/")
             return addon and (github[addon] and "[" .. l .. ":" .. n .. ":](" .. github[addon].url .. l .. "#L" .. n .. ")")
                 or l .. n
-        end)
+        end
+
+        trace = trace:gsub("(lua/.-):(%d+):?", getLink)
 
         client = IsValid(client) and client
         avatar = client and discordrelay.util.GetAvatar(client:SteamID())
