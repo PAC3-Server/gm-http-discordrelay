@@ -56,14 +56,14 @@ function luaerror_to_channel.Init()
         if luaerror_to_channel.errors[id] then return end
         local info = infotbl[1]
         local info2 = infotbl[2]
-        local src = info and (type(info) == table and info["short_src"]) or "???"
+        local src = info and info["short_src"] or "???"
         local addon = src:match("lua/(.-)/") or "???"
         local extra = src:match("lua/.-/(.-)/")
         addon = addon and string.lower(addon)
 
         if not github[addon] then -- try info2
-            local prev_addon = info2 and (type(info2) == table and info2["short_src"]:match("lua/(.-)/")) or "???"
-            extra = info2["short_src"]:match("lua/.-/(.-)/")
+            local prev_addon = info2["short_src"] and info2["short_src"]:match("lua/(.-)/") or "???"
+            extra = info2["short_src"]:match("lua/.-/(.-)/") or ""
             addon = prev_addon and string.lower(prev_addon)
         end
 
