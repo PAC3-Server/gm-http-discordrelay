@@ -54,6 +54,11 @@ function luaerror_to_channel.Init()
     local function DoError(msg, stack, client)
         if luaerror_to_channel.errors[msg] then return end
 
+        if not stack or type(stack) ~= "table" then
+            discordrelay.log(2, "Invalid Stack??", client)
+            return
+        end
+
         local trace = msg
         local addon_name = string.lower(trace:match("lua/(.-)/") or stack[1].what) or "???"
         local addon = github[addon_name]
@@ -72,14 +77,14 @@ function luaerror_to_channel.Init()
         client = IsValid(client) and client
         avatar = client and discordrelay.util.GetAvatar(client:SteamID())
 
-        local locals = string.sub(stack[1].locals .. stack[2].locals .. stack[3].locals, 1, 2030 - #trace) or "???"
+        local locals = string.sub(stack[2].locals .. stack[3].locals, 1, 2030 - #trace - #stack[1].trace) or "???"
 
         post(addon and (addon.important and development) or channel,
             {
                 ["content"] = addon and (addon.mention and ("<@" .. addon.mention .. ">\n")) or "",
                 ["embed"] = {
                     ["title"] = "",
-                    ["description"] = "```lua\n" .. locals .. "```\n" .. trace,
+                    ["description"] = stack[1].locals .. "```lua\n" .. locals .. "```\n" .. trace,
                     ["type"] = "rich",
                     ["color"] = 0xb30000,
                     ["author"] = {
