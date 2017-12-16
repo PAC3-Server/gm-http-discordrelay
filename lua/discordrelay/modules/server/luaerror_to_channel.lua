@@ -56,13 +56,13 @@ function luaerror_to_channel.Init()
         if luaerror_to_channel.errors[id] then return end
         local info = infotbl[1]
         local info2 = infotbl[2]
-        local src = info and info["short_src"] or "???"
+        local src = info and (type(info) == table and info["short_src"]) or "???"
         local addon = src:match("lua/(.-)/") or "???"
         local extra = src:match("lua/.-/(.-)/")
         addon = addon and string.lower(addon)
 
         if not github[addon] then -- try info2
-            local prev_addon = info2["short_src"] and info2["short_src"]:match("lua/(.-)/") or "???"
+            local prev_addon = info2 and (type(info2) == table and info2["short_src"]:match("lua/(.-)/")) or "???"
             extra = info2["short_src"]:match("lua/.-/(.-)/")
             addon = prev_addon and string.lower(prev_addon)
         end
@@ -106,13 +106,17 @@ function luaerror_to_channel.Init()
         luaerror_to_channel.errors[id] = {addon or "generic", {info = {infotbl[1], infotbl[2]}, locals = locals, trace = trace}}
     end
 
-    hook.Add("LuaError", "DiscordRelayErrorMsg", function(infotbl, locals, trace)
+    local function DoServerError(infotbl, locals, trace)
         DoError(infotbl, locals, trace, false)
-    end)
+    end
 
-    hook.Add("ClientLuaError", "DiscordRelayClientErrorMsg", function(client, infotbl, locals, trace)
+    hook.Add("LuaError", "DiscordRelayErrorMsg", DoServerError)
+
+    local function DoClientError(client, infotbl, locals, trace)
         DoError(infotbl, locals, trace, client)
-    end)
+    end
+
+    hook.Add("ClientLuaError", "DiscordRelayClientErrorMsg", DoClientError)
 end
 
 function luaerror_to_channel.Remove()
