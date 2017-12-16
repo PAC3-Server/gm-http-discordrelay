@@ -51,29 +51,30 @@ function luaerror_to_channel.Init()
     github["vgui"] = github["includes"]
     github["weapons"] = github["includes"]
 
-    local function DoError(infotbl, locals, trace, client)
-        local id = util.CRC(trace)
-        if luaerror_to_channel.errors[id] then return end
-        local info = infotbl[1]
-        local info2 = infotbl[2]
-        local src = info and info["short_src"] or "???"
-        local addon = src:match("lua/(.-)/") or "???"
-        local extra = src:match("lua/.-/(.-)/")
-        addon = addon and string.lower(addon)
+    local function DoError(msg, stack, client)
+        if luaerror_to_channel.errors[msg] then return end
 
-        if not github[addon] then -- try info2
-            local prev_addon = info2["short_src"] and info2["short_src"]:match("lua/(.-)/") or "???"
-            extra = info2 and (info2["short_src"] and info2["short_src"]:match("lua/.-/(.-)/"))
-            addon = prev_addon and string.lower(prev_addon)
-        end
+		local addon
 
-        trace = trace:gsub(">", "\\>")
-        trace = trace:gsub("<", "\\<")
+		for i, info in ipairs(stack) do
+			local addon_name = string.lower(src:match("lua/(.-)/") or "???")
+			if github[addon_name] then
+				addon = github[addon_name]
+				break
+			end
+		end
+
+		local info = stack[1]
+		local src = info.short_src
+
+		local extra = src:match("lua/.-/(.-)/")
+		trace = trace:gsub(">", "\\>")
+		trace = trace:gsub("<", "\\<")
 
         local function getLink(l, n)
             local n = n or ""
             local addon = l:match("lua/(.-)/")
-            return addon and (github[addon] and "[" .. l .. ":" .. n .. ":](" .. github[addon].url .. l .. "#L" .. n .. ")")
+            return addon and (addon and "[" .. l .. ":" .. n .. ":](" .. addon.url .. l .. "#L" .. n .. ")")
                 or l .. n
         end
 
@@ -82,11 +83,11 @@ function luaerror_to_channel.Init()
         client = IsValid(client) and client
         avatar = client and discordrelay.util.GetAvatar(client:SteamID())
 
-        locals = string.sub(locals, 1, 2030 - #trace) or "???"
+        local locals = string.sub(stack[1].locals, 1, 2030 - #trace) or "???"
 
-        post(github[addon] and (github[addon].important and development) or channel,
+        post(addon and (addon.important and development) or channel,
             {
-                ["content"] = github[addon] and (github[addon].mention and ("<@" .. github[addon].mention .. ">\n")) or "",
+                ["content"] = addon and (addon.mention and ("<@" .. addon.mention .. ">\n")) or "",
                 ["embed"] = {
                     ["title"] = "",
                     ["description"] = "```lua\n" .. locals .. "```\n" .. trace,
@@ -94,8 +95,8 @@ function luaerror_to_channel.Init()
                     ["color"] = 0xb30000,
                     ["author"] = {
                         ["name"] = ((addon .. (extra and ("/" .. extra) or "")) or "lua") .. " error" .. (client and (" from: " .. client:Nick()) or "" ),
-                        ["url"] = client and ("http://steamcommunity.com/profiles/" .. tostring(util.SteamIDTo64(client:SteamID()))) or (github[addon] and github[addon].url) or "",
-                        ["icon_url"] = avatar and tostring(avatar) or (github[addon] and github[addon].icon or "https://identicons.github.com/" .. addon .. ".png")
+                        ["url"] = client and ("http://steamcommunity.com/profiles/" .. tostring(util.SteamIDTo64(client:SteamID()))) or (addon and addon.url) or "",
+                        ["icon_url"] = avatar and tostring(avatar) or (addon and addon.icon or "https://identicons.github.com/" .. addon .. ".png")
                     },
                     ["footer"] = {
                         ["text"] = tostring(os.date())
@@ -103,20 +104,11 @@ function luaerror_to_channel.Init()
                 }
             })
 
-        luaerror_to_channel.errors[id] = {addon or "generic", {info = {infotbl[1], infotbl[2]}, locals = locals, trace = trace}}
+        luaerror_to_channel.errors[msg] = {addon or "generic", stack = stack, msg = msg}
     end
 
-    local function DoServerError(infotbl, locals, trace)
-        DoError(infotbl, locals, trace, false)
-    end
-
-    hook.Add("LuaError", "DiscordRelayErrorMsg", DoServerError)
-
-    local function DoClientError(client, infotbl, locals, trace)
-        DoError(infotbl, locals, trace, client)
-    end
-
-    hook.Add("ClientLuaError", "DiscordRelayClientErrorMsg", DoClientError)
+    hook.Add("LuaError", "DiscordRelayErrorMsg", DoError)
+    hook.Add("ClientLuaError", "DiscordRelayClientErrorMsg", DoError)
 end
 
 function luaerror_to_channel.Remove()
@@ -128,4 +120,6 @@ function luaerror_to_channel.Remove()
     end
 end
 
-return luaerror_to_channel
+discordrelay.modules.luaerror_to_channel = luaerror_to_channel
+discordrelay.modules.luaerror_to_channel.Init()
+--return luaerror_to_channel
