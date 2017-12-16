@@ -55,7 +55,7 @@ function luaerror_to_channel.Init()
         if luaerror_to_channel.errors[msg] then return end
 
         local trace = msg
-        local addon_name = string.lower(trace:match("lua/(.-)/") or stack[1].what)
+        local addon_name = string.lower(trace:match("lua/(.-)/") or stack[1].what) or "???"
         local addon = github[addon_name]
 
         trace = trace:gsub(">", "\\>")
@@ -71,6 +71,7 @@ function luaerror_to_channel.Init()
 
         client = IsValid(client) and client
         avatar = client and discordrelay.util.GetAvatar(client:SteamID())
+
         local locals = string.sub(stack[1].locals .. stack[2].locals .. stack[3].locals, 1, 2030 - #trace) or "???"
 
         post(addon and (addon.important and development) or channel,
