@@ -58,12 +58,12 @@ function luaerror_to_channel.Init()
         local info2 = infotbl[2]
         local src = info and info["short_src"] or "???"
         local addon = src:match("lua/(.-)/") or "???"
-        local extra = src:match("lua/.-/(.-)/")
+        local extra = src:match("lua/.-/(.-)/") or ""
         addon = addon and string.lower(addon)
 
         if not github[addon] then -- try info2
             local prev_addon = info2["short_src"] and info2["short_src"]:match("lua/(.-)/") or "???"
-            extra = info2["short_src"]:match("lua/.-/(.-)/") or ""
+            extra = info2 and (info2["short_src"] and info2["short_src"]:match("lua/.-/(.-)/")) or ""
             addon = prev_addon and string.lower(prev_addon)
         end
 
