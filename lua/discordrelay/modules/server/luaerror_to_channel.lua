@@ -114,6 +114,4 @@ function luaerror_to_channel.Remove()
     end
 end
 
---return luaerror_to_channel
-discordrelay.modules.luaerror_to_channel = luaerror_to_channel
-discordrelay.modules.luaerror_to_channel.Init()
+return luaerror_to_channel
