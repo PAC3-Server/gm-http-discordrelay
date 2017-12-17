@@ -61,6 +61,7 @@ function luaerror_to_channel.Init()
 
         local trace = msg
         local addon_name = string.lower(trace:match("lua/(.-)/") or stack[1].what) or "???"
+        local extra = trace:match("lua/.-/(.-)/")
         local addon = github[addon_name]
 
         trace = trace:gsub(">", "\\>")
