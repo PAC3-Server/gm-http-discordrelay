@@ -87,7 +87,7 @@ function luaerror_to_channel.Init()
                 ["content"] = addon and (addon.mention and ("<@" .. addon.mention .. ">\n")) or "",
                 ["embed"] = {
                     ["title"] = "",
-                    ["description"] = stack[1].locals .. "```lua\n" .. locals .. "```\n" .. trace,
+                    ["description"] = stack[1].locals .. "\n```lua\n" .. locals .. "```\n" .. trace,
                     ["type"] = "rich",
                     ["color"] = 0xb30000,
                     ["author"] = {
