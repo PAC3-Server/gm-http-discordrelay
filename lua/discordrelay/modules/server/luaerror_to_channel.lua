@@ -52,7 +52,8 @@ function luaerror_to_channel.Init()
     github["weapons"] = github["includes"]
 
     local function DoError(msg, stack, client)
-        if luaerror_to_channel.errors[msg] then return end
+        local id = util.CRC(msg)
+        if luaerror_to_channel.errors[id] then return end
 
         if not stack or type(stack) ~= "table" then
             discordrelay.log(2, "Invalid Stack??", client)
@@ -99,7 +100,7 @@ function luaerror_to_channel.Init()
                 }
             })
 
-        luaerror_to_channel.errors[msg] = {addon or addon_name, stack = stack, msg = msg}
+        luaerror_to_channel.errors[id] = {addon or addon_name, stack = stack, msg = msg}
     end
 
     hook.Add("LuaError", "DiscordRelayErrorMsg", DoError)
