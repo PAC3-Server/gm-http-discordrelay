@@ -79,7 +79,7 @@ function luaerror_to_channel.Init()
         client = IsValid(client) and client
         avatar = client and discordrelay.util.GetAvatar(client:SteamID())
 
-        local locals = string.sub(tostring(stack[2].locals) .. tostring(stack[3].locals), 1, 2030 - #trace - #stack[1].locals) or "???"
+        local locals = string.sub(tostring(stack[2].locals) .. "--\n" .. tostring(stack[3].locals), 1, 2030 - #trace - #stack[1].locals) or "???"
 
         post(addon and (addon.important and development) or channel,
             {
