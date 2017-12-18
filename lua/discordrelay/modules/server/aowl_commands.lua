@@ -32,7 +32,7 @@ function aowl_commands.Init()
                             ["type"] = "rich",
                             ["fields"] = {
                                 [1] = {
-                                    ["name"] = alias,
+                                    ["name"] = "aowl " .. alias,
                                     ["value"] = tostring(arg_line),
                                     ["inline"] = false
                                 }
@@ -56,7 +56,7 @@ function aowl_commands.Init()
                         ["type"] = "rich",
                         ["fields"] = {
                             [1] = {
-                                ["name"] = alias,
+                                ["name"] = "aowl " .. alias,
                                 ["value"] = tostring(arg_line),
                                 ["inline"] = false
                             }
