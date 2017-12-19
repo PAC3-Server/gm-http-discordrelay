@@ -51,52 +51,45 @@ function luaerror_to_channel.Init()
     github["vgui"] = github["includes"]
     github["weapons"] = github["includes"]
 
-    local function DoError(msg, stack, client)
+    hook.Add("LuaError", "DiscordRelayErrorMsg", function(msg, traceback, stack, client)
         if luaerror_to_channel.errors[msg] then return end
 
-		local addon
+		local addon_info
+		local addon_name
 
 		for i, info in ipairs(stack) do
-			local addon_name = string.lower(src:match("lua/(.-)/") or "???")
-			if github[addon_name] then
-				addon = github[addon_name]
+			addon_name = info.source:match("lua/(.-)/")
+			if addon_name and github[addon_name:lower()] then
+				addon_info = github[addon_name:lower()]
 				break
 			end
 		end
 
-		local info = stack[1]
-		local src = info.short_src
+		if not addon_name then
+			addon_name = stack[1].source or "???"
+		end
 
-		local extra = src:match("lua/.-/(.-)/")
-		trace = trace:gsub(">", "\\>")
-		trace = trace:gsub("<", "\\<")
-
-        local function getLink(l, n)
-            local n = n or ""
-            local addon = l:match("lua/(.-)/")
-            return addon and (addon and "[" .. l .. ":" .. n .. ":](" .. addon.url .. l .. "#L" .. n .. ")")
-                or l .. n
-        end
-
-        trace = trace:gsub("(lua/.-):(%d+):?", getLink)
+		if addon_info then
+			traceback = traceback:gsub("(lua/.-):(%d+):?", function(path, line)
+				return "[" .. path .. ":" .. line .. ":](" .. addon_info.url .. path .. "#L" .. line .. ")"
+			end)
+		end
 
         client = IsValid(client) and client
         avatar = client and discordrelay.util.GetAvatar(client:SteamID())
 
-        local locals = string.sub(stack[1].locals, 1, 2030 - #trace) or "???"
-
-        post(addon and (addon.important and development) or channel,
+        post(addon_info and (addon_info.important and development) or channel,
             {
-                ["content"] = addon and (addon.mention and ("<@" .. addon.mention .. ">\n")) or "",
+                ["content"] = addon_info and (addon_info.mention and ("<@" .. addon_info.mention .. ">\n")) or "",
                 ["embed"] = {
-                    ["title"] = "",
-                    ["description"] = "```lua\n" .. locals .. "```\n" .. trace,
+                    ["title"] = msg,
+                    ["description"] = string.sub(traceback, 1, 2030 - #traceback),
                     ["type"] = "rich",
                     ["color"] = 0xb30000,
                     ["author"] = {
-                        ["name"] = ((addon .. (extra and ("/" .. extra) or "")) or "lua") .. " error" .. (client and (" from: " .. client:Nick()) or "" ),
-                        ["url"] = client and ("http://steamcommunity.com/profiles/" .. tostring(util.SteamIDTo64(client:SteamID()))) or (addon and addon.url) or "",
-                        ["icon_url"] = avatar and tostring(avatar) or (addon and addon.icon or "https://identicons.github.com/" .. addon .. ".png")
+                        ["name"] = addon_name .. " lua error" .. (client and (" from: " .. client:Nick()) or ""),
+                        ["url"] = client and ("http://steamcommunity.com/profiles/" .. tostring(util.SteamIDTo64(client:SteamID()))) or (addon_info and addon_info.url) or "",
+                        ["icon_url"] = avatar and tostring(avatar) or (addon_info and addon_info.icon or "https://identicons.github.com/" .. addon_name .. ".png")
                     },
                     ["footer"] = {
                         ["text"] = tostring(os.date())
@@ -105,19 +98,15 @@ function luaerror_to_channel.Init()
             })
 
         luaerror_to_channel.errors[msg] = {addon or "generic", stack = stack, msg = msg}
-    end
-
-    hook.Add("LuaError", "DiscordRelayErrorMsg", DoError)
-    hook.Add("ClientLuaError", "DiscordRelayClientErrorMsg", DoError)
+    end)
 end
 
 function luaerror_to_channel.Remove()
     hook.Remove("LuaError", "DiscordRelayErrorMsg")
-    hook.Remove("ClientLuaError", "DiscordRelayClientErrorMsg")
 
     if discordrelay.modules.luaerror_to_channel then
         discordrelay.modules.luaerror_to_channel = nil
     end
 end
 
-return luaerror_to_channel
+luaerror_to_channel.Init()
