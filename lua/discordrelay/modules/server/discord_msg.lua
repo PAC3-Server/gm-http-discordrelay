@@ -16,7 +16,7 @@ function discord_msg.Handle(input,previous,future)
         end
         if input.embeds then
             for i = 1, #input.embeds do
-                ret = ret .. "\n" .. (input.embeds[i].title and input.embeds[i].title or "") .. "\n" .. input.embeds[i].description
+                ret = ret .. "\n" .. (input.embeds[i].title and input.embeds[i].title or "") .. "\n" .. (input.embeds[i].description or "")
             end
         end
         local send = hook.Run("DiscordRelayMessage", input)
