@@ -52,7 +52,7 @@ function luaerror_to_channel.Init()
     github["weapons"] = github["includes"]
 
     hook.Add("LuaError", "DiscordRelayErrorMsg", function(msg, traceback, stack, client)
-        --if luaerror_to_channel.errors[msg] then return end
+        if luaerror_to_channel.errors[msg] then return end
 
 		local addon_info
 		local addon_name
