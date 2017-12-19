@@ -109,4 +109,4 @@ function luaerror_to_channel.Remove()
     end
 end
 
-luaerror_to_channel.Init()
+return luaerror_to_channel
