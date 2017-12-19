@@ -52,7 +52,7 @@ function luaerror_to_channel.Init()
     github["weapons"] = github["includes"]
 
     hook.Add("LuaError", "DiscordRelayErrorMsg", function(msg, traceback, stack, client)
-        if luaerror_to_channel.errors[msg] then return end
+        --if luaerror_to_channel.errors[msg] then return end
 
 		local addon_info
 		local addon_name
@@ -70,9 +70,10 @@ function luaerror_to_channel.Init()
 		end
 
 		if addon_info then
-			traceback = traceback:gsub("(lua/.-):(%d+):?", function(path, line)
-				return "[" .. path .. ":" .. line .. ":](" .. addon_info.url .. path .. "#L" .. line .. ")"
+			msg = msg:gsub("(lua/.-):(%d+): ", function(path, line)
+				return addon_info.url .. path .. "#L" .. line .. "\n"
 			end)
+			msg = msg:gsub("addons/.-/http", "http")
 		end
 
         client = IsValid(client) and client
@@ -80,10 +81,12 @@ function luaerror_to_channel.Init()
 
         post(addon_info and (addon_info.important and development) or channel,
             {
+				content = msg .. "\n```lua\n" .. string.sub(traceback, 1, 2030 - #traceback) .. "```",
+                --[==[[
                 ["content"] = addon_info and (addon_info.mention and ("<@" .. addon_info.mention .. ">\n")) or "",
-                ["embed"] = {
+				"embed"] = {
                     ["title"] = msg,
-                    ["description"] = string.sub(traceback, 1, 2030 - #traceback),
+                    ["description"] = "```lua\n" .. string.sub(traceback, 1, 2030 - #traceback) .. "```",
                     ["type"] = "rich",
                     ["color"] = 0xb30000,
                     ["author"] = {
@@ -94,7 +97,7 @@ function luaerror_to_channel.Init()
                     ["footer"] = {
                         ["text"] = tostring(os.date())
                     }
-                }
+                }]==]
             })
 
         luaerror_to_channel.errors[msg] = {addon or "generic", stack = stack, msg = msg}
