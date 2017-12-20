@@ -81,7 +81,7 @@ function luaerror_to_channel.Init()
 
         post(addon_info and (addon_info.important and development) or channel,
             {
-				content = msg .. "\n```lua\n" .. string.sub(traceback, 1, 2030 - #traceback) .. "```",
+				content = "`" .. msg .. "`" .. "\n```lua\n" .. traceback:sub(-1900) .. "```",
                 --[==[[
                 ["content"] = addon_info and (addon_info.mention and ("<@" .. addon_info.mention .. ">\n")) or "",
 				"embed"] = {
