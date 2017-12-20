@@ -25,7 +25,11 @@ function luaerror_to_channel.Init()
         ["notagain"] = {
             ["url"] = "https://github.com/PAC3-Server/notagain/tree/master/",
             ["icon"] = "https://avatars1.githubusercontent.com/u/25587531?v=4",
-            ["mention"] = nil -- notagain or server role maybe?
+            ["mention"] = {
+				jrpg = {"208633661787078657", --[["205976012050268160"]]}, -- caps and earu
+				goluwa = "208633661787078657", -- caps
+
+			} -- notagain or server role maybe?
         },
         ["easychat"] = {
             ["url"] = "https://github.com/PAC3-Server/EasyChat/tree/master/",
@@ -41,67 +45,133 @@ function luaerror_to_channel.Init()
             ["url"] = "https://github.com/Facepunch/garrysmod/tree/master/garrysmod/",
             ["icon"] = "https://avatars0.githubusercontent.com/u/3371040?v=4",
             ["mention"] = nil
-        }
+        },
     }
     github["vgui"] = github["includes"]
     github["weapons"] = github["includes"]
     github["entities"] = github["includes"]
     github["derma"] = github["includes"]
     github["menu"] = github["includes"]
+    github["matproxy"] = github["includes"]
     github["vgui"] = github["includes"]
     github["weapons"] = github["includes"]
+    github["gamemodes/base"] = github["includes"]
+    github["gamemodes/sandbox"] = github["includes"]
 
     hook.Add("LuaError", "DiscordRelayErrorMsg", function(msg, traceback, stack, client)
-        if luaerror_to_channel.errors[msg] then return end
+        if luaerror_to_channel.errors[traceback] then return end
+        luaerror_to_channel.errors[traceback] = true
 
-		local addon_info
-		local addon_name
+		local max_level = #stack
+		local min_level = 5
 
-		for i, info in ipairs(stack) do
-			addon_name = info.source:match("lua/(.-)/")
-			if addon_name and github[addon_name:lower()] then
-				addon_info = github[addon_name:lower()]
-				break
+		local mentions = ""
+		local urls = ""
+		do
+			local mentioned = {}
+
+			local function url_from_info(info, i, line)
+				local url_name = info.source:match(".+/(lua/.-%.lua)") or info.source:match("@(lua/.-%.lua)") or info.source:match("@(gamemodes/.-%.lua)")
+				local addon_info
+				if url_name then
+					url_name = url_name .. ":" .. line
+					local addon_name = info.source:match("lua/(.-)/") or info.source:match("@(gamemodes/.-)/")
+					if addon_name and github[addon_name:lower()] then
+						addon_info = github[addon_name:lower()]
+
+						local url = info.source:gsub(addon_name:StartWith("gamemodes") and "@.-(gamemodes/.+)" or "@.-(lua/.+)", function(path)
+							return addon_info.url .. path
+						end)
+						url = url .. "#L" .. line
+						url = "[" .. url_name .. "](" .. url .. ")"
+
+						if (i - min_level - 1) == -1 then
+							urls = urls .. "__**>>** **" .. url .. "** **<<**__"
+						else
+							urls = urls .. "`" .. (i - min_level - 1) .. ":` " .. url
+						end
+
+						if type(addon_info.mention) == "string" then
+							if not mentioned[addon_info.mention] then
+								mentions = mentions .. " <@" .. addon_info.mention .. ">"
+								mentioned[addon_info.mention] = true
+							end
+						elseif type(addon_info.mention) == "table" then
+							for find, ids in pairs(addon_info.mention) do
+								if url:find(find, nil, true) then
+									for _, id in ipairs(type(ids) == "string" and {ids} or ids) do
+										if not mentioned[id] then
+											mentions = mentions .. " <@" .. id .. ">"
+											mentioned[id] = true
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+
+				if not addon_info then
+					local source = info.source
+					if source == "=[C]" then
+						source = source .. " " .. info.name
+					else
+						source = source .. ":" .. line
+					end
+
+					if (i - min_level - 1) == -1 then
+						urls = urls .. "__**>>** `" .. source .. "` **<<**__"
+					else
+						urls = urls .. "`" .. (i - min_level - 1) .. ":` " .. source
+					end
+				end
+
+				urls = urls .. "\n"
+			end
+
+			-- first frame we need to use linedefined instead of currentline
+			url_from_info(stack[max_level], max_level + 1, stack[max_level].linedefined)
+
+			for i = max_level, min_level, -1 do
+				url_from_info(stack[i], i, stack[i].currentline)
 			end
 		end
 
-		if not addon_name then
-			addon_name = stack[1].source or "???"
+		local addon_info
+		local addon_name = stack[max_level].source:match("lua/(.-)/") or stack[max_level].source or "???"
+		if addon_name and github[addon_name:lower()] then
+			addon_info = github[addon_name:lower()]
 		end
 
-		if addon_info then
-			msg = msg:gsub("(lua/.-):(%d+): ", function(path, line)
-				return addon_info.url .. path .. "#L" .. line .. "\n"
-			end)
-			msg = msg:gsub("addons/.-/http", "http")
-		end
+		msg = msg:gsub("^.-%.lua.-: ", "") -- remove the location as it's not needed
 
-        client = IsValid(client) and client
+		local author = "lua error from " .. (client and client:Nick() or "SERVER")
+
+		traceback = "```lua\n" .. traceback:sub(-1900) .. "```\n"
+
+		client = IsValid(client) and client
         avatar = client and discordrelay.util.GetAvatar(client:SteamID())
 
         post(addon_info and (addon_info.important and development) or channel,
             {
-				content = "`" .. msg .. "`" .. "\n```lua\n" .. traceback:sub(-1900) .. "```",
-                --[==[[
-                ["content"] = addon_info and (addon_info.mention and ("<@" .. addon_info.mention .. ">\n")) or "",
-				"embed"] = {
-                    ["title"] = msg,
-                    ["description"] = "```lua\n" .. string.sub(traceback, 1, 2030 - #traceback) .. "```",
+				--content = author .. msg .. "\n```lua\n" .. traceback:sub(-1900) .. "```\n" .. urls,
+                ["content"] = "**" .. msg .. "**" .. mentions .. "\n" .. traceback,
+				embed = {
+                    ["description"] = urls,
                     ["type"] = "rich",
                     ["color"] = 0xb30000,
                     ["author"] = {
-                        ["name"] = addon_name .. " lua error" .. (client and (" from: " .. client:Nick()) or ""),
+                        ["name"] = author,
                         ["url"] = client and ("http://steamcommunity.com/profiles/" .. tostring(util.SteamIDTo64(client:SteamID()))) or (addon_info and addon_info.url) or "",
                         ["icon_url"] = avatar and tostring(avatar) or (addon_info and addon_info.icon or "https://identicons.github.com/" .. addon_name .. ".png")
                     },
                     ["footer"] = {
                         ["text"] = tostring(os.date())
                     }
-                }]==]
-            })
-
-        luaerror_to_channel.errors[msg] = {addon or "generic", stack = stack, msg = msg}
-    end)
+                }
+            }
+		)
+	end)
 end
 
 function luaerror_to_channel.Remove()
