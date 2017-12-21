@@ -157,7 +157,7 @@ function luaerror_to_channel.Init()
                 --content = author .. msg .. "\n```lua\n" .. traceback:sub(-1900) .. "```\n" .. urls,
                 ["content"] = "**" .. msg .. "**" .. mentions .. "\n" .. traceback,
                 embed = {
-                    ["description"] = urls,
+                    ["description"] = urls:sub(-1900),
                     ["type"] = "rich",
                     ["color"] = 0xb30000,
                     ["author"] = {
