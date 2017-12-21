@@ -26,10 +26,10 @@ function luaerror_to_channel.Init()
             ["url"] = "https://github.com/PAC3-Server/notagain/tree/master/",
             ["icon"] = "https://avatars1.githubusercontent.com/u/25587531?v=4",
             ["mention"] = {
-				jrpg = {"208633661787078657", --[["205976012050268160"]]}, -- caps and earu
-				goluwa = "208633661787078657", -- caps
+                jrpg = {"208633661787078657", --[["205976012050268160"]]}, -- caps and earu
+                goluwa = "208633661787078657", -- caps
 
-			} -- notagain or server role maybe?
+            } -- notagain or server role maybe?
         },
         ["easychat"] = {
             ["url"] = "https://github.com/PAC3-Server/EasyChat/tree/master/",
@@ -62,101 +62,101 @@ function luaerror_to_channel.Init()
         if luaerror_to_channel.errors[traceback] then return end
         luaerror_to_channel.errors[traceback] = true
 
-		local max_level = #stack
-		local min_level = 5
+        local max_level = #stack
+        local min_level = 5
 
-		local mentions = ""
-		local urls = ""
-		do
-			local mentioned = {}
+        local mentions = ""
+        local urls = ""
+        do
+            local mentioned = {}
 
-			local function url_from_info(info, i, line)
-				local url_name = info.source:match(".+/(lua/.-%.lua)") or info.source:match("@(lua/.-%.lua)") or info.source:match("@(gamemodes/.-%.lua)")
-				local addon_info
-				if url_name then
-					url_name = url_name .. ":" .. line
-					local addon_name = info.source:match("lua/(.-)/") or info.source:match("@(gamemodes/.-)/")
-					if addon_name and github[addon_name:lower()] then
-						addon_info = github[addon_name:lower()]
+            local function url_from_info(info, i, line)
+                local url_name = info.source:match(".+/(lua/.-%.lua)") or info.source:match("@(lua/.-%.lua)") or info.source:match("@(gamemodes/.-%.lua)")
+                local addon_info
+                if url_name then
+                    url_name = url_name .. ":" .. line
+                    local addon_name = info.source:match("lua/(.-)/") or info.source:match("@(gamemodes/.-)/")
+                    if addon_name and github[addon_name:lower()] then
+                        addon_info = github[addon_name:lower()]
 
-						local url = info.source:gsub(addon_name:StartWith("gamemodes") and "@.-(gamemodes/.+)" or "@.-(lua/.+)", function(path)
-							return addon_info.url .. path
-						end)
-						url = url .. "#L" .. line
-						url = "[" .. url_name .. "](" .. url .. ")"
+                        local url = info.source:gsub(addon_name:StartWith("gamemodes") and "@.-(gamemodes/.+)" or "@.-(lua/.+)", function(path)
+                            return addon_info.url .. path
+                        end)
+                        url = url .. "#L" .. line
+                        url = "[" .. url_name .. "](" .. url .. ")"
 
-						if (i - min_level - 1) == -1 then
-							urls = urls .. "__**>>** **" .. url .. "** **<<**__"
-						else
-							urls = urls .. "`" .. (i - min_level - 1) .. ":` " .. url
-						end
+                        if (i - min_level - 1) == -1 then
+                            urls = urls .. "__**>>** **" .. url .. "** **<<**__"
+                        else
+                            urls = urls .. "`" .. (i - min_level - 1) .. ":` " .. url
+                        end
 
-						if type(addon_info.mention) == "string" then
-							if not mentioned[addon_info.mention] then
-								mentions = mentions .. " <@" .. addon_info.mention .. ">"
-								mentioned[addon_info.mention] = true
-							end
-						elseif type(addon_info.mention) == "table" then
-							for find, ids in pairs(addon_info.mention) do
-								if url:find(find, nil, true) then
-									for _, id in ipairs(type(ids) == "string" and {ids} or ids) do
-										if not mentioned[id] then
-											mentions = mentions .. " <@" .. id .. ">"
-											mentioned[id] = true
-										end
-									end
-								end
-							end
-						end
-					end
-				end
+                        if type(addon_info.mention) == "string" then
+                            if not mentioned[addon_info.mention] then
+                                mentions = mentions .. " <@" .. addon_info.mention .. ">"
+                                mentioned[addon_info.mention] = true
+                            end
+                        elseif type(addon_info.mention) == "table" then
+                            for find, ids in pairs(addon_info.mention) do
+                                if url:find(find, nil, true) then
+                                    for _, id in ipairs(type(ids) == "string" and {ids} or ids) do
+                                        if not mentioned[id] then
+                                            mentions = mentions .. " <@" .. id .. ">"
+                                            mentioned[id] = true
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
 
-				if not addon_info then
-					local source = info.source
-					if source == "=[C]" then
-						source = source .. " " .. info.name
-					else
-						source = source .. ":" .. line
-					end
+                if not addon_info then
+                    local source = info.source
+                    if source == "=[C]" then
+                        source = source .. " " .. info.name
+                    else
+                        source = source .. ":" .. line
+                    end
 
-					if (i - min_level - 1) == -1 then
-						urls = urls .. "__**>>** `" .. source .. "` **<<**__"
-					else
-						urls = urls .. "`" .. (i - min_level - 1) .. ":` " .. source
-					end
-				end
+                    if (i - min_level - 1) == -1 then
+                        urls = urls .. "__**>>** `" .. source .. "` **<<**__"
+                    else
+                        urls = urls .. "`" .. (i - min_level - 1) .. ":` " .. source
+                    end
+                end
 
-				urls = urls .. "\n"
-			end
+                urls = urls .. "\n"
+            end
 
-			-- first frame we need to use linedefined instead of currentline
-			url_from_info(stack[max_level], max_level + 1, stack[max_level].linedefined)
+            -- first frame we need to use linedefined instead of currentline
+            url_from_info(stack[max_level], max_level + 1, stack[max_level].linedefined)
 
-			for i = max_level, min_level, -1 do
-				url_from_info(stack[i], i, stack[i].currentline)
-			end
-		end
+            for i = max_level, min_level, -1 do
+                url_from_info(stack[i], i, stack[i].currentline)
+            end
+        end
 
-		local addon_info
-		local addon_name = stack[max_level].source:match("lua/(.-)/") or stack[max_level].source or "???"
-		if addon_name and github[addon_name:lower()] then
-			addon_info = github[addon_name:lower()]
-		end
+        local addon_info
+        local addon_name = stack[max_level].source:match("lua/(.-)/") or stack[max_level].source or "???"
+        if addon_name and github[addon_name:lower()] then
+            addon_info = github[addon_name:lower()]
+        end
 
-		msg = msg:gsub("^.-%.lua.-: ", "") -- remove the location as it's not needed
+        msg = msg:gsub("^.-%.lua.-: ", "") -- remove the location as it's not needed
 
-		local author = "lua error from " .. (client and client:Nick() or "SERVER")
+        local author = "lua error from " .. (client and client:Nick() or "SERVER")
 
-		traceback = "```lua\n" .. traceback:sub(-1900) .. "```\n"
+        traceback = "```lua\n" .. traceback:sub(-1900) .. "```\n"
 
-		client = IsValid(client) and client
+        client = IsValid(client) and client
         avatar = client and discordrelay.util.GetAvatar(client:SteamID())
 
         post(addon_info and (addon_info.important and development) or channel,
             {
-				--content = author .. msg .. "\n```lua\n" .. traceback:sub(-1900) .. "```\n" .. urls,
+                --content = author .. msg .. "\n```lua\n" .. traceback:sub(-1900) .. "```\n" .. urls,
                 ["content"] = "**" .. msg .. "**" .. mentions .. "\n" .. traceback,
-				embed = {
+                embed = {
                     ["description"] = urls,
                     ["type"] = "rich",
                     ["color"] = 0xb30000,
@@ -170,8 +170,8 @@ function luaerror_to_channel.Init()
                     }
                 }
             }
-		)
-	end)
+        )
+    end)
 end
 
 function luaerror_to_channel.Remove()
