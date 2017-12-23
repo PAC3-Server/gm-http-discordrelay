@@ -10,8 +10,8 @@ function ingame_msg.Init()
 
         if discordrelay and discordrelay.enabled then
             --Parse mentions and replace it into the message
-            if string.match(text, "@%a+") then
-                for n in string.gmatch( text, "@(%a+)") do
+            if string.match(text, "@%w+") then
+                for n in string.gmatch( text, "@(%w+)") do
                     local member = discordrelay.members[string.lower(n)]
                     if member then
                         text = string.Replace(string.gsub(text,"<.->",""), "@" .. n, "<@" .. member.user.id .. ">")
