@@ -56,7 +56,7 @@ function status.Handle(input, previous, future)
                         ["inline"] = true
                     }
                 },
-                ["color"] = ply:IsAFK() and 0xffff00 or (ply:Alive() and 0x00b300 or 0xb30000)
+                ["color"] = ply:IsAFK() and 0xccc000 or (ply:Alive() and 0x008000 or 0x700000)
             }
         end
         if amount > 0 then
@@ -79,7 +79,7 @@ function status.Handle(input, previous, future)
                         ["title"] = "Server status:",
                         ["description"] = "No Players are currently on the Server...\nWant to join? Click this link: steam://connect/threekelv.in",
                         ["type"] = "rich",
-                        ["color"] = 0x5a5a5a
+                        ["color"] = 0x555555
                     }
                 }
             })

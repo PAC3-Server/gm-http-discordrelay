@@ -37,7 +37,7 @@ function aowl_commands.Init()
                                     ["inline"] = false
                                 }
                             },
-                            ["color"] = 0xffff00
+                            ["color"] = 0xccc000
                         }
                     }
                 })
@@ -61,7 +61,7 @@ function aowl_commands.Init()
                                 ["inline"] = false
                             }
                         },
-                        ["color"] = 0xffff00
+                        ["color"] = 0xccc000
                     }
                 }
             })
@@ -104,7 +104,7 @@ function aowl_commands.Init()
                                         ["inline"] = false
                                     }
                                 },
-                                ["color"] = 0xb30000
+                                ["color"] = 0x700000
                             }
                         }
                     })
@@ -131,7 +131,7 @@ function aowl_commands.Init()
                                         ["inline"] = false
                                     }
                                 },
-                                ["color"] = 0x00b300
+                                ["color"] = 0x008000
                             }
                         }
                     })

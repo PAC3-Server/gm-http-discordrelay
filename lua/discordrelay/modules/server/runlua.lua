@@ -58,7 +58,7 @@ function runlua.Init()
                             ["url"] = "http://steamcommunity.com/profiles/" .. ply:SteamID64()
                         },
                         ["type"] = "rich",
-                        ["color"] = 0x00b300
+                        ["color"] = 0x008000
                     }
                 }
             })
@@ -157,7 +157,7 @@ function runlua.Handle(input)
                                 [1] = {
                                 ["description"] = ":interrobang: **Error: **" .. data.error,
                                     ["type"] = "rich",
-                                    ["color"] = 0xb30000
+                                    ["color"] = 0x700000
                                 }
                             }
                         })
@@ -170,7 +170,7 @@ function runlua.Handle(input)
                             [1] = {
                                 ["description"] = ":interrobang: **Cannot run nothing!**",
                                 ["type"] = "rich",
-                                ["color"] = 0xb30000
+                                ["color"] = 0x700000
                             }
                         }
                     })
@@ -183,7 +183,7 @@ function runlua.Handle(input)
                         [1] = {
                             ["description"] = ":no_entry: **Access denied!**",
                             ["type"] = "rich",
-                            ["color"] = 0xb30000
+                            ["color"] = 0x700000
                         }
                     }
                 })

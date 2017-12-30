@@ -81,7 +81,7 @@ function info.Handle(input, previous, future)
                             },
                         },
                             ["type"] = "rich",
-                            ["color"] = ply:IsAFK() and 0xffff00 or (ply:Alive() and 0x00b300 or 0xb30000)
+                            ["color"] = ply:IsAFK() and 0xccc000 or (ply:Alive() and 0x008000 or 0x700000)
                         }
                     }
                 })
@@ -93,7 +93,7 @@ function info.Handle(input, previous, future)
                         [1] = {
                         ["description"] = ":interrobang: Couldn't find that User",
                             ["type"] = "rich",
-                            ["color"] = 0xb30000
+                            ["color"] = 0x700000
                         }
                     }
                 })

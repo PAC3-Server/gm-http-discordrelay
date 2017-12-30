@@ -22,7 +22,7 @@ function rcon.Handle(input,previous,future)
                         [1] = {
                             ["description"] = ":no_entry: **Access denied!**",
                             ["type"] = "rich",
-                            ["color"] = 0xb30000
+                            ["color"] = 0x700000
                         }
                     }
                 })

@@ -177,7 +177,7 @@ function luaerror_to_channel.Init()
                 embed = {
                     ["description"] = urls:sub(-1900),
                     ["type"] = "rich",
-                    ["color"] = 0xb30000,
+                    ["color"] = 0x700000,
                     ["author"] = {
                         ["name"] = author,
                         ["url"] = client and ("http://steamcommunity.com/profiles/" .. tostring(util.SteamIDTo64(client:SteamID()))) or (addon_info and addon_info.url) or "",
