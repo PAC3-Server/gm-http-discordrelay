@@ -184,7 +184,7 @@ function discordrelay.notify(...)
                 ["title"] = "INFO",
                 ["description"] = tostring(...),
                 ["type"] = "rich",
-                ["color"] = 0xffff00
+                ["color"] = 0xccc000
             }
         }
     })
@@ -479,7 +479,7 @@ function discordrelay.DiscordRelayFetchMessages()
                                     ["title"] = "MODULE ERROR: " .. name,
                                     ["description"] = "```" .. why .. "```",
                                     ["type"] = "rich",
-                                    ["color"] = 0xb30000
+                                    ["color"] = 0x700000
                                 }
                             }
                         })
@@ -520,7 +520,7 @@ hook.Add("ShutDown", "DiscordRelayShutDown", function()
                     ["title"] = "",
                     ["description"] = "**Server has shutdown.**",
                     ["type"] = "rich",
-                    ["color"] = 0xb30000
+                    ["color"] = 0x700000
                 }
             }
         })
