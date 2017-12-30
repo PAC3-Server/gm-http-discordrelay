@@ -65,8 +65,8 @@ function luaerror_to_channel.Init()
         if client.discordrelay_luaerror_next_check and client.discordrelay_luaerror_next_check < time then
             if client.discordrelay_luaerror_count > 10 then
                 client.discordrelay_luaerror_halt_time = time + 30
-                print(client, "is erroring 10 different errors in less than a second")
-                print(client, "not accepting errors from this player for 30 seconds")
+                discordrelay.log(2, client, "is erroring 10 different errors in less than a second")
+                discordrelay.log(2, client, "not accepting errors from this player for 30 seconds")
                 return
             end
         end
