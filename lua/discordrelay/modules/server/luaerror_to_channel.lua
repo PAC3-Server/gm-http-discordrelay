@@ -59,12 +59,12 @@ function luaerror_to_channel.Init()
     github["gamemodes/sandbox"] = github["includes"]
 
     hook.Add("LuaError", "DiscordRelayErrorMsg", function(msg, traceback, stack, client)
-        local time = RealTime()
-        if client.discordrelay_luaerror_halt_time and client.discordrelay_luaerror_halt_time < time then return end
+        if client.discordrelay_luaerror_halt_time and client.discordrelay_luaerror_halt_time < SysTime() then return end
 
-        if client.discordrelay_luaerror_next_check and client.discordrelay_luaerror_next_check < time then
+        if client.discordrelay_luaerror_next_check and client.discordrelay_luaerror_next_check < SysTime() then
             if client.discordrelay_luaerror_count > 10 then
-                client.discordrelay_luaerror_halt_time = time + 30
+                client.discordrelay_luaerror_halt_time = SysTime() + 30
+                client.discordrelay_luaerror_count = 0
                 discordrelay.log(2, client, "is erroring 10 different errors in less than a second")
                 discordrelay.log(2, client, "not accepting errors from this player for 30 seconds")
                 return
@@ -78,7 +78,7 @@ function luaerror_to_channel.Init()
         luaerror_to_channel.errors[hash] = true
 
         client.discordrelay_luaerror_count = (client.discordrelay_luaerror_count or 0) + 1
-        client.discordrelay_luaerror_next_check = time + 1
+        client.discordrelay_luaerror_next_check = SysTime() + 1
 
         local max_level = #stack
         local min_level = 5
