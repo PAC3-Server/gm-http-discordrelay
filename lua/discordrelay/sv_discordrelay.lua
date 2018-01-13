@@ -420,7 +420,6 @@ function discordrelay.DiscordRelayFetchMessages()
             setDelay(1.5)
             discordrelay.notify("Back to normal speed!")
             throttled = false
-            return
         end
 
         abort = 0
