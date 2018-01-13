@@ -419,7 +419,6 @@ function discordrelay.DiscordRelayFetchMessages()
         elseif throttled then -- no bad code and 500? back to normal
             setDelay(1.5)
             discordrelay.notify("Back to normal speed!")
-            throttled = false
         end
 
         abort = 0
