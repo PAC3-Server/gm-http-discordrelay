@@ -19,7 +19,7 @@ function luaerror_to_channel.Init()
         ["pac3"] = {
             ["url"] = "https://github.com/CapsAdmin/pac3/tree/master/",
             ["icon"] = "https://avatars3.githubusercontent.com/u/204157?v=4",
-            ["mention"] = "208633661787078657", -- caps
+            --["mention"] = "208633661787078657", -- caps
             ["important"] = true
         },
         ["notagain"] = {
