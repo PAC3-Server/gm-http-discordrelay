@@ -58,7 +58,7 @@ discordrelay.guild = config.guildid or "260866188962168832"
 discordrelay.admin_roles = config.admin_roles or {"260870255486697472", "260932947140411412"}
 discordrelay.relayChannel = config.relaychannel or "273575417401573377"
 
-discordrelay.config.webhookenabled = config.webhookenabled or false
+discordrelay.config.webhookenabled = config.webhookid and config.webhooktoken or false
 
 discordrelay.webhookid = config.webhookid
 discordrelay.webhooktoken = config.webhooktoken
