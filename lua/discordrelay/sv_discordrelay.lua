@@ -40,39 +40,28 @@ function discordrelay.log(level, ...)  -- most expensive print ever
     end
 end
 
+-- config for reading messages and core functionality
 discordrelay.config = {}
 
--- token for reading messages and core functionality
-local token = file.Read( "discordbot_token.txt", "DATA" )
-
-if not token then
-    discordrelay.log(3, "discordbot_token.txt", "not found.")
-end
-
-if not token then return end
-
-discordrelay.config.webhookenabled = true
-
--- webhooktoken for posting messages
-local webhooktoken = file.Read( "webhook_token.txt", "DATA" )
-
-if not webhooktoken then
-    discordrelay.log(2, "webhook_token.txt", " not found. Discordrelay unable to post messages on Discord.")
-    discordrelay.config.webhookenabled = false
-end
+assert(file.Exists("discordrelay_config.json", "DATA"),"Config File Not Found!")
+local config = util.JSONToTable(file.Read( "discordrelay_config.json", "DATA" ))
+assert(config and istable(config),"Invalid Config File?")
+assert(config.token, "Missing Token! (for reading messages)")
 
 util.AddNetworkString("DiscordMessage")
 
 -- main config
-discordrelay.username = "Server"
-discordrelay.avatar = "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png"
-discordrelay.token = token
-discordrelay.guild = "260866188962168832"
-discordrelay.admin_roles = {"260870255486697472", "260932947140411412"}
-discordrelay.relayChannel = "273575417401573377"
+discordrelay.username = config.username or "Server"
+discordrelay.avatar = config.avatar or "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png"
+discordrelay.token = config.token
+discordrelay.guild = config.guildid or "260866188962168832"
+discordrelay.admin_roles = config.admin_roles or {"260870255486697472", "260932947140411412"}
+discordrelay.relayChannel = config.relaychannel or "273575417401573377"
 
-discordrelay.webhookid = "274957435091812352"
-discordrelay.webhooktoken = webhooktoken
+discordrelay.config.webhookenabled = config.webhookenabled or false
+
+discordrelay.webhookid = config.webhookid
+discordrelay.webhooktoken = config.webhooktoken
 
 discordrelay.endpoints = discordrelay.endpoints or {}
 discordrelay.endpoints.base = "https://discordapp.com/api"
