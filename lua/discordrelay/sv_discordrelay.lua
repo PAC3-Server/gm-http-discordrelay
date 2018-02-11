@@ -512,7 +512,7 @@ hook.Add("ShutDown", "DiscordRelayShutDown", function()
             ["embeds"] = {
                 [1] = {
                     ["title"] = "",
-                    ["description"] = "**Server has shutdown.**",
+                    ["description"] = "**Server has shutdown or is changing the Map.**",
                     ["type"] = "rich",
                     ["color"] = 0x700000
                 }
@@ -529,7 +529,7 @@ hook.Add("Initialize", "DiscordRelayStartup", function()
             ["embeds"] = {
                 [1] = {
                     ["title"] = "",
-                    ["description"] = "**Server has started.**",
+                    ["description"] = "**Server has started. (" .. game.GetMap() .. ")" or "???" .. "**",
                     ["type"] = "rich",
                     ["color"] = 0x182687
                 }
