@@ -41,6 +41,10 @@ function luaerror_to_channel.Init()
             ["icon"] = "https://avatars0.githubusercontent.com/u/3000604?v=4",
             ["mention"] = "94829082360942592", -- techbot
         },
+        ["lambda"] = {
+            ["url"] = "https://github.com/ZehMatt/Lambda/tree/master/",
+            ["icon"] = "https://avatars3.githubusercontent.com/u/5415177?s=460&v=4",
+        },
         ["includes"] = { -- garry stuff
             ["url"] = "https://github.com/Facepunch/garrysmod/tree/master/garrysmod/",
             ["icon"] = "https://avatars0.githubusercontent.com/u/3371040?v=4",
@@ -57,6 +61,7 @@ function luaerror_to_channel.Init()
     github["weapons"] = github["includes"]
     github["gamemodes/base"] = github["includes"]
     github["gamemodes/sandbox"] = github["includes"]
+    github["gamemodes/lambda"] = github["lambda"]
 
     hook.Add("LuaError", "DiscordRelayErrorMsg", function(msg, traceback, stack, client)
         if client.discordrelay_luaerror_halt_time and client.discordrelay_luaerror_halt_time < SysTime() then return end
