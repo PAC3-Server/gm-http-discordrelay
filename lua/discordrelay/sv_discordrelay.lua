@@ -529,7 +529,7 @@ hook.Add("Initialize", "DiscordRelayStartup", function()
             ["embeds"] = {
                 [1] = {
                     ["title"] = "",
-                    ["description"] = "**Server has started. (" .. game.GetMap() or "???" .. ")" .. "**",
+                    ["description"] = "**Server has started. (" .. (game.GetMap() or "???") .. ")" .. "**",
                     ["type"] = "rich",
                     ["color"] = 0x182687
                 }
