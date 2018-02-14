@@ -64,17 +64,21 @@ function luaerror_to_channel.Init()
     github["gamemodes/lambda"] = github["lambda"]
 
     hook.Add("LuaError", "DiscordRelayErrorMsg", function(msg, traceback, stack, client)
-        if client.discordrelay_luaerror_halt_time and client.discordrelay_luaerror_halt_time < SysTime() then return end
+		client = IsValid(client) and client
 
-        if client.discordrelay_luaerror_next_check and client.discordrelay_luaerror_next_check < SysTime() then
-            if client.discordrelay_luaerror_count > 10 then
-                client.discordrelay_luaerror_halt_time = SysTime() + 30
-                client.discordrelay_luaerror_count = 0
-                discordrelay.log(2, client, "is erroring 10 different errors in less than a second")
-                discordrelay.log(2, client, "not accepting errors from this player for 30 seconds")
-                return
-            end
-        end
+		if client then
+			if client.discordrelay_luaerror_halt_time and client.discordrelay_luaerror_halt_time < SysTime() then return end
+
+			if client.discordrelay_luaerror_next_check and client.discordrelay_luaerror_next_check < SysTime() then
+				if client.discordrelay_luaerror_count > 10 then
+					client.discordrelay_luaerror_halt_time = SysTime() + 30
+					client.discordrelay_luaerror_count = 0
+					discordrelay.log(2, client, "is erroring 10 different errors in less than a second")
+					discordrelay.log(2, client, "not accepting errors from this player for 30 seconds")
+					return
+				end
+			end
+		end
 
         -- sorta kinda makes it not unique every frame
         local hash = msg .. traceback:gsub(" = .-\n", "")
@@ -82,8 +86,10 @@ function luaerror_to_channel.Init()
         if luaerror_to_channel.errors[hash] then return end
         luaerror_to_channel.errors[hash] = true
 
-        client.discordrelay_luaerror_count = (client.discordrelay_luaerror_count or 0) + 1
-        client.discordrelay_luaerror_next_check = SysTime() + 1
+		if client then
+			client.discordrelay_luaerror_count = (client.discordrelay_luaerror_count or 0) + 1
+			client.discordrelay_luaerror_next_check = SysTime() + 1
+		end
 
         local max_level = #stack
         local min_level = 5
@@ -172,7 +178,6 @@ function luaerror_to_channel.Init()
 
         traceback = "```lua\n" .. traceback:sub(-1900) .. "```\n"
 
-        client = IsValid(client) and client
         avatar = client and discordrelay.util.GetAvatar(client:SteamID())
 
         post(addon_info and (addon_info.important and development) or channel,
