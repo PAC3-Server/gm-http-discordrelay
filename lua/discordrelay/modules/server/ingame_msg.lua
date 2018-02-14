@@ -3,41 +3,41 @@ local discordrelay = discordrelay
 
 function ingame_msg.Init()
 
-    hook.Add("PlayerSay", "DiscordRelayChat", function(ply, text, teamChat)
-        if aowl and aowl.ParseString(text) then
-            return
-        end
+	hook.Add("PlayerSay", "DiscordRelayChat", function(ply, text, teamChat)
+		if aowl and aowl.ParseString(text) then
+			return
+		end
 
-        if discordrelay and discordrelay.enabled then
-            --Parse mentions and replace it into the message
-            if string.match(text, "@%w+") then
-                for n in string.gmatch( text, "@(%w+)") do
-                    local member = discordrelay.members[string.lower(n)]
-                    if member then
-                        text = string.Replace(string.gsub(text,"<.->",""), "@" .. n, "<@" .. member.user.id .. ">")
-                    end
-                end
-            end
+		if discordrelay and discordrelay.enabled then
+			--Parse mentions and replace it into the message
+			if string.match(text, "@%w+") then
+				for n in string.gmatch( text, "@(%w+)") do
+					local member = discordrelay.members[string.lower(n)]
+					if member then
+						text = string.Replace(string.gsub(text,"<.->",""), "@" .. n, "<@" .. member.user.id .. ">")
+					end
+				end
+			end
 
-            text = string.Replace(text, "@everyone", "everyone")
-            text = string.Replace(text, "@here", "here")
+			text = string.Replace(text, "@everyone", "everyone")
+			text = string.Replace(text, "@here", "here")
 
-            discordrelay.util.GetAvatar(ply:SteamID(), function(ret)
-                discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
-                    ["username"] = string.sub(string.gsub(ply:Nick(),"<.->",""),1,32),
-                    ["content"] = text,
-                    ["avatar_url"] = ret
-                })
-            end)
-        end
-    end)
+			discordrelay.util.GetAvatar(ply:SteamID(), function(ret)
+				discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
+					["username"] = string.sub(string.gsub(ply:Nick(),"<.->",""),1,32),
+					["content"] = text,
+					["avatar_url"] = ret
+				})
+			end)
+		end
+	end)
 end
 
 function ingame_msg.Remove()
-    hook.Remove("PlayerSay", "DiscordRelayChat")
-    if discordrelay.modules.ingame_msg then
-        discordrelay.modules.ingame_msg = nil
-    end
+	hook.Remove("PlayerSay", "DiscordRelayChat")
+	if discordrelay.modules.ingame_msg then
+		discordrelay.modules.ingame_msg = nil
+	end
 end
 
 return ingame_msg

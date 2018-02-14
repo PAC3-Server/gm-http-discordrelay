@@ -3,26 +3,26 @@ local examplemodule = {}
 -- local discordrelay = discordrelay
 
 function examplemodule.Init()
-    --initialize your module here, why? it's used to reload the module and on restart/mapreload
-    hook.Add("Think","whyareyouevendoingthis",function() print("aa") end)
+	--initialize your module here, why? it's used to reload the module and on restart/mapreload
+	hook.Add("Think","whyareyouevendoingthis",function() print("aa") end)
 end
 
 function examplemodule.Handle(input,previous,future)  -- warning previous and future messages could also be a relay message so it's not reliable
-    -- handle discord input here see https://discordapp.com/developers/docs/resources/channel#message-object
-    -- don't declare the function if you don't want to handle incoming discord messages.
+	-- handle discord input here see https://discordapp.com/developers/docs/resources/channel#message-object
+	-- don't declare the function if you don't want to handle incoming discord messages.
 
-    -- getting the message example--
-    local user = input.author.username
-    local msg = input.content
-    print(user.." said "..msg)
+	-- getting the message example--
+	local user = input.author.username
+	local msg = input.content
+	print(user.." said "..msg)
 end
 
 function examplemodule.Remove()
-    -- undo all your changes here example:
-    hook.Remove("Think","whyareyouevendoingthis")
-    if discordrelay.modules.examplemodule then -- .modules if you use examplemodule.Handle
-        discordrelay.modules.examplemodule = nil -- until I find out how to do it better
-    end
+	-- undo all your changes here example:
+	hook.Remove("Think","whyareyouevendoingthis")
+	if discordrelay.modules.examplemodule then -- .modules if you use examplemodule.Handle
+		discordrelay.modules.examplemodule = nil -- until I find out how to do it better
+	end
 end
 make sure to return the local variable, otherwise it will be ignored from the relay and error
 return examplemodule
