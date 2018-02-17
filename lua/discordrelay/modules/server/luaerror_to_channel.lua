@@ -191,7 +191,7 @@ function luaerror_to_channel.Init()
 					["author"] = {
 						["name"] = author,
 						["url"] = client and ("http://steamcommunity.com/profiles/" .. tostring(util.SteamIDTo64(client:SteamID()))) or (addon_info and addon_info.url) or "",
-						["icon_url"] = avatar and tostring(avatar) or (addon_info and addon_info.icon or "https://identicons.github.com/" .. (addon_name == "=[C]" and "internal" or addon_name) .. ".png")
+						["icon_url"] = avatar and tostring(avatar) or (addon_info and addon_info.icon or "https://identicons.github.com/" .. (addon_name == "=[C]" and (stack[max_level].source.name or "internal") or addon_name) .. ".png")
 					},
 					["footer"] = {
 						["text"] = tostring(os.date())
