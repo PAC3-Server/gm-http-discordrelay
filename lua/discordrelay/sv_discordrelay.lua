@@ -259,13 +259,9 @@ function discordrelay.CreateMessage(channelid, msg, cb)
 	end)
 end
 
-local warned = false
 function discordrelay.ExecuteWebhook(whid, whtoken, msg, cb)
 	if discordrelay.config.webhookenabled == false then
-		if not warned then
 			discordrelay.log(3, "Tried to ExecuteWebhook, but it is disabled! (webhookid and/or token missing)")
-			warned = true
-		end
 		return
 	end
 	local res
