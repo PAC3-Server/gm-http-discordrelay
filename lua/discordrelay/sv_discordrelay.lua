@@ -144,8 +144,11 @@ function discordrelay.WebhookRequest(ctx, callback, err)
 			["Content-Length"] = string.len(ctx.body) or "0"
 		},
 		["success"] = function(code, body, headers)
+			if discordrelay.util.badcode[code] then
+				discordrelay.log(2, "WebhookRequest failed!", code, discordrelay.util.badcode[code], body, ctx.url)
+			end
 			if not callback then return end
-			callback(headers, body)
+			callback(code, body, headers)
 		end,
 		["failed"] = function(reason)
 			if not err then return end
@@ -278,7 +281,7 @@ function discordrelay.ExecuteWebhook(whid, whtoken, msg, cb)
 		["body"] = res
 
 	},
-	function(headers, body)
+	function(code, body, headers)
 		if not cb then return end
 		local tbl = util.JSONToTable(body)
 		cb(tbl)
