@@ -59,13 +59,13 @@ function info.Handle(input, previous, future)
 							["fields"] = {
 							[1] = {
 								["name"] = "<:poseparameter:289507359699632129>",
-								["value"] = ply:Ping(),
+								["value"] = tostring(ply:Ping()),
 								["inline"] = true
 
 							},
 							[2] = {
 								["name"] = ":heartpulse:",
-								["value"] = ply:Health(),
+								["value"] = tostring(ply:Health()),
 								["inline"] = true
 							},
 							[3] = {
@@ -75,7 +75,7 @@ function info.Handle(input, previous, future)
 							},
 							[4] = {
 								["name"] = ":first_place:",
-								["value"] = ply.GetLevel and ply:GetLevel() or 0,
+								["value"] = tostring(ply.GetLevel and ply:GetLevel() or 0),
 								["inline"] = true
 
 							},
