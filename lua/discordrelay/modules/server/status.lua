@@ -47,7 +47,7 @@ function status.Handle(input, previous, future)
 					},
 					[2] = {
 						["name"] = ":heartpulse:",
-						["value"] = ply:Health(),
+						["value"] = tostring(ply:Health()),
 						["inline"] = true
 					},
 					[3] = {
