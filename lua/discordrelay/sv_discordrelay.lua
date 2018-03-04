@@ -262,7 +262,7 @@ function discordrelay.CreateMessage(channelid, msg, cb)
 	end)
 end
 
-function discordrelay.ExecuteWebhook(whid, whtoken, msg, cb)
+function discordrelay.ExecuteWebhook(whid, whtoken, msg, callback)
 	if discordrelay.config.webhookenabled == false then
 			discordrelay.log(3, "Tried to ExecuteWebhook, but it is disabled! (webhookid and/or token missing)")
 		return
@@ -282,9 +282,11 @@ function discordrelay.ExecuteWebhook(whid, whtoken, msg, cb)
 
 	},
 	function(code, body, headers)
-		if not cb then return end
-		local tbl = util.JSONToTable(body)
-		cb(tbl)
+	if discordrelay.util.badcode[code] then
+		discordrelay.log(2, "ExecuteWebhook failed!", code, discordrelay.util.badcode[code], body, whid)
+	end
+	if not callback then return end
+		callback(code, body, headers)
 	end,
 	function(err)
 		discordrelay.log(3, "WebhookFailed:", whid, msg, err)
