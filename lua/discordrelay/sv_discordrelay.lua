@@ -55,7 +55,7 @@ discordrelay.username = config.username or "Server"
 discordrelay.avatar = config.avatar or "https://cdn.discordapp.com/avatars/276379732726251521/de38fcf57f85e75739a1510c3f9d0531.png"
 discordrelay.token = config.token
 discordrelay.guild = config.guildid or "260866188962168832"
-discordrelay.admin_roles = config.admin_roles or {"260870255486697472", "260932947140411412"}
+discordrelay.admin_roles = config.admin_roles or {"260870255486697472", "260932947140411412", "280080163645947904"}
 discordrelay.relayChannel = config.relaychannel or "273575417401573377"
 
 discordrelay.config.webhookenabled = config.webhookid and config.webhooktoken or false
