@@ -167,7 +167,7 @@ function luaerror_to_channel.Init()
 		end
 
 		local addon_info
-		local addon_name = stack[min_level].source:match("lua/(.-)/") or stack[min_level].source or "???"
+		local addon_name = (stack[min_level].source:match("lua/(.-)/") or stack[min_level].source) or "???"
 		if addon_name and github[addon_name:lower()] then
 			addon_info = github[addon_name:lower()]
 		end
