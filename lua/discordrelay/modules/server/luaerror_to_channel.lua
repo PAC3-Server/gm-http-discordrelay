@@ -26,7 +26,7 @@ function luaerror_to_channel.Init()
 			["url"] = "https://github.com/PAC3-Server/notagain/tree/master/",
 			["icon"] = "https://avatars1.githubusercontent.com/u/25587531?v=4",
 			["mention"] = {
-				jrpg = {"208633661787078657", --[["205976012050268160"]]}, -- caps and earu
+				--jrpg = {"208633661787078657", --[["205976012050268160"]]}, -- caps and earu
 				goluwa = "208633661787078657", -- caps
 
 			} -- notagain or server role maybe?
