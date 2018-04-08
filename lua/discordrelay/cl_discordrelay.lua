@@ -18,7 +18,11 @@
 --todo clientside modules????????
 
 -- standard message
+local allowmsg = CreateClientConVar( "cl_discordrelay", "1", true, false )
+
 net.Receive( "DiscordMessage", function()
+	if not allowmsg:GetBool() then return end
+
 	local nick = net.ReadString()
 	local message = net.ReadString()
 
