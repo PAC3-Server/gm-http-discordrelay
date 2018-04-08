@@ -18,6 +18,7 @@ function ingame_msg.Init()
 					end
 				end
 			end
+
 			text = text:gsub("(@+)everyone", "everyone")
 			text = text:gsub("(@+)here", "here")
 
