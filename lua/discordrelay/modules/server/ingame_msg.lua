@@ -18,9 +18,8 @@ function ingame_msg.Init()
 					end
 				end
 			end
-
-			text = string.Replace(text, "@everyone", "everyone")
-			text = string.Replace(text, "@here", "here")
+			text = text:gsub("(@+)everyone", "everyone")
+			text = text:gsub("(@+)here", "here")
 
 			discordrelay.util.GetAvatar(ply:SteamID(), function(ret)
 				discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
