@@ -23,6 +23,8 @@ function ingame_msg.Init()
 			text = text:gsub("(@+)everyone", "everyone")
 			text = text:gsub("(@+)here", "here")
 
+			text = text:gsub("<texture=(.-)>", function(url) return url end)
+
 			discordrelay.util.GetAvatar(ply:SteamID(), function(ret)
 				discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
 					["username"] = string.sub((not ply:Alive() and "*DEAD* " or "") .. string.gsub(ply:Nick(),"<.->",""),1,32),
