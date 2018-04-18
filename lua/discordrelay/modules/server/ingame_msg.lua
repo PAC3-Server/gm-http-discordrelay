@@ -4,6 +4,7 @@ local discordrelay = discordrelay
 function ingame_msg.Init()
 
 	hook.Add("PlayerSay", "DiscordRelayChat", function(ply, text, teamChat)
+		if not text or text == "" then return end
 		if aowl and aowl.ParseString(text) then
 			return
 		end
