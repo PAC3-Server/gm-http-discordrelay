@@ -77,7 +77,7 @@ function status.Handle(input, previous, future)
 				["embeds"] = {
 					[1] = {
 						["title"] = "Server status:",
-						["description"] = "No Players are currently on the Server...\nWant to join? Click this link: steam://connect/threekelv.in",
+						["description"] = "No Players are currently on the Server...\nWant to join? Click this link: steam://connect/pac3.info",
 						["type"] = "rich",
 						["color"] = 0x555555
 					}
