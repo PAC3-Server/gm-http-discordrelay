@@ -27,19 +27,19 @@ function luaerror_to_channel.Init()
 			["icon"] = "https://avatars1.githubusercontent.com/u/25587531?v=4",
 			["mention"] = {
 				--jrpg = {"208633661787078657", --[["205976012050268160"]]}, -- caps and earu
-				goluwa = "208633661787078657", -- caps
+				--goluwa = "208633661787078657", -- caps
 
 			} -- notagain or server role maybe?
 		},
 		["easychat"] = {
 			["url"] = "https://github.com/PAC3-Server/EasyChat/tree/master/",
 			["icon"] = "https://avatars2.githubusercontent.com/u/20880060?v=4",
-			["mention"] = "205976012050268160" -- earu
+			--["mention"] = "205976012050268160" -- earu
 		},
 		["discordrelay"] = {
 			["url"] = "https://github.com/PAC3-Server/gm-http-discordrelay/tree/master/",
 			["icon"] = "https://avatars0.githubusercontent.com/u/3000604?v=4",
-			["mention"] = "94829082360942592", -- techbot
+			--["mention"] = "94829082360942592", -- techbot
 		},
 		["lambda"] = {
 			["url"] = "https://github.com/ZehMatt/Lambda/tree/master/",
@@ -48,7 +48,6 @@ function luaerror_to_channel.Init()
 		["includes"] = { -- garry stuff
 			["url"] = "https://github.com/Facepunch/garrysmod/tree/master/garrysmod/",
 			["icon"] = "https://avatars0.githubusercontent.com/u/3371040?v=4",
-			["mention"] = nil
 		},
 	}
 	github["vgui"] = github["includes"]
