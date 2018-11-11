@@ -74,6 +74,9 @@ function status.Handle(input, previous, future)
 			discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
 				["username"] = discordrelay.username,
 				["avatar_url"] = discordrelay.avatar,
+				["content"] = "**Hostname:** " .. GetHostName() ..
+					"\n**Uptime:** " .. string.NiceTime(CurTime()) ..
+					"\n**Map:** `" .. game.GetMap(),
 				["embeds"] = {
 					[1] = {
 						["title"] = "Server status:",
