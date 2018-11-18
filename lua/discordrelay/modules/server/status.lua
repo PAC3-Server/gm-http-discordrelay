@@ -67,7 +67,7 @@ function status.Handle(input, previous, future)
 					"\n**Uptime:** " .. string.NiceTime(CurTime()) ..
 					"\n**Map:** `" .. game.GetMap() ..
 					"`\n**Players:** " .. amount .. "/" ..  game.MaxPlayers() ..
-					"\nWant to join? Click this link: steam://connect/threekelv.in",
+					"\nWant to join? Click this link: steam://connect/pac3.info",
 				["embeds"] = embeds
 		})
 		else
