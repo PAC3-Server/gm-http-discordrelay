@@ -40,7 +40,7 @@ function ingame_msg.Init()
 				end
 			end
 				
-			cleanMassPings(text)
+			text = cleanMassPings(text)
 
 			text = text:gsub("<texture=(.-)>", function(url) return url end)
 
