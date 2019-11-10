@@ -19,9 +19,11 @@ function ingame_msg.Init()
 					end
 				end
 			end
-
+				
+			text = text:gsub("%\x20[%\x2E%\x2D%\x2A%\x2B%\x2C]","")
 			text = text:gsub("(@+)everyone", "everyone")
 			text = text:gsub("(@+)here", "here")
+			
 
 			text = text:gsub("<texture=(.-)>", function(url) return url end)
 
