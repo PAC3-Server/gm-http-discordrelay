@@ -1,11 +1,6 @@
 local ingame_msg = {}
 local discordrelay = discordrelay
 
-local function cleanMassPings(str)
-	str = str:gsub("@", "@\xE2\x80\x8B") -- Not in the same line as the return to prevent it from returning unneeded extra args
-	return str
-end
-
 function ingame_msg.Init()
 
 	hook.Add("PlayerSay", "DiscordRelayChat", function(ply, text, teamChat)
@@ -24,8 +19,6 @@ function ingame_msg.Init()
 					end
 				end
 			end
-				
-			text = cleanMassPings(text)
 
 			text = text:gsub("<texture=(.-)>", function(url) return url end)
 
@@ -33,7 +26,10 @@ function ingame_msg.Init()
 				discordrelay.ExecuteWebhook(discordrelay.webhookid, discordrelay.webhooktoken, {
 					["username"] = string.sub((not ply:Alive() and "*DEAD* " or "") .. string.gsub(ply:Nick(),"<.->",""),1,32),
 					["content"] = text,
-					["avatar_url"] = ret
+					["avatar_url"] = ret,
+					["allowed_mentions"] = {
+						["parse"] = {"users", "roles"}
+					}
 				})
 			end)
 		end
